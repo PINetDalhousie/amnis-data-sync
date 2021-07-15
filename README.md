@@ -6,8 +6,11 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
 
 ## Getting started
 
-1. Clone the repository
+1. Clone the repository, then enter into it.
+
 ```git clone https://github.com/PINetDalhousie/amnis-data-sync```
+
+```cd amnis-data-sync```
 
 2. Install dependencies. Our tool depends on the following software:
 
