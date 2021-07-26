@@ -20,13 +20,14 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   - Java 11
   - Xterm
   - Kafka-python 2.0.2
+  - Matplotlib 3.3.4
 
   Most dependencies can be installed using `apt install`:
   
   ```bash
   $ sudo apt install python3-pip mininet default-jdk xterm
   
-  $ pip3 install mininet networkx kafka-python
+  $ pip3 install mininet networkx kafka-python matplotlib
   ```
   3. You are ready to go! Should be able to get help using:
 
