@@ -15,6 +15,7 @@ import emuNetwork
 import emuKafka
 import emuZk
 import emuLoad
+import emuLogs
 
 pID=0
 popens = {}
@@ -38,6 +39,7 @@ if __name__ == '__main__':
 	parser.add_argument('--nbroker', dest='nBroker', type=int, default=0,
                     help='Number of brokers')
 	parser.add_argument('--nzk', dest='nZk', type=int, default=0, help='Number of Zookeeper instances')
+	parser.add_argument('--create-plots', dest='createPlots', action='store_true')
 
 	args = parser.parse_args()
 
@@ -59,9 +61,11 @@ if __name__ == '__main__':
 
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
+	emuLogs.cleanLogs()
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
 
+	emuLogs.configureLogDir()
 	emuZk.configureZkCluster(zkPlace)
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace)
 	
@@ -76,7 +80,7 @@ if __name__ == '__main__':
 	print("Finished network connectivity test")
 		
 	#Start monitoring tasks
-	popens[pID] = subprocess.Popen("sudo python bandwidth-monitor.py &", shell=True)
+	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" &", shell=True)
 	pID += 1
 
 	emuZk.runZk(net, zkPlace)
@@ -89,6 +93,10 @@ if __name__ == '__main__':
 	killSubprocs(brokerPlace, zkPlace)
 
 	net.stop()
+
+	if args.createPlots:
+		emuLogs.plotBandwidth(args.nBroker)
+		print("Plots created")
 
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)

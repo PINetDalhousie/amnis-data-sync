@@ -1,24 +1,33 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import subprocess
 import os
 import time
+import sys
 
+interval = 5
 
-if os.path.isfile("bandwidth-log.txt"):
-	print("Erase bandwidth log")
-	os.system("sudo rm bandwidth-log.txt")
-
+os.system("sudo mkdir logs/bandwidth/")
+switches = int(sys.argv[1]) #get the passed argument
 
 while True:
-	bandwidthLog = open("bandwidth-log.txt", "a")
 
-	#TODO: change for any topology
-	for i in range(2):
-		bandwidthLog.write(">>>> S" + str(i+1) + " <<<<\n")
+	for i in range(switches):
+		bandwidthLog = open("logs/bandwidth/bandwidth-log" + str(i+1) + ".txt", "a")
+
 		statsProcess = subprocess.Popen("sudo ovs-ofctl dump-ports s"+str(i+1), shell=True, stdout=subprocess.PIPE)
 		stdout = statsProcess.communicate()[0]
-		bandwidthLog.write(stdout)
+		bandwidthLog.write(stdout.decode("utf-8"))  #converting bytes to string
+		bandwidthLog.close()
 
-	bandwidthLog.close()
-	time.sleep(5)
+	time.sleep(interval)
+
+
+
+
+
+
+
+
+
+
