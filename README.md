@@ -35,11 +35,13 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   
   ## Sample command lines
   
-  Emulate and sync data in a small network. If emulation completes successfully, you will be able to see consumed data on `consumed-data.txt`.
+  1) Emulate and sync data in a small network. If emulation completes successfully, you will be able to see consumed data on `consumed-data.txt`.
   
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2```
   
-  
+  2) Create plots for metrics of interest (e.g., bandwidth consumption). Navigate through the `logs/` folder after the simulation finishes to check them.
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots```
   
   
   
