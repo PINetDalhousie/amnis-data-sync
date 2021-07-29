@@ -69,15 +69,15 @@ def getStatsValue(switch,portNumber, portFlag):
     return bandwidth,count
       
 #drawing single plot for a single flag of each port for one switch           
-def drawPlot(switchNo,portNo,portFlag,x,y):      
+def drawPlot(switchNo,portNo,portFlag,x,y,yLabel):      
     plt.plot(x,y, label = "S-" +str(switchNo)+" P-"+str(portNo))
     plt.xlabel('Time (sec)')
-    plt.ylabel('Bandwidth (Bytes/sec)')
+    plt.ylabel(yLabel)
     if portFlag=="bytes":
         plt.title("Bandwidth for rx bytes")
     else:
         plt.title("Bandwidth for " + portFlag) 
-    #plt.legend()   
+
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='xx-small')
     
 
@@ -94,7 +94,10 @@ def singlePlotDraw(switches, portFlag):
         for i in port_list:
             bandwidth, occurrence = getStatsValue(s+1,i, portFlag)	
             timeList = list(range(0,occurrence*interval,interval))
-            drawPlot(s+1,i,portFlag,timeList, bandwidth)
+	    if portFlag=="rx pkts" or portFlag=="tx pkts":
+            	drawPlot(s+1,i,portFlag,timeList, bandwidth, "Bandwidth (pkts/sec)")
+	    else:
+		drawPlot(s+1,i,portFlag,timeList, bandwidth, "Bandwidth (bytes/sec)")
     if portFlag=="bytes":
         plt.savefig('logs/bandwidth/rx bytes',bbox_inches="tight")
     else:    
@@ -106,17 +109,3 @@ def plotBandwidth(switches):
     singlePlotDraw(switches, "bytes")
     singlePlotDraw(switches, "tx pkts")
     singlePlotDraw(switches, "tx bytes")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
