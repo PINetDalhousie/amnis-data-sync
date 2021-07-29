@@ -94,10 +94,10 @@ def singlePlotDraw(switches, portFlag):
         for i in port_list:
             bandwidth, occurrence = getStatsValue(s+1,i, portFlag)	
             timeList = list(range(0,occurrence*interval,interval))
-	    if portFlag=="rx pkts" or portFlag=="tx pkts":
-            	drawPlot(s+1,i,portFlag,timeList, bandwidth, "Bandwidth (pkts/sec)")
-	    else:
-		drawPlot(s+1,i,portFlag,timeList, bandwidth, "Bandwidth (bytes/sec)")
+            if portFlag=="rx pkts" or portFlag=="tx pkts":
+                drawPlot(s+1,i,portFlag,timeList, bandwidth, "Bandwidth (pkts/sec)")
+            else:
+                drawPlot(s+1,i,portFlag,timeList, bandwidth, "Bandwidth (bytes/sec)")
     if portFlag=="bytes":
         plt.savefig('logs/bandwidth/rx bytes',bbox_inches="tight")
     else:    
