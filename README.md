@@ -43,19 +43,23 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots```
   
-  3) Create custom load. 
+  3) Create custom load. This example assumes a Gaussian distribution for the message sizes and two traffic classes (one sending messages at half the specified rate, i.e., 0.4, and another at twice).
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --message-size gaussian,2,5 --message-rate 0.4 --traffic-classes 0.5,2```
   
-  4) Set the number of topics
+  4) Create custom load with fixed message sizes.
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --message-size fixed,50 --message-rate 0.4 --traffic-classes 0.5,2```
+  
+  5) Set the number of topics
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --nTopics 4```
   
-  5) Set the consumer rate (e.g., check new messages every 2 seconds)
+  6) Set the consumer rate (e.g., check new messages every 2 seconds)
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --consumer-rate 0.5```
   
-  6) Set a duration for the simulation. OBS.: this is the time the workload will run
+  7) Set a duration for the simulation. OBS.: this is the time the workload will run
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60```
   
