@@ -35,13 +35,29 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   
   ## Sample command lines
   
-  1) Emulate and sync data in a small network. If emulation completes successfully, you will be able to see consumed data on `consumed-data.txt`.
+  1) Emulate and sync data in a small network.
   
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2```
   
   2) Create plots for metrics of interest (e.g., bandwidth consumption). Navigate through the `logs/` folder after the simulation finishes to check them.
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots```
+  
+  3) Create custom load. 
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --message-size gaussian,2,5 --message-rate 0.4 --traffic-classes 0.5,2```
+  
+  4) Set the number of topics
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --nTopics 4```
+  
+  5) Set the consumer rate (e.g., check new messages every 2 seconds)
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --consumer-rate 0.5```
+  
+  6) Set a duration for the simulation. OBS.: this is the time the workload will run
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60```
   
   
   
