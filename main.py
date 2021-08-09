@@ -102,7 +102,7 @@ if __name__ == '__main__':
 	parser.add_argument('--message-size', dest='mSizeString', type=str, default='fixed,10', help='Message size distribution (fixed, gaussian)')
 	parser.add_argument('--message-rate', dest='mRate', type=float, default=1.0, help='Message rate in msgs/second')
 	parser.add_argument('--traffic-classes', dest='tClassString', type=str, default='1', help='Number of traffic classes')
-	parser.add_argument('--consumer-rate', dest='consumerRate', type=float, default=5.0, help='Rate consumers check for new messages in checks/second')
+	parser.add_argument('--consumer-rate', dest='consumerRate', type=float, default=0.5, help='Rate consumers check for new messages in checks/second')
 	parser.add_argument('--time', dest='duration', type=int, default=10, help='Duration of the simulation (in seconds)')
 	parser.add_argument('--create-plots', dest='createPlots', action='store_true')
 
