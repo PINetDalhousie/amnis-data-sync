@@ -53,13 +53,13 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   
   5) Set the number of topics
 
-  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --nTopics 4```
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --ntopics 4```
   
   6) Set the consumer rate (e.g., check new messages every 2 seconds)
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --consumer-rate 0.5```
   
-  7) Set a duration for the simulation. OBS.: this is the time the workload will run
+  7) Set a duration for the simulation. OBS.: this is the time the workload will run, not the total simulation time
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60```
   
