@@ -7,6 +7,8 @@ from random import seed, randint, gauss
 import time
 import sys
 
+import logging
+
 node = sys.argv[1]
 tClass = float(sys.argv[2])
 mSizeString = sys.argv[3]
@@ -19,6 +21,11 @@ mSizeParams = mSizeString.split(',')
 msgSize = 0
 
 nodeID = node[1:]
+msgID = 0
+
+logging.basicConfig(filename='logs/prod/prod-'+nodeID+'.log',
+						format='%(asctime)s %(levelname)s:%(message)s',
+ 						level=logging.INFO)
 
 producer = KafkaProducer(bootstrap_servers="10.0.0."+nodeID+":9092")
 
@@ -32,14 +39,23 @@ while True:
 		if msgSize < 1:
 			msgSize = 1
 
-	message = [97] * msgSize
-	bMsg = bytearray(message)
+	bMsgID = msgID.to_bytes(4, 'big')
+	bNodeID = bytes(nodeID, 'utf-8')
+
+	payloadSize = msgSize - 5
+
+	if payloadSize < 0:
+		payloadSize = 0
+
+	message = [97] * payloadSize
+	bMsg = bNodeID + bMsgID + bytearray(message)
 
 	topicID = randint(0, nTopics-1)
 	topicName = 'topic-'+str(topicID)
 
-	#TODO: write to random topic
 	producer.send(topicName, bMsg)
+	logging.info('Topic: %s; Message ID: %s', topicName, str(msgID))
+	msgID += 1
 	time.sleep(1.0/(mRate*tClass))
 
 

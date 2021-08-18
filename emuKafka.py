@@ -38,6 +38,10 @@ def configureKafkaCluster(brokerPlace, zkPlace):
 			"zookeeper.connect=localhost:2181",
 			"zookeeper.connect="+zkAddresses)
 
+		#bProperties = bProperties.replace(
+		#	"zookeeper.connection.timeout.ms=18000",
+		#	"zookeeper.connection.timeout.ms=30000")
+
 		bFile = open("kafka/config/server" + str(bID) + ".properties", "w")
 		bFile.write(bProperties)
 		bFile.close()

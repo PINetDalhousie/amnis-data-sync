@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import logging
 
 import matplotlib.pyplot as plt
 
@@ -9,6 +10,12 @@ interval = 5
 
 def configureLogDir():
 	os.system("sudo mkdir logs/")
+	os.system("sudo mkdir logs/prod/")
+	os.system("sudo mkdir logs/cons/")
+
+	logging.basicConfig(filename='logs/events.log',
+						format='%(levelname)s:%(message)s',
+ 						level=logging.INFO)
 
 
 def cleanLogs():

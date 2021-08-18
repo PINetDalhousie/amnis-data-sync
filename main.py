@@ -3,6 +3,7 @@
 from mininet.net import Mininet
 from mininet.cli import CLI
 from mininet.node import RemoteController
+from mininet.link import TCLink
 
 import os
 import sys
@@ -10,6 +11,7 @@ import subprocess
 import time
 
 import argparse
+import logging
 
 import emuNetwork
 import emuKafka
@@ -120,6 +122,7 @@ if __name__ == '__main__':
 
 	net = Mininet(topo = emulatedTopo,
 			controller=RemoteController,
+			link = TCLink,
 			autoSetMacs = True,
 			autoStaticArp = True)
 
@@ -137,6 +140,7 @@ if __name__ == '__main__':
 	
 	#Start network
 	net.start()
+	logging.info('Network started')
 
 	emuNetwork.configureNetwork(args.topo)
 	time.sleep(1)
@@ -159,6 +163,7 @@ if __name__ == '__main__':
 	killSubprocs(brokerPlace, zkPlace)
 
 	net.stop()
+	logging.info('Network stopped')
 
 	if args.createPlots:
 		emuLogs.plotBandwidth(args.nBroker)
