@@ -101,6 +101,7 @@ if __name__ == '__main__':
                     help='Number of brokers')
 	parser.add_argument('--nzk', dest='nZk', type=int, default=0, help='Number of Zookeeper instances')
 	parser.add_argument('--ntopics', dest='nTopics', type=int, default=1, help='Number of topics')
+	parser.add_argument('--replication', dest='replication', type=int, default=1, help='Replication factor')
 	parser.add_argument('--message-size', dest='mSizeString', type=str, default='fixed,10', help='Message size distribution (fixed, gaussian)')
 	parser.add_argument('--message-rate', dest='mRate', type=float, default=1.0, help='Message rate in msgs/second')
 	parser.add_argument('--traffic-classes', dest='tClassString', type=str, default='1', help='Number of traffic classes')
@@ -156,7 +157,7 @@ if __name__ == '__main__':
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
 
-	emuLoad.runLoad(net, args.nTopics, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration)
+	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration)
 	print("Simulation complete")
 
 	# to kill all the running subprocesses

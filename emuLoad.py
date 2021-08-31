@@ -50,7 +50,7 @@ def spawnConsumers(net, nTopics, rate):
 		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(rate)+" &", shell=True)
 
 
-def runLoad(net, nTopics, mSizeString, mRate, tClassString, consumerRate, duration):
+def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration):
 
 	print("Start workload")
 
@@ -64,7 +64,7 @@ def runLoad(net, nTopics, mSizeString, mRate, tClassString, consumerRate, durati
 		issuingID = randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]
 
-		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor 1 --partitions 1 --topic topic-"+str(i)+" &", shell=True)
+		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i)+" &", shell=True)
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
 	
 	time.sleep(15)
