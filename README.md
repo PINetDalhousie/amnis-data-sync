@@ -54,8 +54,11 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   5) Set the number of topics
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --ntopics 4```
+  
   6) Set a replication factor for each topic (e.g., store two copies of each message)
+  
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --ntopics 4 --replication 2```
+  
   7) Set the consumer rate (e.g., check new messages every 2 seconds)
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --consumer-rate 0.5```
