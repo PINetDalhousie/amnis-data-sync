@@ -58,28 +58,36 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 	nHosts = len(net.hosts)
 	print("Number of hosts: " + str(nHosts))
-
+    
 	#Create topics
+	topicNodes = []
 	for i in range(nTopics):
 		issuingID = randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]
 
 		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i)+" &", shell=True)
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
+		topicNodes.append(issuingNode)
+
+	topicWait = True
+	#topicWaitTime = 100
+	startTime = time.time()
+	totalTime = 0
+	for host in topicNodes:
+	    while topicWait:
+	        print("Checking Topic Creation for Host " + str(host.IP()) + "...")
+	        out = host.cmd("kafka/bin/kafka-topics.sh --list --bootstrap-server " + str(host.IP()) + ":9092", shell=True)
+	        if "topic-" in out:
+	            topicWait = False
+	            stopTime = time.time()
+	            totalTime = stopTime - startTime
+	            print(out)
+	        else:
+	            time.sleep(10)
+	    topicWait = True
+	    
+	print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
-	time.sleep(15)
-	print("Topics created")	
-
-	h1=net.hosts[0]
-	h2=net.hosts[1]
-
-	#h1.cmd("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0.1:9092 --replication-factor 1 --partitions 1 --topic example-topic", shell=True)
-	#time.sleep(10)
-	#print("Created a topic")
-
-	out = h1.cmd("kafka/bin/kafka-topics.sh --list --bootstrap-server 10.0.0.1:9092", shell=True)
-	print("#######################")
-	print(out)
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics)
 	time.sleep(1)
