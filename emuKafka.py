@@ -93,8 +93,25 @@ def runKafka(net, brokerPlace):
 		startingHost = netNodes[bID]
 
 		startingHost.popen("kafka/bin/kafka-server-start.sh kafka/config/server"+str(bNode)+".properties &", shell=True)
-		time.sleep(10)
-		print("Created Kafka broker at node "+str(bNode))
+		
+		print("Creating Kafka broker at node "+str(bNode))
+
+	brokerWait = True
+	#brokerWaitTime = 100
+	startTime = time.time()
+	totalTime = 0
+	for bNode in brokerPlace:
+	    while brokerWait:
+	        print("Testing Connection to Broker " + str(bNode) + "...")
+	        out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0." + str(bNode) + " 9092")
+	        if(exitCode == 0):
+	            brokerWait = False
+	            stopTime = time.time()
+	            totalTime = stopTime - startTime
+	        else:
+	            time.sleep(10)
+	    brokerWait = True
+	print("Successfully Created Kafka Brokers in " + str(totalTime) + " seconds")
 
 
 def cleanKafkaState(brokerPlace):
