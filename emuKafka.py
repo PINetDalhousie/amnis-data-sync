@@ -80,7 +80,7 @@ def placeKafkaBrokers(net, nBroker, nZk):
 
 
 
-def runKafka(net, brokerPlace):
+def runKafka(net, brokerPlace, brokerWaitTime=100):
 
 	netNodes = {}
 
@@ -97,17 +97,19 @@ def runKafka(net, brokerPlace):
 		print("Creating Kafka broker at node "+str(bNode))
 
 	brokerWait = True
-	#brokerWaitTime = 100
 	startTime = time.time()
 	totalTime = 0
 	for bNode in brokerPlace:
 	    while brokerWait:
 	        print("Testing Connection to Broker " + str(bNode) + "...")
 	        out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0." + str(bNode) + " 9092")
+	        stopTime = time.time()
+	        totalTime = stopTime - startTime
 	        if(exitCode == 0):
 	            brokerWait = False
-	            stopTime = time.time()
-	            totalTime = stopTime - startTime
+	        elif(totalTime > brokerWaitTime):
+	            print("ERROR: Timed out waiting for Kafka brokers to start")
+	            sys.exit(1)
 	        else:
 	            time.sleep(10)
 	    brokerWait = True

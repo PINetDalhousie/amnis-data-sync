@@ -50,7 +50,7 @@ def spawnConsumers(net, nTopics, rate):
 		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(rate)+" &", shell=True)
 
 
-def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration):
+def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, topicWaitTime=100):
 
 	print("Start workload")
 
@@ -70,18 +70,20 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		topicNodes.append(issuingNode)
 
 	topicWait = True
-	#topicWaitTime = 100
 	startTime = time.time()
 	totalTime = 0
 	for host in topicNodes:
 	    while topicWait:
 	        print("Checking Topic Creation for Host " + str(host.IP()) + "...")
 	        out = host.cmd("kafka/bin/kafka-topics.sh --list --bootstrap-server " + str(host.IP()) + ":9092", shell=True)
+	        stopTime = time.time()
+	        totalTime = stopTime - startTime
 	        if "topic-" in out:
 	            topicWait = False
-	            stopTime = time.time()
-	            totalTime = stopTime - startTime
 	            print(out)
+	        elif(totalTime > topicWaitTime):
+	            print("ERROR: Timed out waiting for topics to be created")
+	            sys.exit(1)
 	        else:
 	            time.sleep(10)
 	    topicWait = True
