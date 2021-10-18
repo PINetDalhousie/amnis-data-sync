@@ -16,11 +16,16 @@ nodeID = nodeName[1:]
 
 nTopics = int(sys.argv[2])
 rate = float(sys.argv[3])
+nZk = int(sys.argv[4])
 
-logging.basicConfig(filename='logs/cons/cons-'+nodeID+'.log',
-						format='%(asctime)s %(levelname)s:%(message)s',
- 						level=logging.INFO)
-
+if nZk == 0:
+	logging.basicConfig(filename='logs/kraft/cons/cons-'+nodeID+'.log',
+							format='%(asctime)s %(levelname)s:%(message)s',
+							level=logging.INFO)
+else:
+	logging.basicConfig(filename='logs/kafka/cons/cons-'+nodeID+'.log',
+							format='%(asctime)s %(levelname)s:%(message)s',
+							level=logging.INFO)    
 while True:
 
 	#Randomly select topic
