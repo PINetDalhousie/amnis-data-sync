@@ -106,7 +106,7 @@ def cleanZkState(zkPlace):
 
 	for zkID in zkPlace:
 		#Erase log directory
-		os.system("sudo rm -rf kafka/zookeeper" + str(zkID) + "/")
+		os.system("sudo rm -r kafka/zookeeper" + str(zkID) + "/")
 
 		#Erase properties file
 		os.system("sudo rm kafka/config/zookeeper" + str(zkID) + ".properties")

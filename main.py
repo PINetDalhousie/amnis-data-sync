@@ -18,7 +18,6 @@ import emuKafka
 import emuZk
 import emuLoad
 import emuLogs
-import emuKraft
 
 pID=0
 popens = {}
@@ -128,28 +127,17 @@ if __name__ == '__main__':
 			autoSetMacs = True,
 			autoStaticArp = True)
 
-	if args.nZk == 0:
-		brokerPlace = emuKraft.placeKraftBrokers(net, args.nBroker)
-		zkPlace = []        
-	else:        
-		brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)        
+	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
 
-# 	#TODO: remove debug code
+	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
+	emuLogs.cleanLogs()
+	emuKafka.cleanKafkaState(brokerPlace)
+	emuZk.cleanZkState(zkPlace)
 
-# clean and then configure
-	if args.nZk == 0:
-# 		emuLogs.cleanKraftLogs()
-		emuKraft.cleanKraftState(brokerPlace)
-		emuLogs.configureKraftLogDir()        
-		emuKraft.configureKraftCluster(brokerPlace)        
-	else:        
-# 		emuLogs.cleanKafkaLogs()        
-		emuKafka.cleanKafkaState(brokerPlace)
-		emuZk.cleanZkState(zkPlace)
-		emuLogs.configureKafkaLogDir()
-		emuZk.configureZkCluster(zkPlace)
-		emuKafka.configureKafkaCluster(brokerPlace, zkPlace)
+	emuLogs.configureLogDir()
+	emuZk.configureZkCluster(zkPlace)
+	emuKafka.configureKafkaCluster(brokerPlace, zkPlace)
 	
 	#Start network
 	net.start()
@@ -162,34 +150,29 @@ if __name__ == '__main__':
 	net.pingAll()
 	print("Finished network connectivity test")
 		
-# 	#Start monitoring tasks
-	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+"mSize:"+args.mSizeString+"mRate:"+str(args.mRate) +"nTopics:" +str(args.nTopics) +"replication:"+ str(args.replication) + "nZk:"+ str(args.nZk) +" &", shell=True)
+	#Start monitoring tasks
+	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" &", shell=True)
 	pID += 1
 
-	if args.nZk == 0:
-		emuKraft.runKraft(net, brokerPlace)
-	else:
-		emuZk.runZk(net, zkPlace)
-		emuKafka.runKafka(net, brokerPlace)
-        
-	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args.nZk)
+	emuZk.runZk(net, zkPlace)
+	emuKafka.runKafka(net, brokerPlace)
+
+	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration)
 	print("Simulation complete")
 
-# 	# to kill all the running subprocesses
+	# to kill all the running subprocesses
 	killSubprocs(brokerPlace, zkPlace)
 
 	net.stop()
 	logging.info('Network stopped')
 
-# 	if args.createPlots:
-# 		emuLogs.plotBandwidth(args.nBroker)
-# 		print("Plots created")
+	if args.createPlots:
+		emuLogs.plotBandwidth(args.nBroker)
+		print("Plots created")
 
-	if args.nZk == 0:
-		emuKraft.cleanKraftState(brokerPlace)       
-	else:        
-		emuKafka.cleanKafkaState(brokerPlace)
-		emuZk.cleanZkState(zkPlace)
+	#Need to clean both kafka and zookeeper state before a new simulation
+	emuKafka.cleanKafkaState(brokerPlace)
+	emuZk.cleanZkState(zkPlace)
 
 
 

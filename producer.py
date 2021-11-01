@@ -14,7 +14,6 @@ tClass = float(sys.argv[2])
 mSizeString = sys.argv[3]
 mRate = float(sys.argv[4])
 nTopics = int(sys.argv[5])
-nZk = int(sys.argv[6])
 
 seed(1)
 
@@ -24,14 +23,9 @@ msgSize = 0
 nodeID = node[1:]
 msgID = 0
 
-if nZk == 0:
-	logging.basicConfig(filename='logs/kraft/prod/prod-'+nodeID+'.log',
-							format='%(asctime)s %(levelname)s:%(message)s',
-							level=logging.INFO)
-else:
-	logging.basicConfig(filename='logs/kafka/prod/prod-'+nodeID+'.log',
-							format='%(asctime)s %(levelname)s:%(message)s',
-							level=logging.INFO)    
+logging.basicConfig(filename='logs/prod/prod-'+nodeID+'.log',
+						format='%(asctime)s %(levelname)s:%(message)s',
+ 						level=logging.INFO)
 
 producer = KafkaProducer(bootstrap_servers="10.0.0."+nodeID+":9092")
 
