@@ -3,7 +3,6 @@
 from mininet.net import Mininet
 
 import os
-import sys
 import subprocess
 import time
 
@@ -62,7 +61,7 @@ def configureZkCluster(zkPlace):
 
 
 
-def runZk(net, zkPlace, zkWaitTime=100):
+def runZk(net, zkPlace):
 
 	netNodes = {}
 
@@ -75,30 +74,8 @@ def runZk(net, zkPlace, zkWaitTime=100):
 		startingHost = netNodes[zID]
 
 		startingHost.popen("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper"+str(zNode)+".properties &", shell=True)
-		print("Creating Zookeeper instance at node "+str(zNode))
-	
-	zkWait = True
-	startTime = time.time()
-	totalTime = 0
-	clientPort = 2181
-	for zNode in zkPlace:
-	    while zkWait:
-	        print("Testing Connection to Zookeeper at node " + str(zNode) + "...")
-	        zID = "h"+str(zNode)
-	        startingHost = netNodes[zID]
-	        out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0." + str(zNode) + " " + str(clientPort))
-	        stopTime = time.time()
-	        totalTime = stopTime - startTime
-	        if(exitCode == 0):
-	            zkWait = False
-	        elif(totalTime > zkWaitTime):
-	            print("ERROR: Timed out waiting for zookeeper instances to start")
-	            sys.exit(1)
-	        else:
-	            time.sleep(10)
-	    zkWait = True
-	    clientPort += 1
-	print("Successfully Created Zookeeper Instances in " + str(totalTime) + " seconds")
+		time.sleep(10) 
+		print("Created Zookeeper instance at node "+str(zNode))
 
 
 
