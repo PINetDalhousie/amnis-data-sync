@@ -7,9 +7,16 @@ from random import seed, randint
 
 import time
 import os
+import sys
 
 
-def spawnProducers(net, mSizeString, mRate, tClassString, nTopics):
+def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
+
+	acks = args.acks
+	compression = args.compression
+	batchSize = args.batchSize
+	linger = args.linger
+	requestTimeout = args.requestTimeout
 
 	tClasses = tClassString.split(',')
 	#print("Traffic classes: " + str(tClasses))
@@ -37,20 +44,24 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics):
 
 	for nodeList in nodeClassification.values():
 		for node in nodeList:
-			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" &", shell=True)
-
+			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" &", shell=True)
 		i += 1
 
 
-def spawnConsumers(net, nTopics, rate):
+def spawnConsumers(net, nTopics, rate, args):
+
+	fetchMinBytes = args.fetchMinBytes
+	fetchMaxWait = args.fetchMaxWait
+	sessionTimeout = args.sessionTimeout
+
 	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
 	#print("Data consumed")
 
 	for node in net.hosts:
-		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(rate)+" &", shell=True)
+		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(rate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" &", shell=True)
 
 
-def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, topicWaitTime=100):
+def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):
 
 	print("Start workload")
 
@@ -91,11 +102,11 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
 
-	spawnProducers(net, mSizeString, mRate, tClassString, nTopics)
+	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
 	time.sleep(1)
 	print("Producers created")
 
-	spawnConsumers(net, nTopics, consumerRate)
+	spawnConsumers(net, nTopics, consumerRate, args)
 	time.sleep(1)
 	print("Consumers created")
 

@@ -7,7 +7,7 @@ import sys
 import subprocess
 import time
 
-def configureKafkaCluster(brokerPlace, zkPlace):
+def configureKafkaCluster(brokerPlace, zkPlace, args):
 	print("Configure kafka cluster")
 
 	propertyFile = open("kafka/config/server.properties", "r")
@@ -23,6 +23,9 @@ def configureKafkaCluster(brokerPlace, zkPlace):
 			"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
 		bProperties = bProperties.replace("log.dirs=/tmp/kafka-logs",
 			"log.dirs=./kafka/kafka" + str(bID))
+
+		bProperties = bProperties.replace("#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))
+		bProperties = bProperties.replace("#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
 
 		#Specify zookeeper addresses to connect
 		zkAddresses = ""
