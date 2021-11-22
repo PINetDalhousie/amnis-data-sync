@@ -20,6 +20,8 @@ try:
 	batchSize = int(sys.argv[8])
 	linger = int(sys.argv[9])
 	requestTimeout = int(sys.argv[10])
+	brokers = int(sys.argv[11])    
+	replication = int(sys.argv[12])    
 
 	seed(1)
 
@@ -28,9 +30,13 @@ try:
 
 	nodeID = node[1:]
 	msgID = 0
+    
+# 	logging.basicConfig(filename='logs/kafka/prod/prod-'+nodeID+'.log',
+# 							format='%(asctime)s %(levelname)s:%(message)s',
+# 							level=logging.INFO)  
 
-	logging.basicConfig(filename='logs/prod/prod-'+nodeID+'.log',
-						format='%(asctime)s %(levelname)s:%(message)s',
+	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/prod-"+nodeID+".log",
+						format='%(levelname)s:%(message)s',
  						level=logging.INFO)
 
 	bootstrapServers="10.0.0."+nodeID+":9092"

@@ -17,6 +17,8 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 	batchSize = args.batchSize
 	linger = args.linger
 	requestTimeout = args.requestTimeout
+	brokers = args.nBroker
+	replication = args.replication    
 
 	tClasses = tClassString.split(',')
 	#print("Traffic classes: " + str(tClasses))
@@ -44,21 +46,25 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 
 	for nodeList in nodeClassification.values():
 		for node in nodeList:
-			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" &", shell=True)
+			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" &", shell=True)
 		i += 1
 
 
-def spawnConsumers(net, nTopics, rate, args):
+def spawnConsumers(net, nTopics, cRate, args):
 
 	fetchMinBytes = args.fetchMinBytes
 	fetchMaxWait = args.fetchMaxWait
 	sessionTimeout = args.sessionTimeout
+	brokers = args.nBroker    
+	mSizeString = args.mSizeString
+	mRate = args.mRate    
+	replication = args.replication    
 
 	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
 	#print("Data consumed")
 
 	for node in net.hosts:
-		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(rate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" &", shell=True)
+		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" &", shell=True)
 
 
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):
@@ -77,6 +83,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		issuingNode = net.hosts[issuingID]
 
 		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i)+" &", shell=True)
+# 		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions "+str(nHosts)+" --topic topic-"+str(i)+" &", shell=True)        
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
 		topicNodes.append(issuingNode)
 
@@ -109,6 +116,10 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	spawnConsumers(net, nTopics, consumerRate, args)
 	time.sleep(1)
 	print("Consumers created")
+    
+# 	for i in range(nHosts):    
+# 		consumer_groups = net.hosts[i].cmd("kafka/bin/kafka-consumer-groups.sh --bootstrap-server 10.0.0."+str(i+1)+":9092 --list", shell=True)
+# 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	timer = 0
 

@@ -101,8 +101,8 @@ def validateInput(args):
 		sys.exit(1)
 
 	compressionList = ['gzip', 'snappy', 'lz4']
-	if not (args.compression in compressionList):
-		print("ERROR: Compression should be one of the following:")
+	if not (args.compression in compressionList) and args.compression != 'None':
+		print("ERROR: Compression should be None or one of the following:")
 		print(*compressionList, sep = ", ") 
 		sys.exit(1)
 
@@ -172,7 +172,7 @@ if __name__ == '__main__':
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
 
-	emuLogs.configureLogDir()
+	emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
 	emuZk.configureZkCluster(zkPlace)
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
@@ -188,7 +188,7 @@ if __name__ == '__main__':
 	print("Finished network connectivity test")
 		
 	#Start monitoring tasks
-	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" &", shell=True)
+	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
 	pID += 1
 
 	emuZk.runZk(net, zkPlace)
@@ -202,10 +202,6 @@ if __name__ == '__main__':
 
 	net.stop()
 	logging.info('Network stopped')
-
-	if args.createPlots:
-		emuLogs.plotBandwidth(args.nBroker)
-		print("Plots created")
 
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)
