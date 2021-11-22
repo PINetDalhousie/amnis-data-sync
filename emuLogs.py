@@ -6,11 +6,7 @@ import logging
 import matplotlib.pyplot as plt
 
 
-def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):
-# 	os.system("sudo mkdir -p logs/kafka/bandwidth/")
-# 	os.system("sudo mkdir -p logs/kafka/prod/")
-# 	os.system("sudo mkdir -p logs/kafka/cons/")
-    
+def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):  
 	os.system("sudo rm -rf logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/bandwidth/"+"; sudo mkdir -p logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/bandwidth/")
     
 	os.system("sudo rm -rf logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/"+"; sudo mkdir -p logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/")    
@@ -20,10 +16,6 @@ def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/events.log",
 						format='%(levelname)s:%(message)s',
  						level=logging.INFO)
-        
-# 	logging.basicConfig(filename='logs/kafka/events.log',
-# 						format='%(levelname)s:%(message)s',
-#  						level=logging.INFO)
 
 
 def cleanLogs():

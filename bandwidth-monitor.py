@@ -13,7 +13,6 @@ mRate = float(sys.argv[3])
 nTopics = int(sys.argv[4])
 replication = int(sys.argv[5])
 
-# os.system("sudo rm -rf logs/kafka/bandwidth/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/"+"; sudo mkdir logs/kafka/bandwidth/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/")
 
 while True:
 

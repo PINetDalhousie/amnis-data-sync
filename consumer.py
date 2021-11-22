@@ -9,13 +9,6 @@ import time
 
 import logging
 
-# switches = int(sys.argv[1])
-# mSizeString = sys.argv[2]
-# mRate = float(sys.argv[3])
-# nTopics = int(sys.argv[4])
-# replication = int(sys.argv[5])
-
-
 
 try:
 	seed(2)
@@ -33,10 +26,6 @@ try:
 	mSizeString = sys.argv[8]
 	mRate = float(sys.argv[9])    
 	replication = int(sys.argv[10])    
-  
-# 	logging.basicConfig(filename='logs/kafka/cons/cons-'+nodeID+'.log',
-# 							format='%(asctime)s %(levelname)s:%(message)s',
-# 							level=logging.INFO) 
     
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/cons/cons-"+nodeID+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
