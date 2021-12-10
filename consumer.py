@@ -29,7 +29,8 @@ try:
     
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/cons/cons-"+nodeID+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
-							level=logging.INFO)     
+							level=logging.INFO)    
+	logging.info("node: "+nodeID)
     
 	while True:
 
@@ -39,7 +40,8 @@ try:
 
 		consumptionLag = random() < 0.95
 
-		timeout = int(1.0/cRate) * 1000
+# 		timeout = int(1.0/cRate) * 1000
+		timeout = int((1.0/cRate) * 1000)
 
 		#TODO: erase debug code
 		#fromBegin = ""
@@ -82,12 +84,25 @@ try:
 		for msg in consumer:
 			msgContent = str(msg.value, 'utf-8')
 
-			prodID = msgContent[0]
-			bMsgID = bytearray(msgContent[1:5], 'utf-8')
+# 			prodID = msgContent[0]
+# 			bMsgID = bytearray(msgContent[1:5], 'utf-8')
+# 			print(len(bMsgID))
+# 			msgID = int.from_bytes(bMsgID, 'big')
+# 			topic = msg.topic
+# 			offset = str(msg.offset)
+
+			prodID = msgContent[:2]
+			bMsgID = bytearray(msgContent[2:6], 'utf-8')
 			msgID = int.from_bytes(bMsgID, 'big')
 			topic = msg.topic
 			offset = str(msg.offset)
+                
+            
 			logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)))
+# 			logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID).zfill(3), str(consumptionLag), topic, offset, str(len(msgContent)))            
+
+# 			logging.info('Latest: %s; Topic: %s; Offset: %s; Size: %s', str(consumptionLag), topic, offset, str(len(msgContent)))
+# 			logging.info("message %s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition,msg.offset, msg.key,msg.value.decode('utf-8')))
 
 			#f.write(str(msg.value)+"\n")
 

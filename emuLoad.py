@@ -109,13 +109,17 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
 
+	spawnConsumers(net, nTopics, consumerRate, args)
+	time.sleep(1)
+	print("Consumers created")
+    
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
 	time.sleep(1)
 	print("Producers created")
 
-	spawnConsumers(net, nTopics, consumerRate, args)
-	time.sleep(1)
-	print("Consumers created")
+# 	spawnConsumers(net, nTopics, consumerRate, args)
+# 	time.sleep(1)
+# 	print("Consumers created")
     
 # 	for i in range(nHosts):    
 # 		consumer_groups = net.hosts[i].cmd("kafka/bin/kafka-consumer-groups.sh --bootstrap-server 10.0.0."+str(i+1)+":9092 --list", shell=True)

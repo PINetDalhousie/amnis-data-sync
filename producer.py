@@ -29,12 +29,19 @@ try:
 	msgSize = 0
 
 	nodeID = node[1:]
+    
 	msgID = 0
     
 
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/prod-"+nodeID+".log",
-						format='%(levelname)s:%(message)s',
- 						level=logging.INFO)
+							format='%(asctime)s %(levelname)s:%(message)s',
+							level=logging.INFO)                             
+# 						format='%(levelname)s:%(message)s',
+#  						level=logging.INFO)
+
+       
+	logging.info("node: "+nodeID)
+    
 
 	bootstrapServers="10.0.0."+nodeID+":9092"
 
@@ -72,11 +79,15 @@ try:
 	
 			if msgSize < 1:
 				msgSize = 1
-
+        
+        
 		bMsgID = msgID.to_bytes(4, 'big')
-		bNodeID = bytes(nodeID, 'utf-8')
+		newNodeID = nodeID.zfill(2)
+		bNodeID = bytes(newNodeID, 'utf-8')
 
-		payloadSize = msgSize - 5
+# 			payloadSize = msgSize - 5
+		payloadSize = msgSize - 4
+            
 
 		if payloadSize < 0:
 			payloadSize = 0
@@ -88,7 +99,8 @@ try:
 		topicName = 'topic-'+str(topicID)
 
 		producer.send(topicName, bMsg)
-		logging.info('Topic: %s; Message ID: %s', topicName, str(msgID))
+		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID))
+# 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
 		msgID += 1
 		time.sleep(1.0/(mRate*tClass))
 

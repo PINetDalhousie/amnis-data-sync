@@ -83,7 +83,7 @@ def placeKafkaBrokers(net, nBroker, nZk):
 
 
 
-def runKafka(net, brokerPlace, brokerWaitTime=100):
+def runKafka(net, brokerPlace, brokerWaitTime=200):
 
 	netNodes = {}
 
