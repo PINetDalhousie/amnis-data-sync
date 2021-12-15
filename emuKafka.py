@@ -89,18 +89,20 @@ def runKafka(net, brokerPlace, brokerWaitTime=200):
 
 	for node in net.hosts:
 		netNodes[node.name] = node
-
+		
+	startTime = time.time()
 	for bNode in brokerPlace:
 		bID = "h"+str(bNode)
 
 		startingHost = netNodes[bID]
-
-		startingHost.popen("kafka/bin/kafka-server-start.sh kafka/config/server"+str(bNode)+".properties &", shell=True)
 		
 		print("Creating Kafka broker at node "+str(bNode))
 
+		startingHost.popen("kafka/bin/kafka-server-start.sh kafka/config/server"+str(bNode)+".properties &", shell=True)
+		
+		time.sleep(1)
+
 	brokerWait = True
-	startTime = time.time()
 	totalTime = 0
 	for bNode in brokerPlace:
 	    while brokerWait:
@@ -110,10 +112,11 @@ def runKafka(net, brokerPlace, brokerWaitTime=200):
 	        totalTime = stopTime - startTime
 	        if(exitCode == 0):
 	            brokerWait = False
-	        elif(totalTime > brokerWaitTime):
-	            print("ERROR: Timed out waiting for Kafka brokers to start")
-	            sys.exit(1)
+	        #elif(totalTime > brokerWaitTime):
+	        #    print("ERROR: Timed out waiting for Kafka brokers to start")
+	        #    sys.exit(1)
 	        else:
+	            print("Waiting for Broker " + str(bNode) + " to Start...")
 	            time.sleep(10)
 	    brokerWait = True
 	print("Successfully Created Kafka Brokers in " + str(totalTime) + " seconds")

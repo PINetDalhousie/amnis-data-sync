@@ -78,35 +78,42 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
     
 	#Create topics
 	topicNodes = []
+	startTime = time.time()
 	for i in range(nTopics):
 		issuingID = randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]
-
-		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i)+" &", shell=True)
-# 		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions "+str(nHosts)+" --topic topic-"+str(i)+" &", shell=True)        
+		
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
-		topicNodes.append(issuingNode)
 
-	topicWait = True
-	startTime = time.time()
-	totalTime = 0
-	for host in topicNodes:
-	    while topicWait:
-	        print("Checking Topic Creation for Host " + str(host.IP()) + "...")
-	        out = host.cmd("kafka/bin/kafka-topics.sh --list --bootstrap-server " + str(host.IP()) + ":9092", shell=True)
-	        stopTime = time.time()
-	        totalTime = stopTime - startTime
-	        if "topic-" in out:
-	            topicWait = False
-	            print(out)
-	        elif(totalTime > topicWaitTime):
-	            print("ERROR: Timed out waiting for topics to be created")
-	            sys.exit(1)
-	        else:
-	            time.sleep(10)
-	    topicWait = True
-	    
-	print("Successfully Created Topics in " + str(totalTime) + " seconds")
+		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
+# 		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions "+str(nHosts)+" --topic topic-"+str(i)+" &", shell=True)        
+		print(out)
+		topicNodes.append(issuingNode)
+	
+	stopTime = time.time()
+	totalTime = stopTime - startTime
+	print("Successfully Created " + str(nTopics) + " Topics in " + str(totalTime) + " seconds")
+	
+	#topicWait = True
+	#startTime = time.time()
+	#totalTime = 0
+	#for host in topicNodes:
+	#    while topicWait:
+	#        print("Checking Topic Creation for Host " + str(host.IP()) + "...")
+	#        out = host.cmd("kafka/bin/kafka-topics.sh --list --bootstrap-server " + str(host.IP()) + ":9092", shell=True)
+	#        stopTime = time.time()
+	#        totalTime = stopTime - startTime
+	#        if "topic-" in out:
+	#            topicWait = False
+	#            print(out)
+	#        elif(totalTime > topicWaitTime):
+	#            print("ERROR: Timed out waiting for topics to be created")
+	#            sys.exit(1)
+	#        else:
+	#            time.sleep(10)
+	#    topicWait = True
+	#    
+	#print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
 
 	spawnConsumers(net, nTopics, consumerRate, args)
