@@ -25,93 +25,86 @@ try:
 	brokers = int(sys.argv[7])    
 	mSizeString = sys.argv[8]
 	mRate = float(sys.argv[9])    
-	replication = int(sys.argv[10])    
+	replication = int(sys.argv[10])   
+	topicCheckInterval = int(sys.argv[11])  
     
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/cons/cons-"+nodeID+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
 							level=logging.INFO)    
 	logging.info("node: "+nodeID)
-    
+
 	while True:
+		for topicID in range(0, nTopics):
+			startTime = time.time()
+			#Randomly select topic
+			#topicID = randint(0, nTopics-1)
+			topicName = 'topic-'+str(topicID)
 
-		#Randomly select topic
-		topicID = randint(0, nTopics-1)
-		topicName = 'topic-'+str(topicID)
+			consumptionLag = random() < 0.95
 
-		consumptionLag = random() < 0.95
+			timeout = int((1.0/cRate) * 1000)
 
-# 		timeout = int(1.0/cRate) * 1000
-		timeout = int((1.0/cRate) * 1000)
+			bootstrapServers="10.0.0."+str(nodeID)+":9092"
 
-		#TODO: erase debug code
-		#fromBegin = ""
-		bootstrapServers="10.0.0."+str(nodeID)+":9092"
+			logging.info("**Configuring KafkaConsumer** topicName=" + topicName + " bootstrap_servers=" + str(bootstrapServers) +
+				" consumer_timeout_ms=" + str(timeout) + " fetch_min_bytes=" + str(fetchMinBytes) +
+				" fetch_max_wait_ms=" + str(fetchMaxWait) + " session_timeout_ms=" + str(sessionTimeout))
 
-		logging.info("**Configuring KafkaConsumer** bootstrap_servers=" + str(bootstrapServers) +
-			" consumer_timeout_ms=" + str(timeout) + " fetch_min_bytes=" + str(fetchMinBytes) +
-			" fetch_max_wait_ms=" + str(fetchMaxWait) + " session_timeout_ms=" + str(sessionTimeout))
+			if consumptionLag == True:
+				consumer = KafkaConsumer(topicName,
+			 		bootstrap_servers=bootstrapServers,
+			 		#auto_offset_reset='earliest',
+			 		enable_auto_commit=True,
+			 		consumer_timeout_ms=timeout,
+			 		fetch_min_bytes=fetchMinBytes,
+			 		fetch_max_wait_ms=fetchMaxWait,
+			 		session_timeout_ms=sessionTimeout,
+			 		group_id="group-"+str(nodeID)                                     
+					)
+			else:
+				consumer = KafkaConsumer(topicName,
+			 		bootstrap_servers=bootstrapServers,
+			 		auto_offset_reset='earliest',
+			 		enable_auto_commit=True,
+			 		consumer_timeout_ms=timeout,
+			 		fetch_min_bytes=fetchMinBytes,
+			 		fetch_max_wait_ms=fetchMaxWait,
+			 		session_timeout_ms=sessionTimeout,
+			 		group_id="group-"+str(nodeID)                                     
+					)
 
-		if consumptionLag == True:
-			consumer = KafkaConsumer(topicName,
-			 	bootstrap_servers=bootstrapServers,
-			 	#auto_offset_reset='earliest',
-			 	enable_auto_commit=True,
-			 	consumer_timeout_ms=timeout,
-			 	fetch_min_bytes=fetchMinBytes,
-			 	fetch_max_wait_ms=fetchMaxWait,
-			 	session_timeout_ms=sessionTimeout,
-			 	group_id="group-"+str(nodeID)                                     
-				)
-			#fromBegin = "latest"
-		else:
-			consumer = KafkaConsumer(topicName,
-			 	bootstrap_servers=bootstrapServers,
-			 	auto_offset_reset='earliest',
-			 	enable_auto_commit=True,
-			 	consumer_timeout_ms=timeout,
-			 	fetch_min_bytes=fetchMinBytes,
-			 	fetch_max_wait_ms=fetchMaxWait,
-			 	session_timeout_ms=sessionTimeout,
-			 	group_id="group-"+str(nodeID)                                     
-				)
-			#fromBegin = "begin"
+			logging.info('Connect to broker looking for topic %s. Timeout: %s.', topicName, str(timeout))
 
-		#f = open("test-consumer-"+str(nodeID)+"-"+str(topicID)+"-"+fromBegin+".txt", "a")
-		#f.write("test\n")
+			for msg in consumer:
+				msgContent = str(msg.value, 'utf-8')
 
-		logging.info('Connect to broker looking for topic %s. Timeout: %s.', topicName, str(timeout))
+# 				prodID = msgContent[0]
+# 				bMsgID = bytearray(msgContent[1:5], 'utf-8')
+# 				print(len(bMsgID))
+# 				msgID = int.from_bytes(bMsgID, 'big')
+# 				topic = msg.topic
+# 				offset = str(msg.offset)
 
-		for msg in consumer:
-			msgContent = str(msg.value, 'utf-8')
-
-# 			prodID = msgContent[0]
-# 			bMsgID = bytearray(msgContent[1:5], 'utf-8')
-# 			print(len(bMsgID))
-# 			msgID = int.from_bytes(bMsgID, 'big')
-# 			topic = msg.topic
-# 			offset = str(msg.offset)
-
-			prodID = msgContent[:2]
-			bMsgID = bytearray(msgContent[2:6], 'utf-8')
-			msgID = int.from_bytes(bMsgID, 'big')
-			topic = msg.topic
-			offset = str(msg.offset)
+				prodID = msgContent[:2]
+				bMsgID = bytearray(msgContent[2:6], 'utf-8')
+				msgID = int.from_bytes(bMsgID, 'big')
+				topic = msg.topic
+				offset = str(msg.offset)
                 
             
-			logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)))
-# 			logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID).zfill(3), str(consumptionLag), topic, offset, str(len(msgContent)))            
+				logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)))           
 
-# 			logging.info('Latest: %s; Topic: %s; Offset: %s; Size: %s', str(consumptionLag), topic, offset, str(len(msgContent)))
-# 			logging.info("message %s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition,msg.offset, msg.key,msg.value.decode('utf-8')))
+# 				logging.info('Latest: %s; Topic: %s; Offset: %s; Size: %s', str(consumptionLag), topic, offset, str(len(msgContent)))
+# 				logging.info("message %s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition,msg.offset, msg.key,msg.value.decode('utf-8')))
 
-			#f.write(str(msg.value)+"\n")
 
-		#f.close()
+			consumer.close()
+			logging.info('Disconnect from broker')
+			stopTime = time.time()
 
-		consumer.close()
-		logging.info('Disconnect from broker')
-
-		#time.sleep(1.0/cRate)
+			topicCheckWait = topicCheckInterval -(stopTime - startTime)
+			if(topicCheckWait > 0):
+				time.sleep(topicCheckWait)
 
 except Exception as e:
 	logging.error(e)

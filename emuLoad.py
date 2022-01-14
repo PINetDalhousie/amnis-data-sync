@@ -18,7 +18,8 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 	linger = args.linger
 	requestTimeout = args.requestTimeout
 	brokers = args.nBroker
-	replication = args.replication    
+	replication = args.replication 
+	messageFilePath = args.messageFilePath   
 
 	tClasses = tClassString.split(',')
 	#print("Traffic classes: " + str(tClasses))
@@ -46,7 +47,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 
 	for nodeList in nodeClassification.values():
 		for node in nodeList:
-			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" &", shell=True)
+			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)+" &", shell=True)
 		i += 1
 
 
@@ -58,13 +59,14 @@ def spawnConsumers(net, nTopics, cRate, args):
 	brokers = args.nBroker    
 	mSizeString = args.mSizeString
 	mRate = args.mRate    
-	replication = args.replication    
+	replication = args.replication  
+	topicCheckInterval = args.topicCheckInterval  
 
 	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
 	#print("Data consumed")
 
 	for node in net.hosts:
-		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" &", shell=True)
+		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
 
 
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):

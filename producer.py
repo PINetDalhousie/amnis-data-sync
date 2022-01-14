@@ -7,6 +7,54 @@ from random import seed, randint, gauss
 import time
 import sys
 import logging
+import re
+import random
+import os
+
+def processXmlFileMessage(file):
+	lines = file.readlines()
+	processedFile = ' '
+	for line in lines:
+		randomNum = str(random.randint(1,999))
+		# Randomize values in XML file
+		line = re.sub('[0-9]+', randomNum, line)
+		processedFile += line
+	return processedFile.encode()
+
+def processFileMessage(file):
+	message = file.read().encode()
+	return message
+
+def readMessageFromFile(filePath):
+	file = open(filePath, 'r')
+	_, fileExt = os.path.splitext(filePath)
+
+	if(fileExt.lower() == '.xml'):
+		message = processXmlFileMessage(file)
+	#elif(fileExt.lower == '.svg'):
+	#	message = processSvgFile(file)
+	else:
+		message = processFileMessage(file)
+
+	return message
+
+def generateMessage(mSizeParams):
+	if mSizeParams[0] == 'fixed':
+		msgSize = int(mSizeParams[1])
+	elif mSizeParams[0] == 'gaussian':
+		msgSize = int(gauss(float(mSizeParams[1]), float(mSizeParams[2])))
+	
+		if msgSize < 1:
+			msgSize = 1
+		
+	payloadSize = msgSize - 4
+            
+
+	if payloadSize < 0:
+		payloadSize = 0
+
+	message = [97] * payloadSize
+	return message
 
 try:
 	node = sys.argv[1]
@@ -21,15 +69,13 @@ try:
 	linger = int(sys.argv[9])
 	requestTimeout = int(sys.argv[10])
 	brokers = int(sys.argv[11])    
-	replication = int(sys.argv[12])    
+	replication = int(sys.argv[12]) 
+	messageFilePath = sys.argv[13] 
 
 	seed(1)
 
 	mSizeParams = mSizeString.split(',')
-	msgSize = 0
-
 	nodeID = node[1:]
-    
 	msgID = 0
     
 
@@ -71,30 +117,17 @@ try:
 
 
 	while True:
-
-		if mSizeParams[0] == 'fixed':
-			msgSize = int(mSizeParams[1])
-		elif mSizeParams[0] == 'gaussian':
-			msgSize = int(gauss(float(mSizeParams[1]), float(mSizeParams[2])))
-	
-			if msgSize < 1:
-				msgSize = 1
-        
-        
+		if(messageFilePath != 'None'):
+			message = readMessageFromFile(messageFilePath)
+			logging.info("Message Generated From File")
+		else:
+			message = generateMessage(mSizeParams)
+			logging.info("Generated Message")
+		
 		bMsgID = msgID.to_bytes(4, 'big')
 		newNodeID = nodeID.zfill(2)
 		bNodeID = bytes(newNodeID, 'utf-8')
-
-# 			payloadSize = msgSize - 5
-		payloadSize = msgSize - 4
-            
-
-		if payloadSize < 0:
-			payloadSize = 0
-
-		message = [97] * payloadSize
 		bMsg = bNodeID + bMsgID + bytearray(message)
-
 		topicID = randint(0, nTopics-1)
 		topicName = 'topic-'+str(topicID)
 

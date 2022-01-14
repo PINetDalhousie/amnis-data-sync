@@ -43,7 +43,7 @@ def killSubprocs(brokerPlace, zkPlace):
 def validateInput(args):
 
 	#Check duration
-	if args.duration < 1:
+	if ((args.duration < 1) or (args.topicCheckInterval < 1)):
 		print("ERROR: Time should be greater than zero.")
 		sys.exit(1)
 
@@ -115,6 +115,9 @@ def validateInput(args):
 	if args.replicaMaxWait >= REPLICA_LAG_TIME_MAX_MS:
 		print("ERROR: replica.fetch.wait.max.ms must be less than the replica.lag.time.max.ms value of " +  str(REPLICA_LAG_TIME_MAX_MS) + " at all times")
 		sys.exit(1)
+	
+	if(args.topicCheckInterval * args.nTopics) > args.duration:
+		print("WARNING: Not all topics will be checked within the given duration of the simulation. Simulation Time:" +  str(args.duration) + " seconds. Time Required to Check All Topics at Least Once: "+  str(args.topicCheckInterval * args.nTopics) + " seconds.")
 
 if __name__ == '__main__': 
 
@@ -145,6 +148,9 @@ if __name__ == '__main__':
 	parser.add_argument('--replica-min-bytes', dest='replicaMinBytes', type=int, default=1, help='Minimum bytes expected for each fetch response')
 
 	parser.add_argument('--create-plots', dest='createPlots', action='store_true')
+
+	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
+	parser.add_argument('--topic-check', dest='topicCheckInterval', type=int, default=1, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
 	args = parser.parse_args()
 
