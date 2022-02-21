@@ -1,0 +1,48 @@
+--------
+Commands
+--------
+Run commands from the amnis-data-sync dir
+
+Monitor:
+sudo python3 cpu-mem-monitor.py 1-1
+
+Plot all tests:
+sudo python3 plot-scripts/cpuMemPlotScript.py
+
+Plot single test:
+sudo python3 plot-scripts/cpuMemPlotScript.py --test 1-1
+
+
+------
+Tests
+------
+
+1. Standard
+1.1         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 100
+
+
+2. Replica Max Wait 
+2.1         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 500
+2.2         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 1
+2.3         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 2
+2.4         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 5
+
+
+3. Time 
+3.1         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 400 --replica-min-bytes 200000 --replica-max-wait 100
+3.2         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 600 --replica-min-bytes 200000 --replica-max-wait 100
+3.3         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 800 --replica-min-bytes 200000 --replica-max-wait 100
+
+
+4. Number of topics (also check consumer log)        
+4.1         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 200 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 100
+4.2         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 400 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 100
+4.3         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 20 --nzk 20 --ntopics 600 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 100
+
+
+5. Not working - Number of nodes (also check consumer log)  
+5.1         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 40 --nzk 40 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 100
+5.2         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 80 --nzk 80 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 100
+5.3         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 100 --nzk 100 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 100
+5.4         sudo python3 main.py tests/input/star-twenty-node-topo.graphml --nbroker 200 --nzk 200 --ntopics 100 --message-size fixed,1000 --message-rate 0.2 --replication 20 --consumer-rate 0.5 --message-file message-data/xml/Cars103.xml --time 200 --replica-min-bytes 200000 --replica-max-wait 100
+
