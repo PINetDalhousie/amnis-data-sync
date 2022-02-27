@@ -7,7 +7,7 @@ import sys
 import subprocess
 import time
 
-def configureKafkaCluster(brokerPlace, zkPlace):
+def configureKafkaCluster(brokerPlace, zkPlace, args):
 	print("Configure kafka cluster")
 
 	propertyFile = open("kafka/config/server.properties", "r")
@@ -23,6 +23,9 @@ def configureKafkaCluster(brokerPlace, zkPlace):
 			"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
 		bProperties = bProperties.replace("log.dirs=/tmp/kafka-logs",
 			"log.dirs=./kafka/kafka" + str(bID))
+
+		bProperties = bProperties.replace("#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))
+		bProperties = bProperties.replace("#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
 
 		#Specify zookeeper addresses to connect
 		zkAddresses = ""
@@ -80,24 +83,26 @@ def placeKafkaBrokers(net, nBroker, nZk):
 
 
 
-def runKafka(net, brokerPlace, brokerWaitTime=100):
+def runKafka(net, brokerPlace, brokerWaitTime=200):
 
 	netNodes = {}
 
 	for node in net.hosts:
 		netNodes[node.name] = node
-
+		
+	startTime = time.time()
 	for bNode in brokerPlace:
 		bID = "h"+str(bNode)
 
 		startingHost = netNodes[bID]
-
-		startingHost.popen("kafka/bin/kafka-server-start.sh kafka/config/server"+str(bNode)+".properties &", shell=True)
 		
 		print("Creating Kafka broker at node "+str(bNode))
 
+		startingHost.popen("kafka/bin/kafka-server-start.sh kafka/config/server"+str(bNode)+".properties &", shell=True)
+		
+		time.sleep(1)
+
 	brokerWait = True
-	startTime = time.time()
 	totalTime = 0
 	for bNode in brokerPlace:
 	    while brokerWait:
@@ -107,10 +112,11 @@ def runKafka(net, brokerPlace, brokerWaitTime=100):
 	        totalTime = stopTime - startTime
 	        if(exitCode == 0):
 	            brokerWait = False
-	        elif(totalTime > brokerWaitTime):
-	            print("ERROR: Timed out waiting for Kafka brokers to start")
-	            sys.exit(1)
+	        #elif(totalTime > brokerWaitTime):
+	        #    print("ERROR: Timed out waiting for Kafka brokers to start")
+	        #    sys.exit(1)
 	        else:
+	            print("Waiting for Broker " + str(bNode) + " to Start...")
 	            time.sleep(10)
 	    brokerWait = True
 	print("Successfully Created Kafka Brokers in " + str(totalTime) + " seconds")
@@ -118,8 +124,8 @@ def runKafka(net, brokerPlace, brokerWaitTime=100):
 
 def cleanKafkaState(brokerPlace):
 	for bID in brokerPlace:
-		os.system("sudo rm -r kafka/kafka" + str(bID) + "/")
-		os.system("sudo rm kafka/config/server" + str(bID) + ".properties")
+		os.system("sudo rm -rf kafka/kafka" + str(bID) + "/")
+		os.system("sudo rm -f kafka/config/server" + str(bID) + ".properties")
 
 
 

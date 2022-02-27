@@ -68,17 +68,19 @@ def runZk(net, zkPlace, zkWaitTime=100):
 
 	for node in net.hosts:
 		netNodes[node.name] = node
-
+	
+	startTime = time.time()
 	for zNode in zkPlace:
 		zID = "h"+str(zNode)
 
 		startingHost = netNodes[zID]
+		
+		print("Creating Zookeeper instance at node "+str(zNode))
 
 		startingHost.popen("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper"+str(zNode)+".properties &", shell=True)
-		print("Creating Zookeeper instance at node "+str(zNode))
+		time.sleep(1)
 	
 	zkWait = True
-	startTime = time.time()
 	totalTime = 0
 	clientPort = 2181
 	for zNode in zkPlace:
@@ -91,10 +93,11 @@ def runZk(net, zkPlace, zkWaitTime=100):
 	        totalTime = stopTime - startTime
 	        if(exitCode == 0):
 	            zkWait = False
-	        elif(totalTime > zkWaitTime):
-	            print("ERROR: Timed out waiting for zookeeper instances to start")
-	            sys.exit(1)
+	        #elif(totalTime > zkWaitTime):
+	        #    print("ERROR: Timed out waiting for zookeeper instances to start")
+	        #    sys.exit(1)
 	        else:
+	            print("Waiting for Zookeeper at node " + str(zNode) + "to Start...")
 	            time.sleep(10)
 	    zkWait = True
 	    clientPort += 1
@@ -106,10 +109,10 @@ def cleanZkState(zkPlace):
 
 	for zkID in zkPlace:
 		#Erase log directory
-		os.system("sudo rm -r kafka/zookeeper" + str(zkID) + "/")
+		os.system("sudo rm -rf kafka/zookeeper" + str(zkID) + "/")
 
 		#Erase properties file
-		os.system("sudo rm kafka/config/zookeeper" + str(zkID) + ".properties")
+		os.system("sudo rm -f kafka/config/zookeeper" + str(zkID) + ".properties")
 
 
 

@@ -16,20 +16,12 @@
     <node id="h4"/>
     <node id="h5"/>
     <node id="h6"/>    
-    <node id="h7"/>
-    <node id="h8"/>
-    <node id="h9"/>
-    <node id="h10"/>
     <node id="s1"/>
     <node id="s2"/>
     <node id="s3"/>
     <node id="s4"/>
     <node id="s5"/>
-    <node id="s6"/> 
-    <node id="s7"/>
-    <node id="s8"/>
-    <node id="s9"/>
-    <node id="s10"/>
+    <node id="s6"/>    
     <edge source="h1" target="s1">
 	<data key="bw">1000</data>
 	<data key="lat">1</data>
@@ -66,31 +58,6 @@
 	<data key="st">1</data>
 	<data key="dt">1</data>
     </edge>    
-
-    <edge source="h7" target="s7">
-	<data key="bw">1000</data>
-	<data key="st">1</data>
-	<data key="dt">1</data>
-    </edge>    
-    <edge source="h8" target="s8">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>
-	<data key="st">1</data>
-	<data key="dt">1</data>
-    </edge>
-    <edge source="h9" target="s9">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>
-	<data key="st">1</data>
-	<data key="dt">1</data>
-    </edge>    
-    <edge source="h10" target="s10">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>
-	<data key="st">1</data>
-	<data key="dt">1</data>
-    </edge> 
-    
     
     <edge source="s1" target="s2">
 	<data key="bw">1000</data>
@@ -128,42 +95,7 @@
 	<data key="st">3</data>
 	<data key="dt">3</data>
     </edge>    
-
-    <edge source="s6" target="s7">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>
-	<data key="st">3</data>
-	<data key="dt">2</data>
-    </edge>    
-    <edge source="s7" target="s8">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>
-	<data key="st">3</data>
-	<data key="dt">2</data>
-    </edge>    
-    <edge source="s8" target="s9">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>
-	<data key="st">3</data>
-	<data key="dt">2</data>
-    </edge>    
-    <edge source="s9" target="s10">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>
-	<data key="st">3</data>
-	<data key="dt">2</data>
-    </edge>    
     
+
   </graph>
 </graphml>
-
-
-
-
-
-
-
-
-
-
-
