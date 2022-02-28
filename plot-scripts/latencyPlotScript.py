@@ -78,8 +78,8 @@ def getConsDetails(consId, prodId, msgProdTime, topicId, msgId):
 #                 msgConsTime = line.split(",")[0]
                 msgConsTime = line.split(" INFO:Prod ID:")[0]
                 
-                prodTime = datetime.strptime(msgProdTime, "%Y-%m-%d %H:%M:%S.%f")
-                consTime = datetime.strptime(msgConsTime, "%Y-%m-%d %H:%M:%S.%f")
+                prodTime = datetime.strptime(msgProdTime, "%Y-%m-%d %H:%M:%S,%f")
+                consTime = datetime.strptime(msgConsTime, "%Y-%m-%d %H:%M:%S,%f")
                 latencyMessage = consTime - prodTime
                 
                 consCount+=1  

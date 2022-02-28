@@ -76,7 +76,7 @@ try:
 			logging.info('Connect to broker looking for topic %s. Timeout: %s.', topicName, str(timeout))
 
 			for msg in consumer:
-				msgContent = str(msg.value, 'utf-8')
+				msgContent = str(msg.value, 'utf-8', errors='ignore')
 
 # 				prodID = msgContent[0]
 # 				bMsgID = bytearray(msgContent[1:5], 'utf-8')
