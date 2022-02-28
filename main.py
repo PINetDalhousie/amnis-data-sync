@@ -43,10 +43,14 @@ def killSubprocs(brokerPlace, zkPlace):
 def validateInput(args):
 
 	#Check duration
-	if ((args.duration < 1) or (args.topicCheckInterval < 1)):
+	if (args.duration < 1):
 		print("ERROR: Time should be greater than zero.")
 		sys.exit(1)
 
+	if(args.topicCheckInterval < 0):
+		print("ERROR: Topic check interval should be greater than zero.")
+		sys.exit(1)
+		
 	#Check traffic classes
 	tClassString = args.tClassString
 	tClasses = tClassString.split(',')
@@ -150,7 +154,7 @@ if __name__ == '__main__':
 	parser.add_argument('--create-plots', dest='createPlots', action='store_true')
 
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
-	parser.add_argument('--topic-check', dest='topicCheckInterval', type=int, default=1, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
+	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
 	args = parser.parse_args()
 

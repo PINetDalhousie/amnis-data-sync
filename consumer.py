@@ -26,7 +26,7 @@ try:
 	mSizeString = sys.argv[8]
 	mRate = float(sys.argv[9])    
 	replication = int(sys.argv[10])   
-	topicCheckInterval = int(sys.argv[11])  
+	topicCheckInterval = float(sys.argv[11])  
     
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/cons/cons-"+nodeID+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
