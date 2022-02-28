@@ -28,6 +28,8 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   ```bash
   $ sudo apt install python3-pip mininet default-jdk xterm netcat
   
+  $ python3 -m pip install --upgrade pip
+  
   $ sudo pip3 install mininet networkx kafka-python matplotlib python-snappy lz4 seaborn
   ```
   3. You are ready to go! Should be able to get help using:
