@@ -40,7 +40,7 @@ def plot_cpu(filename):
     plt.xlabel('Seconds')
     plt.ylabel('CPU %')
     plt.title(title)    
-    f = log_dir + "/" + title
+    f = log_dir + "/plots/cpu/" + title
     plt.savefig(f,bbox_inches="tight") 
     clear_existing_plot() 
 
@@ -59,7 +59,7 @@ def plot_mem(filename):
     plt.xlabel('Seconds')
     plt.ylabel('MiB')
     plt.title(title)
-    f = log_dir + "/" + title
+    f = log_dir + "/plots/memory/" + title
     plt.savefig(f,bbox_inches="tight")  
     clear_existing_plot()
 
@@ -81,6 +81,10 @@ log_dir = args.log_dir
 
 if not os.path.isdir(log_dir):
     os.makedirs(log_dir)
+
+if not os.path.isdir(log_dir+"/plots"):
+    os.makedirs(log_dir+"/plots/cpu/")
+    os.makedirs(log_dir+"/plots/memory/")
 
 if test is not None:
     plot_test_cpu_mem(test)

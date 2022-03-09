@@ -135,7 +135,7 @@ def aggregatedPlot(portFlag,x,y, yLeaderLess, yLabel, msgSize, countX):
     plt.xlabel('Time (sec)')
     plt.ylabel(yLabel)
     
-#     plt.ylim([0, 35])
+    plt.ylim([0, 38])
     
     if portFlag=="bytes":
         plt.title("Aggregated Bandwidth for rx bytes("+str(args.switches)+" nodes "+str(args.nTopics)+" topics "+str(args.replication)+" replication)")
