@@ -109,7 +109,7 @@ try:
 
 # 				logging.info('Latest: %s; Topic: %s; Offset: %s; Size: %s', str(consumptionLag), topic, offset, str(len(msgContent)))
 # 				logging.info("message %s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition,msg.offset, msg.key,msg.value.decode('utf-8')))
-                info = msgContent[6:]
+#                 info = msgContent[6:]
 #                 client.send(bytes(info,"utf-8"))
 
 
