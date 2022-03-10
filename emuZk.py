@@ -17,6 +17,7 @@ def configureZkCluster(zkPlace):
 	zkProperties = propertyFile.read()
 
 	for zkID in zkPlace:
+		print("in emuZk configureZkCluster with ZK: "+ str(zkID))        
 		os.system("sudo mkdir kafka/zookeeper" + str(zkID) + "/")
 		os.system("sudo mkdir kafka/zookeeper" + str(zkID) + "/data/")
 		os.system("sudo mkdir kafka/zookeeper" + str(zkID) + "/logs/")
@@ -97,7 +98,7 @@ def runZk(net, zkPlace, zkWaitTime=100):
 	        #    print("ERROR: Timed out waiting for zookeeper instances to start")
 	        #    sys.exit(1)
 	        else:
-	            print("Waiting for Zookeeper at node " + str(zNode) + "to Start...")
+	            print("Waiting for Zookeeper at node " + str(zNode) + " to Start...")
 	            time.sleep(10)
 	    zkWait = True
 	    clientPort += 1

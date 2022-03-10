@@ -10,7 +10,7 @@ import os
 import sys
 
 
-def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
+def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, producerPlace):
 
 	acks = args.acks
 	compression = args.compression
@@ -25,6 +25,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 	#print("Traffic classes: " + str(tClasses))
 
 	nodeClassification = {}
+	netNodes = {}    
 
 	classID = 1
 
@@ -34,8 +35,14 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 	
 	#Distribute nodes among classes
 	for node in net.hosts:
+		netNodes[node.name] = node
+        
+	for pNode in producerPlace:      
+		prodID = "h"+str(pNode)
+		prodNode = netNodes[prodID]
+        
 		nodeClass = randint(1,len(tClasses))
-		nodeClassification[nodeClass].append(node)
+		nodeClassification[nodeClass].append(prodNode)
 
 	#print("Node classification")
 	#print(nodeClassification)
@@ -51,7 +58,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 		i += 1
 
 
-def spawnConsumers(net, nTopics, cRate, args):
+def spawnConsumers(net, nTopics, cRate, args, consumerPlace):
 
 	fetchMinBytes = args.fetchMinBytes
 	fetchMaxWait = args.fetchMaxWait
@@ -60,16 +67,49 @@ def spawnConsumers(net, nTopics, cRate, args):
 	mSizeString = args.mSizeString
 	mRate = args.mRate    
 	replication = args.replication  
-	topicCheckInterval = args.topicCheckInterval  
+	topicCheckInterval = args.topicCheckInterval   
 
 	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
 	#print("Data consumed")
 
+# 	for node in net.hosts:
+# 		if str(node.name) == "h2":        
+# 			node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
+
+	netNodes = {}
+
 	for node in net.hosts:
+		netNodes[node.name] = node
+        
+	for cNode in consumerPlace:
+		consID = "h"+str(cNode)      
+		node = netNodes[consID]
 		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
 
 
-def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):
+        
+def spawnClients(net, nTopics, cRate, args, consumerPlace):
+	fetchMinBytes = args.fetchMinBytes
+	fetchMaxWait = args.fetchMaxWait
+	sessionTimeout = args.sessionTimeout
+	brokers = args.nBroker    
+	mSizeString = args.mSizeString
+	mRate = args.mRate    
+	replication = args.replication  
+	topicCheckInterval = args.topicCheckInterval    
+    
+	netNodes = {}
+
+	for node in net.hosts:
+		netNodes[node.name] = node
+        
+	for cNode in consumerPlace:
+		consID = "h"+str(cNode)      
+		node = netNodes[consID]
+		node.popen("python3 client.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)    
+
+
+def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, producerPlace, consumerPlace, topicWaitTime=100):
 
 	print("Start workload")
 
@@ -118,11 +158,15 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	#print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
 
-	spawnConsumers(net, nTopics, consumerRate, args)
+	spawnConsumers(net, nTopics, consumerRate, args, consumerPlace)
 	time.sleep(1)
 	print("Consumers created")
     
-	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
+# 	spawnClients(net, nTopics, consumerRate, args, consumerPlace)
+# 	time.sleep(1)
+# 	print("Clients created")    
+    
+	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, producerPlace)
 	time.sleep(1)
 	print("Producers created")
 

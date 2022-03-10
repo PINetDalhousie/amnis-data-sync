@@ -174,13 +174,15 @@ if __name__ == '__main__':
 			autoSetMacs = True,
 			autoStaticArp = True)
 
-	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
+# 	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
+	brokerPlace, zkPlace, producerPlace, consumerPlace = emuKafka.placeKafkaBrokers(net, args.topo)    
 
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
 	emuLogs.cleanLogs()
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
+        
 
 	emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
 	emuZk.configureZkCluster(zkPlace)
@@ -196,6 +198,7 @@ if __name__ == '__main__':
 	print("Testing network connectivity")
 	net.pingAll()
 	print("Finished network connectivity test")
+    
 		
 	#Start monitoring tasks
 	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
@@ -203,9 +206,13 @@ if __name__ == '__main__':
 
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
+    
+# 	CLI(net)    
 
-	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args)
+	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args, producerPlace, consumerPlace)
 	print("Simulation complete")
+    
+# 	CLI(net) 
 
 	# to kill all the running subprocesses
 	killSubprocs(brokerPlace, zkPlace)

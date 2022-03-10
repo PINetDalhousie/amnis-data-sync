@@ -9,6 +9,11 @@ import time
 
 import logging
 
+import socket
+
+def stringToList(string):
+    listRes = list(string.split(" "))
+    return listRes
 
 try:
 	seed(2)
@@ -28,12 +33,19 @@ try:
 	replication = int(sys.argv[10])   
 	topicCheckInterval = float(sys.argv[11])  
     
+    
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/cons/cons-"+nodeID+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
 							level=logging.INFO)    
 	logging.info("node: "+nodeID)
+    
+#     skt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# #     skt.bind((socket.gethostname(), 9999))
+#     skt.bind(("10.0.0."+str(nodeID), 9999))
+# #     skt.listen()
 
 	while True:
+#         client, address = skt.accept()
 		for topicID in range(0, nTopics):
 			startTime = time.time()
 			#Randomly select topic
@@ -45,6 +57,7 @@ try:
 			timeout = int((1.0/cRate) * 1000)
 
 			bootstrapServers="10.0.0."+str(nodeID)+":9092"
+            
 
 			logging.info("**Configuring KafkaConsumer** topicName=" + topicName + " bootstrap_servers=" + str(bootstrapServers) +
 				" consumer_timeout_ms=" + str(timeout) + " fetch_min_bytes=" + str(fetchMinBytes) +
@@ -92,19 +105,25 @@ try:
 				offset = str(msg.offset)
                 
             
-				logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)))           
+				logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s; whole message: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)), msgContent)           
 
 # 				logging.info('Latest: %s; Topic: %s; Offset: %s; Size: %s', str(consumptionLag), topic, offset, str(len(msgContent)))
 # 				logging.info("message %s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition,msg.offset, msg.key,msg.value.decode('utf-8')))
+                info = msgContent[6:]
+#                 client.send(bytes(info,"utf-8"))
 
 
 			consumer.close()
 			logging.info('Disconnect from broker')
 			stopTime = time.time()
-
+            
+            
 			topicCheckWait = topicCheckInterval -(stopTime - startTime)
 			if(topicCheckWait > 0):
 				time.sleep(topicCheckWait)
+                
+# 	client.close()
+# 	logging.info('Disconnect from client')                
 
 except Exception as e:
 	logging.error(e)
