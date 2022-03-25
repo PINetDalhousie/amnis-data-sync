@@ -28,11 +28,21 @@ class CustomTopo(Topo):
 				sys.exit(1)
 
 		for source, target, data in inputTopo.edges(data=True):
-# 			linkDelay = str(data['latency'])+'ms'
 
-# 			self.addLink(source, target, data['sport'], data['dport'], bw=data['bandwidth'], delay=linkDelay)
+			linkBandwidth = 1000
+			if 'bandwidth' in data:
+				linkBandwidth = int(data['bandwidth'])
 
-			self.addLink(source, target, data['sport'], data['dport'])
+			linkDelay = '1ms'
+			if 'latency' in data:
+				linkDelay = str(data['latency'])+'ms'
+
+			#print("Link bandwidth: "+ str(linkBandwidth))
+			#print("Link delay: "+ str(linkDelay))
+
+			self.addLink(source, target, data['sport'], data['dport'], bw=linkBandwidth, delay=linkDelay)
+
+			#self.addLink(source, target, data['sport'], data['dport'])
 
 
 
