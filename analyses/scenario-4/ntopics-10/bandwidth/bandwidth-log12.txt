@@ -1,0 +1,469 @@
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=48, bytes=4616, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=59, bytes=6378, drop=0, errs=0, coll=0
+  port 12: rx pkts=57, bytes=6198, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=58, bytes=6268, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=74, bytes=6036, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=85, bytes=8335, drop=0, errs=0, coll=0
+  port 12: rx pkts=84, bytes=8225, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=84, bytes=7725, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=135, bytes=9330, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=146, bytes=12849, drop=0, errs=0, coll=0
+  port 12: rx pkts=145, bytes=12739, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=145, bytes=11019, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=424, bytes=45855, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=430, bytes=55614, drop=0, errs=0, coll=0
+  port 12: rx pkts=428, bytes=55434, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=435, bytes=47614, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=501, bytes=58125, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=520, bytes=66278, drop=0, errs=0, coll=0
+  port 12: rx pkts=519, bytes=66168, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=512, bytes=59921, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=730, bytes=75683, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=768, bytes=93976, drop=0, errs=0, coll=0
+  port 12: rx pkts=767, bytes=93866, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=741, bytes=77479, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=963, bytes=93500, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=990, bytes=118214, drop=0, errs=0, coll=0
+  port 12: rx pkts=989, bytes=118104, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=974, bytes=95296, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=1213, bytes=114123, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1242, bytes=147336, drop=0, errs=0, coll=0
+  port 12: rx pkts=1241, bytes=147226, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1224, bytes=115919, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=1357, bytes=124855, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1378, bytes=165310, drop=0, errs=0, coll=0
+  port 12: rx pkts=1377, bytes=165200, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1368, bytes=126651, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=1363, bytes=125383, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1392, bytes=166399, drop=0, errs=0, coll=0
+  port 12: rx pkts=1390, bytes=166219, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1376, bytes=127356, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=1427, bytes=130486, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1449, bytes=175210, drop=0, errs=0, coll=0
+  port 12: rx pkts=1447, bytes=175030, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1439, bytes=132389, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=1498, bytes=136376, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1520, bytes=185190, drop=0, errs=0, coll=0
+  port 12: rx pkts=1519, bytes=185080, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1510, bytes=138279, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=1643, bytes=147995, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1680, bytes=204808, drop=0, errs=0, coll=0
+  port 12: rx pkts=1679, bytes=204698, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1655, bytes=149898, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=1748, bytes=157293, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1783, bytes=217985, drop=0, errs=0, coll=0
+  port 12: rx pkts=1782, bytes=217875, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=1760, bytes=159196, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=2110, bytes=211437, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=2212, bytes=294141, drop=0, errs=0, coll=0
+  port 12: rx pkts=2211, bytes=294031, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=2122, bytes=213340, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=3170, bytes=1469443, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3420, bytes=1192074, drop=0, errs=0, coll=0
+  port 12: rx pkts=3419, bytes=1191964, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=3182, bytes=1471346, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=4519, bytes=4071627, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=4914, bytes=3138320, drop=0, errs=0, coll=0
+  port 12: rx pkts=4913, bytes=3138210, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=4531, bytes=4073530, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=5952, bytes=8360218, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=6462, bytes=5609979, drop=0, errs=0, coll=0
+  port 12: rx pkts=6461, bytes=5609869, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=5964, bytes=8362121, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=7585, bytes=16235574, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=8053, bytes=7567388, drop=0, errs=0, coll=0
+  port 12: rx pkts=8052, bytes=7567278, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=7597, bytes=16237477, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=9084, bytes=20984125, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=9637, bytes=10410222, drop=0, errs=0, coll=0
+  port 12: rx pkts=9636, bytes=10410112, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=9096, bytes=20986028, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=10348, bytes=23623078, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=11052, bytes=13382745, drop=0, errs=0, coll=0
+  port 12: rx pkts=11050, bytes=13382565, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=10362, bytes=23625158, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=12207, bytes=33113263, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=12971, bytes=15371144, drop=0, errs=0, coll=0
+  port 12: rx pkts=12969, bytes=15370964, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=12220, bytes=33115273, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=13447, bytes=35805312, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=14356, bytes=18309546, drop=0, errs=0, coll=0
+  port 12: rx pkts=14354, bytes=18309366, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=13460, bytes=35807322, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=14619, bytes=38590437, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=15626, bytes=21290357, drop=0, errs=0, coll=0
+  port 12: rx pkts=15625, bytes=21290247, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=14632, bytes=38592447, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=16359, bytes=48482532, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=17298, bytes=23135346, drop=0, errs=0, coll=0
+  port 12: rx pkts=17297, bytes=23135236, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=16372, bytes=48484542, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=17771, bytes=52203796, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=18863, bytes=26071804, drop=0, errs=0, coll=0
+  port 12: rx pkts=18862, bytes=26071694, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=17784, bytes=52205806, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=19108, bytes=57183943, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=20166, bytes=28789449, drop=0, errs=0, coll=0
+  port 12: rx pkts=20165, bytes=28789339, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=19121, bytes=57185953, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=20935, bytes=65594123, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=22142, bytes=31132923, drop=0, errs=0, coll=0
+  port 12: rx pkts=22142, bytes=31133344, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=20948, bytes=65596133, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=22191, bytes=68510004, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=23556, bytes=33919924, drop=0, errs=0, coll=0
+  port 12: rx pkts=23555, bytes=33919814, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=22204, bytes=68512014, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=23605, bytes=73803874, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=25052, bytes=36557289, drop=0, errs=0, coll=0
+  port 12: rx pkts=25051, bytes=36557179, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=23618, bytes=73805884, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=25544, bytes=83196595, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=27046, bytes=38854601, drop=0, errs=0, coll=0
+  port 12: rx pkts=27045, bytes=38854491, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=25557, bytes=83198605, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=26536, bytes=85043240, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=28081, bytes=41371846, drop=0, errs=0, coll=0
+  port 12: rx pkts=28080, bytes=41371736, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=26549, bytes=85045250, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=28288, bytes=92590625, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=29872, bytes=44303236, drop=0, errs=0, coll=0
+  port 12: rx pkts=29871, bytes=44303126, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=28301, bytes=92592635, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=29524, bytes=95894080, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=31207, bytes=46800508, drop=0, errs=0, coll=0
+  port 12: rx pkts=31206, bytes=46800398, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=29537, bytes=95896090, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=30622, bytes=98784324, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=32196, bytes=49645785, drop=0, errs=0, coll=0
+  port 12: rx pkts=32195, bytes=49645675, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=30635, bytes=98786334, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=32118, bytes=104520987, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=33740, bytes=51619941, drop=0, errs=0, coll=0
+  port 12: rx pkts=33739, bytes=51619831, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=32131, bytes=104522997, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=33246, bytes=106674300, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=34941, bytes=54978938, drop=0, errs=0, coll=0
+  port 12: rx pkts=34940, bytes=54978828, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=33259, bytes=106676310, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=34619, bytes=110501266, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=36458, bytes=57679805, drop=0, errs=0, coll=0
+  port 12: rx pkts=36457, bytes=57679695, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=34632, bytes=110503276, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=36239, bytes=118762371, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=38080, bytes=59983244, drop=0, errs=0, coll=0
+  port 12: rx pkts=38079, bytes=59983134, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=36252, bytes=118764381, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=37222, bytes=120369390, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=39123, bytes=62590775, drop=0, errs=0, coll=0
+  port 12: rx pkts=39122, bytes=62590665, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=37235, bytes=120371400, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=38711, bytes=125856696, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=40628, bytes=65282990, drop=0, errs=0, coll=0
+  port 12: rx pkts=40627, bytes=65282880, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=38724, bytes=125858706, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=40413, bytes=132644291, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=42386, bytes=67945064, drop=0, errs=0, coll=0
+  port 12: rx pkts=42385, bytes=67944954, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=40426, bytes=132646301, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=41596, bytes=135945901, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=43587, bytes=70822760, drop=0, errs=0, coll=0
+  port 12: rx pkts=43586, bytes=70822650, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=41609, bytes=135947911, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=42962, bytes=140732388, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=45008, bytes=72797025, drop=0, errs=0, coll=0
+  port 12: rx pkts=45006, bytes=72796845, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=42976, bytes=140734505, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=44372, bytes=145113989, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=46606, bytes=75507802, drop=0, errs=0, coll=0
+  port 12: rx pkts=46604, bytes=75507622, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=44386, bytes=145116106, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=45685, bytes=148546567, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=48027, bytes=78271013, drop=0, errs=0, coll=0
+  port 12: rx pkts=48025, bytes=78270833, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=45699, bytes=148548684, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=47275, bytes=155469965, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=49716, bytes=80709585, drop=0, errs=0, coll=0
+  port 12: rx pkts=49714, bytes=80709405, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=47289, bytes=155472082, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=48577, bytes=159654964, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=51011, bytes=83849532, drop=0, errs=0, coll=0
+  port 12: rx pkts=51009, bytes=83849352, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=48591, bytes=159657081, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=50458, bytes=167646294, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=52821, bytes=86368334, drop=0, errs=0, coll=0
+  port 12: rx pkts=52820, bytes=86368224, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=50472, bytes=167648411, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=51832, bytes=171521959, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=54297, bytes=89038795, drop=0, errs=0, coll=0
+  port 12: rx pkts=54296, bytes=89038685, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=51846, bytes=171524076, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=53050, bytes=174810886, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=55578, bytes=91818286, drop=0, errs=0, coll=0
+  port 12: rx pkts=55577, bytes=91818176, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=53064, bytes=174813003, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=54472, bytes=179976639, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=57046, bytes=93921401, drop=0, errs=0, coll=0
+  port 12: rx pkts=57045, bytes=93921291, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=54486, bytes=179978756, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=55762, bytes=183170188, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=58342, bytes=96557432, drop=0, errs=0, coll=0
+  port 12: rx pkts=58341, bytes=96557322, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=55776, bytes=183172305, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=56991, bytes=186294886, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=59677, bytes=99871336, drop=0, errs=0, coll=0
+  port 12: rx pkts=59676, bytes=99871226, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=57005, bytes=186297003, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=58688, bytes=193647950, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=61362, bytes=101803504, drop=0, errs=0, coll=0
+  port 12: rx pkts=61361, bytes=101803394, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=58702, bytes=193650067, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=60082, bytes=198079291, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=62773, bytes=104879968, drop=0, errs=0, coll=0
+  port 12: rx pkts=62772, bytes=104879858, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=60096, bytes=198081408, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=61594, bytes=204929884, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=64379, bytes=107278596, drop=0, errs=0, coll=0
+  port 12: rx pkts=64378, bytes=107278486, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=61608, bytes=204932001, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=62827, bytes=207895440, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=65645, bytes=109936388, drop=0, errs=0, coll=0
+  port 12: rx pkts=65644, bytes=109936278, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=62841, bytes=207897557, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=63963, bytes=210700714, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=66774, bytes=112344490, drop=0, errs=0, coll=0
+  port 12: rx pkts=66773, bytes=112344380, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=63977, bytes=210702831, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=65464, bytes=215661937, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=68471, bytes=115027190, drop=0, errs=0, coll=0
+  port 12: rx pkts=68470, bytes=115027080, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=65478, bytes=215664054, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=66784, bytes=219912236, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=69713, bytes=117865342, drop=0, errs=0, coll=0
+  port 12: rx pkts=69712, bytes=117865232, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=66798, bytes=219914353, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=68009, bytes=223693670, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=70998, bytes=120018951, drop=0, errs=0, coll=0
+  port 12: rx pkts=70997, bytes=120018841, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=68023, bytes=223695787, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=69813, bytes=232872375, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=72854, bytes=123211210, drop=0, errs=0, coll=0
+  port 12: rx pkts=72853, bytes=123211100, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=69827, bytes=232874492, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=71145, bytes=236373667, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=74322, bytes=126069664, drop=0, errs=0, coll=0
+  port 12: rx pkts=74321, bytes=126069554, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=71159, bytes=236375784, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=72431, bytes=239740845, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=75758, bytes=128544664, drop=0, errs=0, coll=0
+  port 12: rx pkts=75757, bytes=128544554, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=72445, bytes=239742962, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=74090, bytes=247123600, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=77392, bytes=130670467, drop=0, errs=0, coll=0
+  port 12: rx pkts=77391, bytes=130670357, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=74104, bytes=247125717, drop=0, errs=0, coll=0
+OFPST_PORT reply (xid=0x2): 3 ports
+  port LOCAL: rx pkts=0, bytes=0, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=0, bytes=0, drop=0, errs=0, coll=0
+  port  1: rx pkts=75130, bytes=249387063, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=78453, bytes=133033264, drop=0, errs=0, coll=0
+  port 12: rx pkts=78452, bytes=133033154, drop=0, errs=0, frame=0, over=0, crc=0
+           tx pkts=75144, bytes=249389180, drop=0, errs=0, coll=0

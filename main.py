@@ -155,6 +155,8 @@ if __name__ == '__main__':
 
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
+    
+	parser.add_argument('--spark-socket', dest='sparkSocket', type=int, default=0, help='Support for Spark')    
 
 	args = parser.parse_args()
 
@@ -209,7 +211,7 @@ if __name__ == '__main__':
     
 # 	CLI(net)    
 
-	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args, producerPlace, consumerPlace)
+	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args, producerPlace, consumerPlace, args.sparkSocket)
 	print("Simulation complete")
     
 # 	CLI(net) 

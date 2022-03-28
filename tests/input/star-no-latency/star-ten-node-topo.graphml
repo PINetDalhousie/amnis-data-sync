@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+
+  <key id="st" for="edge" attr.name="sport" attr.type="int"/>
+  <key id="dt" for="edge" attr.name="dport" attr.type="int"/>
+
+  <graph id="simple-topo" edgedefault="undirected">
+    <node id="h1"/>
+    <node id="h2"/>
+    <node id="h3"/>
+    <node id="h4"/>
+    <node id="h5"/>
+    <node id="h6"/>    
+    <node id="h7"/>
+    <node id="h8"/>
+    <node id="h9"/>
+    <node id="h10"/>
+	
+    <node id="s1"/>
+    <node id="s2"/>
+    <node id="s3"/>
+    <node id="s4"/>
+    <node id="s5"/>
+    <node id="s6"/> 
+    <node id="s7"/>
+    <node id="s8"/>
+    <node id="s9"/>
+    <node id="s10"/>
+
+    <edge source="h1" target="s1">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>
+    <edge source="h2" target="s2">    
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>    
+    <edge source="h3" target="s3">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>    
+    <edge source="h4" target="s4">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>    
+    <edge source="h5" target="s5">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>
+    <edge source="h6" target="s6">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>    
+    <edge source="h7" target="s7">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>    
+    <edge source="h8" target="s8">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>
+    <edge source="h9" target="s9">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>    
+    <edge source="h10" target="s10">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge> 	
+	
+    
+    <edge source="s2" target="s1">
+	<data key="st">2</data>
+	<data key="dt">2</data>
+    </edge>
+	<edge source="s3" target="s1">
+	<data key="st">3</data>
+	<data key="dt">3</data>
+    </edge>
+	<edge source="s4" target="s1">
+	<data key="st">4</data>
+	<data key="dt">4</data>
+    </edge>
+    <edge source="s5" target="s1">
+	<data key="st">5</data>
+	<data key="dt">5</data>
+    </edge>
+	<edge source="s6" target="s1">
+	<data key="st">6</data>
+	<data key="dt">6</data>
+    </edge>
+	<edge source="s7" target="s1">
+	<data key="st">7</data>
+	<data key="dt">7</data>
+    </edge>
+	<edge source="s8" target="s1">
+	<data key="st">8</data>
+	<data key="dt">8</data>
+    </edge>
+	<edge source="s9" target="s1">
+	<data key="st">9</data>
+	<data key="dt">9</data>
+    </edge>
+	<edge source="s10" target="s1">
+	<data key="st">10</data>
+	<data key="dt">10</data>
+    </edge>
+	
+  </graph>
+</graphml>

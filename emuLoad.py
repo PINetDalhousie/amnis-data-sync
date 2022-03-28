@@ -58,7 +58,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, produce
 		i += 1
 
 
-def spawnConsumers(net, nTopics, cRate, args, consumerPlace):
+def spawnConsumers(net, nTopics, cRate, args, consumerPlace, sparkSocket):
 
 	fetchMinBytes = args.fetchMinBytes
 	fetchMaxWait = args.fetchMaxWait
@@ -77,6 +77,10 @@ def spawnConsumers(net, nTopics, cRate, args, consumerPlace):
 # 			node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
 
 	netNodes = {}
+	if sparkSocket == 1:
+		portId = 65450
+	else:
+		portId = 0
 
 	for node in net.hosts:
 		netNodes[node.name] = node
@@ -84,7 +88,9 @@ def spawnConsumers(net, nTopics, cRate, args, consumerPlace):
 	for cNode in consumerPlace:
 		consID = "h"+str(cNode)      
 		node = netNodes[consID]
-		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
+		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(portId)+" &", shell=True)
+		if sparkSocket == 1:        
+			portId += 1        
 
 
         
@@ -109,7 +115,7 @@ def spawnClients(net, nTopics, cRate, args, consumerPlace):
 		node.popen("python3 client.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)    
 
 
-def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, producerPlace, consumerPlace, topicWaitTime=100):
+def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, producerPlace, consumerPlace, sparkSocket, topicWaitTime=100):
 
 	print("Start workload")
 
@@ -158,13 +164,13 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	#print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
 
-	spawnConsumers(net, nTopics, consumerRate, args, consumerPlace)
-	time.sleep(1)
+	spawnConsumers(net, nTopics, consumerRate, args, consumerPlace, sparkSocket)
+	time.sleep(2)
 	print("Consumers created")
     
-# 	spawnClients(net, nTopics, consumerRate, args, consumerPlace)
-# 	time.sleep(1)
-# 	print("Clients created")    
+	spawnClients(net, nTopics, consumerRate, args, consumerPlace)
+	time.sleep(10)
+	print("Clients created")    
     
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, producerPlace)
 	time.sleep(1)

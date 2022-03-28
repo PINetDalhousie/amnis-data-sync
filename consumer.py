@@ -15,6 +15,24 @@ def stringToList(string):
     listRes = list(string.split(" "))
     return listRes
 
+def messageReadFromConsumer(consumer, consumptionLag):
+
+    msgContent = str(msg.value, 'utf-8', errors='ignore')
+
+# 				prodID = msgContent[0]
+# 				bMsgID = bytearray(msgContent[1:5], 'utf-8')
+# 				print(len(bMsgID))
+# 				msgID = int.from_bytes(bMsgID, 'big')
+# 				topic = msg.topic
+# 				offset = str(msg.offset)
+
+    prodID = msgContent[:2]
+    bMsgID = bytearray(msgContent[2:6], 'utf-8')
+    msgID = int.from_bytes(bMsgID, 'big')
+    topic = msg.topic
+    offset = str(msg.offset)
+
+
 try:
 	seed(2)
 
@@ -31,7 +49,8 @@ try:
 	mSizeString = sys.argv[8]
 	mRate = float(sys.argv[9])    
 	replication = int(sys.argv[10])   
-	topicCheckInterval = float(sys.argv[11])  
+	topicCheckInterval = float(sys.argv[11])
+	portId = int(sys.argv[12])    
     
     
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/cons/cons-"+nodeID+".log",
@@ -39,13 +58,9 @@ try:
 							level=logging.INFO)    
 	logging.info("node: "+nodeID)
     
-#     skt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# #     skt.bind((socket.gethostname(), 9999))
-#     skt.bind(("10.0.0."+str(nodeID), 9999))
-# #     skt.listen()
+
 
 	while True:
-#         client, address = skt.accept()
 		for topicID in range(0, nTopics):
 			startTime = time.time()
 			#Randomly select topic
@@ -88,29 +103,31 @@ try:
 
 			logging.info('Connect to broker looking for topic %s. Timeout: %s.', topicName, str(timeout))
 
-			for msg in consumer:
-				msgContent = str(msg.value, 'utf-8', errors='ignore')
+			if portId == 0:
+				for msg in consumer:
+					messageReadFromConsumer(consumer, consumptionLag)
+					logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s; whole message: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)), msgContent)           
 
-# 				prodID = msgContent[0]
-# 				bMsgID = bytearray(msgContent[1:5], 'utf-8')
-# 				print(len(bMsgID))
-# 				msgID = int.from_bytes(bMsgID, 'big')
-# 				topic = msg.topic
-# 				offset = str(msg.offset)
-
-				prodID = msgContent[:2]
-				bMsgID = bytearray(msgContent[2:6], 'utf-8')
-				msgID = int.from_bytes(bMsgID, 'big')
-				topic = msg.topic
-				offset = str(msg.offset)
-                
-            
-				logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s; whole message: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)), msgContent)           
-
-# 				logging.info('Latest: %s; Topic: %s; Offset: %s; Size: %s', str(consumptionLag), topic, offset, str(len(msgContent)))
-# 				logging.info("message %s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition,msg.offset, msg.key,msg.value.decode('utf-8')))
-#                 info = msgContent[6:]
-#                 client.send(bytes(info,"utf-8"))
+			else:
+				host = '127.0.0.1' #"10.0.0."+str(nodeID)
+				logging.info("inside else")
+				logging.info("host id: " + host)
+				logging.info("port id: " + str(portId))
+				with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+					a = s.bind((host, portId))
+					logging.info(a)
+					s.listen()
+					conn, addr = s.accept()
+					logging.info("connected opened")                    
+					with conn:
+						logging.info("connected by: "+addr)
+						for msg in consumer:                        
+							messageReadFromConsumer(consumer, consumptionLag)
+							logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s; whole message: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)), msgContent)           
+                            
+							msgContent = str(msg.value, 'utf-8')
+							sentMsg = msgContent.encode("utf-8")
+							conn.send(sentMsg)
 
 
 			consumer.close()
@@ -122,8 +139,7 @@ try:
 			if(topicCheckWait > 0):
 				time.sleep(topicCheckWait)
                 
-# 	client.close()
-# 	logging.info('Disconnect from client')                
+
 
 except Exception as e:
 	logging.error(e)

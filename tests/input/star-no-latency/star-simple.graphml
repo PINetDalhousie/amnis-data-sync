@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+
+  <key id="st" for="edge" attr.name="sport" attr.type="int"/>
+  <key id="dt" for="edge" attr.name="dport" attr.type="int"/>
+
+  <graph id="simple-topo" edgedefault="undirected">
+    <node id="h1"/>
+    <node id="h2"/>
+    <node id="h3"/>
+    <node id="h4"/>
+    <node id="h5"/>
+    <node id="s1"/>
+    <node id="s2"/>
+    <node id="s3"/>
+    <node id="s4"/>
+    <node id="s5"/>
+    <edge source="h1" target="s1">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge> 
+    <edge source="h2" target="s2">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>    
+    <edge source="h3" target="s3">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>
+    <edge source="h4" target="s4">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>    
+    <edge source="h5" target="s5">
+	<data key="st">1</data>
+	<data key="dt">1</data>
+    </edge>
+    
+    <edge source="s2" target="s1">
+	<data key="st">2</data>
+	<data key="dt">2</data>
+    </edge>
+    <edge source="s1" target="s3">
+	<data key="st">3</data>
+	<data key="dt">3</data>
+    </edge>
+    
+    <edge source="s4" target="s1">
+	<data key="st">4</data>
+	<data key="dt">4</data>
+    </edge>
+    
+    
+  </graph>
+</graphml>

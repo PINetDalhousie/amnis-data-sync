@@ -32,9 +32,13 @@ logging.info("node: "+nodeID)
 # logging.info("Node id: " + str(nodeID))
 # logging.info("Data received" + client.recv(1024).decode())
 
-serverAddress = ("10.0.0."+str(nodeID), 7070)
-# Create a datagram socket
+# serverAddress = ("10.0.0."+str(nodeID), 7070)
+host = "10.0.0."+str(nodeId)
+port = 65450  # The port used by the server
 
-tempSensorSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-response = tempSensorSocket.recv(1024);
-logging.info("Data received" + response.decode())
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+	s.connect((host, port))
+    #s.sendall(b"Hello, world")
+	while True:
+		data = s.recv(1024)
+		logging.info("Data received" + data)
