@@ -4,32 +4,44 @@
     xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
      http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
 
+  <key id="topicCfg" for="graph" attr.name="topicConfig" attr.type="string"/>
+  
+  <key id="zk" for="node" attr.name="zookeeper" attr.type="int"/>
+  <key id="bk" for="node" attr.name="broker" attr.type="int"/>
+  <key id="prod" for="node" attr.name="producer" attr.type="string"/>
+  <key id="prodConfig" for="node" attr.name="producerConfigFile" attr.type="string"/>
+  <key id="cons" for="node" attr.name="consumer" attr.type="string"/>
+  <!-- <key id="consConfig" for="node" attr.name="consumer" attr.type="string"/> -->   
+
   <key id="bw" for="edge" attr.name="bandwidth" attr.type="int"/>
   <key id="lat" for="edge" attr.name="latency" attr.type="int"/>
   <key id="st" for="edge" attr.name="sport" attr.type="int"/>
   <key id="dt" for="edge" attr.name="dport" attr.type="int"/>
   
-  <key id="zk" for="node" attr.name="zookeeper" attr.type="int"/>
-  <key id="bk" for="node" attr.name="broker" attr.type="int"/>
-  <key id="prod" for="node" attr.name="producer" attr.type="int"/>
-  <key id="cons" for="node" attr.name="consumer" attr.type="int"/>
-
-    
+   
   <graph id="simple-topo" edgedefault="undirected">
+    <data key="topicCfg">tests/input/topicConfiguration.txt</data>
+
     <node id="h1">
-		<data key="zk">1</data>
-		<data key="bk">1</data>
-		<data key="prod">1</data>
-		<data key="cons">0</data>        
-	</node>            
+      <data key="zk">1</data>
+      <data key="bk">1</data>
+      <data key="prod">SFST</data>    <!-- production pattern can be SFST/MFMT/RND -->
+      <data key="prodConfig">tests/input/p1SFSTConfig.txt</data>
+      <!-- <data key="prodConfig">filePath1,topic1</data> -->   <!-- for SFST: one pair of filePath, topicName; for MFMT: multiple pair of filePaths, topicNames; -->
+      <data key="cons">tests/input/c1Config.txt</data>   <!-- will discard cons attribute; consType can be an attribute which will contain the consumption type-->
+      <!-- <data key="consConfig">topic1,topic2</data> -->        <!-- consConfig will contain the topic name(s) from where the consumer will consumer -->
+	  </node>            
+    
     <node id="s1"/>
     <node id="s2"/>
+
     <node id="h2">
-		<data key="zk">0</data>    
-		<data key="bk">1</data>
-		<data key="prod">0</data>        
-		<data key="cons">1</data>        
-	</node>            
+      <data key="bk">1</data>
+      <!-- <data key="prod">SFST</data>   -->
+      <!-- <data key="prodConfig">tests/input/p2SFSTConfig.txt</data>       -->
+      <!-- <data key="cons">tests/input/c2Config.txt</data>         -->
+	  </node>            
+
     <edge source="h1" target="s1">
 		<data key="bw">1</data>
 		<data key="lat">20</data>

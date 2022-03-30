@@ -50,7 +50,7 @@ def validateInput(args):
 	if(args.topicCheckInterval < 0):
 		print("ERROR: Topic check interval should be greater than zero.")
 		sys.exit(1)
-		
+
 	#Check traffic classes
 	tClassString = args.tClassString
 	tClasses = tClassString.split(',')
@@ -177,8 +177,9 @@ if __name__ == '__main__':
 			autoStaticArp = True)
 
 # 	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
-	brokerPlace, zkPlace, producerPlace, consumerPlace = emuKafka.placeKafkaBrokers(net, args.topo)    
-
+	brokerPlace, zkPlace, producerPlace, consumerPlace, producerTypePlace, producerConfigFile,\
+		consumerTopicFile, topicPlace = emuKafka.placeKafkaBrokers(net, args.topo)    
+	
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
 	emuLogs.cleanLogs()
@@ -211,7 +212,9 @@ if __name__ == '__main__':
     
 # 	CLI(net)    
 
-	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args, producerPlace, consumerPlace, args.sparkSocket)
+	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString,\
+		 args.consumerRate, args.duration, args,producerPlace, consumerPlace, args.sparkSocket,\
+			 producerTypePlace, producerConfigFile, consumerTopicFile, topicPlace)
 	print("Simulation complete")
     
 # 	CLI(net) 

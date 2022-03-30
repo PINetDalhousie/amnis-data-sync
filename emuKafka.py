@@ -8,6 +8,16 @@ import subprocess
 import time
 import networkx as nx
 
+def readTopicConfig(topicConfigPath):
+	topicNames = []
+	f = open(topicConfigPath, "r")
+	for line in f:
+		topicNames.append(line.strip())
+	
+	f.close()
+
+	return topicNames
+
 def configureKafkaCluster(brokerPlace, zkPlace, args):
 	print("Configure kafka cluster")
 
@@ -92,29 +102,43 @@ def placeKafkaBrokers(net, inputTopoFile):
 	brokerPlace = []
 	zkPlace = []
 	producerPlace = []
-	consumerPlace = []    
+	consumerPlace = []  
 
+	producerTypePlace = []
+	producerConfigFile = []  
+	consumerTopicFile = []
+	topicPlace = []
 
-	#Read topo information
+	#Read topo info	rmation
 	try:
 		inputTopo = nx.read_graphml(inputTopoFile)
 	except Exception as e:
 		print("ERROR: Could not read topo properly.")
 		print(str(e))
 		sys.exit(1)
-        
+
+	topicConfigPath = inputTopo.graph["topicConfig"]
+	print("topic config directory: " + topicConfigPath)
+	topicPlace = readTopicConfig(topicConfigPath)
+	print("Topic(s): ")
+	print(*topicPlace)
+	
 	for node, data in inputTopo.nodes(data=True):  
 		if node[0] == 'h':
 			print("node id: "+node[1])
-			print("zk type: "+str(type(data["zookeeper"])))
-			if data["zookeeper"] == 1:
+			#print("zk : "+str(data["zookeeper"]))
+			if 'zookeeper' in data: 
 				zkPlace.append(node[1]) 
-			if data["broker"] == 1:
+			if 'broker' in data: 
 				brokerPlace.append(node[1])
-			if data["producer"] != 0:
+			if 'producer' in data: 
 				producerPlace.append(node[1])
-			if data["consumer"] != 0:
+				producerTypePlace.append(data["producer"])
+			if 'producerConfigFile' in data: 
+				producerConfigFile.append(data["producerConfigFile"])
+			if 'consumer' in data: 
 				consumerPlace.append(node[1])
+				consumerTopicFile.append(data["consumer"])
 
             
 	print("zookeepers:\n")
@@ -123,10 +147,18 @@ def placeKafkaBrokers(net, inputTopoFile):
 	print(*brokerPlace)
 	print("producers: \n")
 	print(*producerPlace)
+	
+	print("producers type: \n")
+	print(*producerTypePlace)
+
+	print("producers config file: \n")
+	print(*producerConfigFile)
+
 	print("consumers: \n")
 	print(*consumerPlace)    
 
-	return brokerPlace, zkPlace, producerPlace, consumerPlace
+	return brokerPlace, zkPlace, producerPlace, consumerPlace, producerTypePlace,\
+		 producerConfigFile, consumerTopicFile, topicPlace
 
 
 

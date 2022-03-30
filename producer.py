@@ -56,6 +56,8 @@ def generateMessage(mSizeParams):
 	message = [97] * payloadSize
 	return message
 
+
+
 try:
 	node = sys.argv[1]
 	tClass = float(sys.argv[2])
@@ -71,6 +73,16 @@ try:
 	brokers = int(sys.argv[11])    
 	replication = int(sys.argv[12]) 
 	messageFilePath = sys.argv[13] 
+	#prodFile = sys.argv[13]
+	prodTopic = sys.argv[14] 
+
+	#print(nTopics)
+	#print(compression)
+	#print(prodFile)
+	#print(prodTopic)
+
+	#prodFile, prodTopic = readProdConfig(prodConfigPath)
+
 
 	seed(1)
 
@@ -87,6 +99,9 @@ try:
 
        
 	logging.info("node: "+nodeID)
+	logging.info("topic: "+prodTopic)
+	#logging.info("input file: "+prodFile)
+	#logging.info("produce data in topic: "+prodTopic)
     
 
 	bootstrapServers="10.0.0."+nodeID+":9092"
@@ -103,7 +118,7 @@ try:
 	if(compression == 'None'):
 		producer = KafkaProducer(bootstrap_servers=bootstrapServers,
 			acks=acks,
-			batch_size=batchSize,
+			batch_size=batchSize, #batchFileSize,
 			linger_ms=linger,
 			request_timeout_ms=requestTimeout)
 	else:
@@ -114,12 +129,13 @@ try:
 			linger_ms=linger,
 			request_timeout_ms=requestTimeout)
 
-
+ 
 
 	while True:
 		if(messageFilePath != 'None'):
 			message = readMessageFromFile(messageFilePath)
 			logging.info("Message Generated From File")
+
 		else:
 			message = generateMessage(mSizeParams)
 			logging.info("Generated Message")
@@ -130,6 +146,9 @@ try:
 		bMsg = bNodeID + bMsgID + bytearray(message)
 		topicID = randint(0, nTopics-1)
 		topicName = 'topic-'+str(topicID)
+
+		topicName = prodTopic
+		#producer.send(prodTopic, bMsg)
 
 		producer.send(topicName, bMsg)
 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID))

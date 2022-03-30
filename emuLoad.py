@@ -8,9 +8,30 @@ from random import seed, randint
 import time
 import os
 import sys
+import itertools
+
+import subprocess
+from subprocess import Popen, PIPE, STDOUT
+
+def readProdConfig(prodConfigPath):
+	f = open(prodConfigPath, "r")
+	prodFile = f.readline()
+	prodTopic = f.readline()
+
+	f.close()
+
+	return prodFile, prodTopic
+
+def readConsConfig(consConfigPath):
+	f = open(consConfigPath, "r")
+	consTopic = f.readline().strip()
+
+	f.close()
+
+	return consTopic
 
 
-def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, producerPlace):
+def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, producerPlace, producerTypePlace, producerConfigFile):
 
 	acks = args.acks
 	compression = args.compression
@@ -50,15 +71,27 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, produce
 	#print("Message size: " + mSizeString)
 	#print("Message rate: " + str(mRate))
 
+
 	i=0
 
 	for nodeList in nodeClassification.values():
-		for node in nodeList:
-			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)+" &", shell=True)
+		for (node,prodConfig) in zip(nodeList, producerConfigFile) :
+			prodFile, prodTopic = readProdConfig(prodConfig)
+			print("node:"+str(node))
+			print("input file: "+prodFile.strip())
+			print("produce data in topic: "+prodTopic)
+			messageFilePath = prodFile.strip()
+			proc = node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)
+			+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)
+			+" "+str(prodTopic)+" &", shell=True) #, stdout=PIPE, stderr=PIPE)
+			""" (output, error) = proc.communicate()
+			print("output=")
+			print(output)
+			print(error) """
 		i += 1
 
 
-def spawnConsumers(net, nTopics, cRate, args, consumerPlace, sparkSocket):
+def spawnConsumers(net, nTopics, cRate, args, consumerPlace, sparkSocket, consumerTopicFile):
 
 	fetchMinBytes = args.fetchMinBytes
 	fetchMaxWait = args.fetchMaxWait
@@ -85,10 +118,13 @@ def spawnConsumers(net, nTopics, cRate, args, consumerPlace, sparkSocket):
 	for node in net.hosts:
 		netNodes[node.name] = node
         
-	for cNode in consumerPlace:
+	for (cNode, cTopicFile) in zip(consumerPlace, consumerTopicFile):
+		consTopic = readConsConfig(cTopicFile)
 		consID = "h"+str(cNode)      
 		node = netNodes[consID]
-		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(portId)+" &", shell=True)
+		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "
+		+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(portId)
+		+" "+str(consTopic)+" &", shell=True)
 		if sparkSocket == 1:        
 			portId += 1        
 
@@ -115,7 +151,9 @@ def spawnClients(net, nTopics, cRate, args, consumerPlace):
 		node.popen("python3 client.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)    
 
 
-def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, producerPlace, consumerPlace, sparkSocket, topicWaitTime=100):
+def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args,\
+	producerPlace, consumerPlace, sparkSocket, producerTypePlace, producerConfigFile, consumerTopicFile,\
+		topicPlace, topicWaitTime=100):
 
 	print("Start workload")
 
@@ -127,14 +165,26 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	#Create topics
 	topicNodes = []
 	startTime = time.time()
-	for i in range(nTopics):
+	""" for i in range(nTopics):
 		issuingID = randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]
 		
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
 
-		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
+		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True) #topic-"+str(i), shell=True)
 # 		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions "+str(nHosts)+" --topic topic-"+str(i)+" &", shell=True)        
+		print(out)
+		topicNodes.append(issuingNode) """
+
+	for topicName in topicPlace:
+		issuingID = randint(0, nHosts-1)
+		issuingNode = net.hosts[issuingID]
+
+		print("Creating topic "+topicName+" at broker "+str(issuingID+1))
+
+		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092\
+			 --replication-factor "+str(replication)+" --partitions 1 --topic "+topicName, shell=True)         
+		
 		print(out)
 		topicNodes.append(issuingNode)
 	
@@ -164,15 +214,15 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	#print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
 
-	spawnConsumers(net, nTopics, consumerRate, args, consumerPlace, sparkSocket)
+	spawnConsumers(net, nTopics, consumerRate, args, consumerPlace, sparkSocket, consumerTopicFile)
 	time.sleep(2)
 	print("Consumers created")
     
-	spawnClients(net, nTopics, consumerRate, args, consumerPlace)
-	time.sleep(10)
-	print("Clients created")    
+	# spawnClients(net, nTopics, consumerRate, args, consumerPlace)
+	# time.sleep(10)
+	# print("Clients created")    
     
-	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, producerPlace)
+	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, producerPlace, producerTypePlace, producerConfigFile)
 	time.sleep(1)
 	print("Producers created")
 
@@ -192,14 +242,3 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		timer += 10
 
 	print("Workload finished")
-
-
-
-
-
-
-
-
-
-
-
