@@ -1,2 +1,0 @@
-message-data/csv/nycTaxiRides.csv
-topic-0

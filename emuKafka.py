@@ -8,6 +8,8 @@ import subprocess
 import time
 import networkx as nx
 
+from emuLoad import readProdConfig
+
 def readTopicConfig(topicConfigPath):
 	topicNames = []
 	f = open(topicConfigPath, "r")
@@ -17,6 +19,18 @@ def readTopicConfig(topicConfigPath):
 	f.close()
 
 	return topicNames
+
+def readProdConfig(prodType, prodConfig):
+	if prodType == 'SFST':
+		prodFile = prodConfig.split(",")[0]
+		prodTopic = prodConfig.split(",")[1]
+
+	return prodFile, prodTopic
+
+def readConsConfig(consConfig):
+	consTopic = consConfig.split(",")
+
+	return consTopic
 
 def configureKafkaCluster(brokerPlace, zkPlace, args):
 	print("Configure kafka cluster")
@@ -52,6 +66,7 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 
 # 		zkAddresses += "localhost:"+str(zkPort)
 		zkAddresses += "10.0.0."+str(zkPlace[-1])+ ":" +str(zkPort)
+		print("zk connect: " + zkAddresses)
 
 		bProperties = bProperties.replace(
 			"zookeeper.connect=localhost:2181",
@@ -68,48 +83,22 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 	propertyFile.close()
 
 
-
-# def placeKafkaBrokers(net, nBroker, nZk):
-
-# 	brokerPlace = []
-# 	zkPlace = []
-
-# 	if nBroker < 0 or nBroker > len(net.hosts):
-# 		print("ERROR: Cannot support specified number of broker instances.");
-# 		sys.exit(1)
-# 	elif nZk < 0 or nZk > len(net.hosts):
-# 		print("ERROR: Cannot support specified number of Zookeeper instances.");
-# 		sys.exit(1)	
-
-# 	if nBroker == len(net.hosts):
-# 		for i in range(nBroker):
-# 			brokerPlace.append(i+1)
-# 	else:
-# 		print("ERROR: Support for broker placement will be added in the future. Please consider setting the number of brokers to the number of end hosts in your network.")
-# 		sys.exit(1)
-
-# 	if nZk == len(net.hosts):
-# 		for i in range(nZk):
-# 			zkPlace.append(i+1)
-# 	else:
-# 		print("ERROR: Support for zookeeper placement will be added in the future. Please consider setting the number of zookeeper instances to the number of end hosts in your network.")
-# 		sys.exit(1)
-
-# 	return brokerPlace, zkPlace
-
 def placeKafkaBrokers(net, inputTopoFile):
 
 	brokerPlace = []
 	zkPlace = []
-	producerPlace = []
-	consumerPlace = []  
 
-	producerTypePlace = []
-	producerConfigFile = []  
-	consumerTopicFile = []
 	topicPlace = []
 
-	#Read topo info	rmation
+	prodDetailsList = []
+	prodDetails = {}
+	prodDetailsKeys = {"nodeId", "producerType","produceFromFile", "produceInTopic"}
+
+	consDetailsList = []
+	consDetails = {}
+	consDetailsKeys = {"nodeId", "consumeFromTopic"}
+
+	#Read topo information
 	try:
 		inputTopo = nx.read_graphml(inputTopoFile)
 	except Exception as e:
@@ -117,12 +106,14 @@ def placeKafkaBrokers(net, inputTopoFile):
 		print(str(e))
 		sys.exit(1)
 
+	#Read topic information
 	topicConfigPath = inputTopo.graph["topicConfig"]
 	print("topic config directory: " + topicConfigPath)
 	topicPlace = readTopicConfig(topicConfigPath)
 	print("Topic(s): ")
 	print(*topicPlace)
 	
+	#Read nodewise broker, zookeeper, producer, consumer information
 	for node, data in inputTopo.nodes(data=True):  
 		if node[0] == 'h':
 			print("node id: "+node[1])
@@ -131,34 +122,35 @@ def placeKafkaBrokers(net, inputTopoFile):
 				zkPlace.append(node[1]) 
 			if 'broker' in data: 
 				brokerPlace.append(node[1])
-			if 'producer' in data: 
-				producerPlace.append(node[1])
-				producerTypePlace.append(data["producer"])
-			if 'producerConfigFile' in data: 
-				producerConfigFile.append(data["producerConfigFile"])
-			if 'consumer' in data: 
-				consumerPlace.append(node[1])
-				consumerTopicFile.append(data["consumer"])
+			if 'producerType' in data: 
+				prodFile, prodTopic = readProdConfig(data["producerType"], data["producerConfig"])
+				prodDetails = {"nodeId": node[1], "producerType": data["producerType"],\
+					"produceFromFile":prodFile, "produceInTopic": prodTopic}
+				prodDetailsList.append(prodDetails)
+
+			if 'consumerConfig' in data: 
+				consTopic = readConsConfig(data["consumerConfig"])
+				consDetails = {"nodeId": node[1], "consumeFromTopic": consTopic}
+				consDetailsList.append(consDetails)
 
             
 	print("zookeepers:\n")
 	print(*zkPlace)
 	print("brokers: \n")
 	print(*brokerPlace)
-	print("producers: \n")
-	print(*producerPlace)
+
+	print("producer details")
+	print(*prodDetailsList)
+
+	print("consumer details")
+	print(*consDetailsList)
 	
-	print("producers type: \n")
-	print(*producerTypePlace)
 
-	print("producers config file: \n")
-	print(*producerConfigFile)
+	# return brokerPlace, zkPlace, producerPlace, consumerPlace, producerTypePlace,\
+	# 	 producerConfig, consumerTopicFile, topicPlace
 
-	print("consumers: \n")
-	print(*consumerPlace)    
+	return brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList
 
-	return brokerPlace, zkPlace, producerPlace, consumerPlace, producerTypePlace,\
-		 producerConfigFile, consumerTopicFile, topicPlace
 
 
 

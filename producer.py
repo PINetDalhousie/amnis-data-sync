@@ -73,7 +73,6 @@ try:
 	brokers = int(sys.argv[11])    
 	replication = int(sys.argv[12]) 
 	messageFilePath = sys.argv[13] 
-	#prodFile = sys.argv[13]
 	prodTopic = sys.argv[14] 
 
 	#print(nTopics)
@@ -118,7 +117,7 @@ try:
 	if(compression == 'None'):
 		producer = KafkaProducer(bootstrap_servers=bootstrapServers,
 			acks=acks,
-			batch_size=batchSize, #batchFileSize,
+			batch_size=batchSize, 
 			linger_ms=linger,
 			request_timeout_ms=requestTimeout)
 	else:

@@ -177,8 +177,7 @@ if __name__ == '__main__':
 			autoStaticArp = True)
 
 # 	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
-	brokerPlace, zkPlace, producerPlace, consumerPlace, producerTypePlace, producerConfigFile,\
-		consumerTopicFile, topicPlace = emuKafka.placeKafkaBrokers(net, args.topo)    
+	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo)    
 	
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
@@ -210,14 +209,16 @@ if __name__ == '__main__':
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
     
-# 	CLI(net)    
+	# CLI(net)    
 
-	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString,\
-		 args.consumerRate, args.duration, args,producerPlace, consumerPlace, args.sparkSocket,\
-			 producerTypePlace, producerConfigFile, consumerTopicFile, topicPlace)
+# 	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString,\
+# 		 args.consumerRate, args.duration, args,producerPlace, consumerPlace, args.sparkSocket,\
+# 			 producerTypePlace, producerConfigFile, consumerTopicFile, topicPlace)
+# 	print("Simulation complete")
+
+	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList)
 	print("Simulation complete")
     
-# 	CLI(net) 
 
 	# to kill all the running subprocesses
 	killSubprocs(brokerPlace, zkPlace)
@@ -228,17 +229,3 @@ if __name__ == '__main__':
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
