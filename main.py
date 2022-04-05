@@ -177,7 +177,7 @@ if __name__ == '__main__':
 			autoStaticArp = True)
 
 # 	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
-	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo)    
+	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList = emuKafka.placeKafkaBrokers(net, args.topo)    
 	
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
@@ -216,8 +216,10 @@ if __name__ == '__main__':
 # 			 producerTypePlace, producerConfigFile, consumerTopicFile, topicPlace)
 # 	print("Simulation complete")
 
-	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList)
+	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList)
 	print("Simulation complete")
+
+	# CLI(net)
     
 
 	# to kill all the running subprocesses

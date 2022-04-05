@@ -78,7 +78,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDet
 	j =0
 	for j in prodDetailsList:
 		j['tClasses'] = str(randint(1,len(tClasses)))
-	print(*[(key,value) for i in prodDetailsList for (key,value) in zip(i.keys(), i.values())], sep = "\n")
+	# print(*[(key,value) for i in prodDetailsList for (key,value) in zip(i.keys(), i.values())], sep = "\n")
 		
 
 	# for nodeList in nodeClassification.values():
@@ -161,7 +161,7 @@ def spawnConsumers(net, nTopics, cRate, args, consDetailsList, sparkSocket):
 
 
         
-def spawnClients(net, nTopics, cRate, args, consumerPlace):
+def spawnClients(net, nTopics, cRate, args, consDetailsList):
 	fetchMinBytes = args.fetchMinBytes
 	fetchMaxWait = args.fetchMaxWait
 	sessionTimeout = args.sessionTimeout
@@ -176,13 +176,35 @@ def spawnClients(net, nTopics, cRate, args, consumerPlace):
 	for node in net.hosts:
 		netNodes[node.name] = node
         
-	for cNode in consumerPlace:
-		consID = "h"+str(cNode)      
+	for cons in consDetailsList:
+		consNode = cons["nodeId"]
+		consTopic = cons["consumeFromTopic"][0]
+		consID = "h"+consNode      
 		node = netNodes[consID]
 		node.popen("python3 client.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)    
 
+def spawnSparkClients(net, sparkDetailsList):
+	netNodes = {}
+	port = 12345
 
-def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, topicWaitTime=100):
+	for node in net.hosts:
+		netNodes[node.name] = node
+
+	for sprk in sparkDetailsList:
+		sparkNode = sprk["nodeId"]
+		sparkApp = sprk["applicationPath"]
+		sparkTopic = sprk["topicsToConsume"][0]
+		print("spark node: "+sparkNode)
+		print("spark App: "+sparkApp)
+
+		sprkID = "h"+sparkNode
+		node = netNodes[sprkID]
+		print("node is: "+str(node))
+		# node.popen("~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port)+" &", shell=True) 
+		node.popen("python3 "+sparkApp+" "+str(node.name)+" "+str(port)+" &", shell=True)    
+
+
+def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):
 
 	sparkSocket = args.sparkSocket
 	nTopics = args.nTopics
@@ -222,25 +244,22 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, topicWaitTi
 	print("Successfully Created " + str(nTopics) + " Topics in " + str(totalTime) + " seconds")
 	
 
-	spawnConsumers(net, nTopics, consumerRate, args, consDetailsList, sparkSocket)
-	time.sleep(2)
-	print("Consumers created")
-    
-	# spawnClients(net, nTopics, consumerRate, args, consumerPlace)
-	# time.sleep(10)
-	# print("Clients created")    
-    
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList)
-	time.sleep(1)
+	time.sleep(10)
 	print("Producers created")
 
-# 	spawnConsumers(net, nTopics, consumerRate, args)
-# 	time.sleep(1)
-# 	print("Consumers created")
+	spawnConsumers(net, nTopics, consumerRate, args, consDetailsList, sparkSocket)
+	time.sleep(15)
+	print("Consumers created")
+
+	spawnSparkClients(net, sparkDetailsList)
+	time.sleep(2)
+	print("Spark Clients created")
+
+	# spawnClients(net, nTopics, consumerRate, args, consDetailsList)
+	# time.sleep(2)
+	# print("Clients created")
     
-# 	for i in range(nHosts):    
-# 		consumer_groups = net.hosts[i].cmd("kafka/bin/kafka-consumer-groups.sh --bootstrap-server 10.0.0."+str(i+1)+":9092 --list", shell=True)
-# 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	timer = 0
 

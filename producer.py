@@ -147,7 +147,6 @@ try:
 		topicName = 'topic-'+str(topicID)
 
 		topicName = prodTopic
-		#producer.send(prodTopic, bMsg)
 
 		producer.send(topicName, bMsg)
 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID))

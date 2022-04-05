@@ -33,12 +33,16 @@ logging.info("node: "+nodeID)
 # logging.info("Data received" + client.recv(1024).decode())
 
 # serverAddress = ("10.0.0."+str(nodeID), 7070)
-host = "10.0.0."+str(nodeId)
-port = 65450  # The port used by the server
+host = "10.0.0."+nodeID
+port = 12345  # The port used by the server
+
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	s.connect((host, port))
-    #s.sendall(b"Hello, world")
-	while True:
-		data = s.recv(1024)
-		logging.info("Data received" + data)
+	logging.info("connected to the server")
+	# s.sendall(b"Hello, world")
+	# while True:
+	data = s.recv(1024).decode()
+
+logging.info("Data received\n")
+logging.info(data)
