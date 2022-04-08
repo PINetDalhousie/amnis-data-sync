@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from datetime import datetime
 from mininet.net import Mininet
 from mininet.cli import CLI
 
@@ -69,6 +70,15 @@ def spawnConsumers(net, nTopics, cRate, args):
 		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
 
 
+
+def printLinksBetween(net , n1, n2):	
+	linksBetween = net.linksBetween(n1, n2)
+	print(f"Links between {n1.name} {n2.name} {linksBetween}")	
+	if len(linksBetween) > 0:
+		print(linksBetween[0].intf1)
+		print(linksBetween[0].intf2)
+	
+
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):
 
 	print("Start workload")
@@ -136,12 +146,47 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 	timer = 0
 
+	if args.disconnect:
+		# Get hosts and switches
+		hosts = []	
+		for h in net.hosts:
+			hosts.append(net.getNodeByName(h.name))
+		
+		switches = []
+		for s in net.switches:
+			switches.append(net.getNodeByName(s.name))
+
+		#TODO: Pick random node to disconnect
+		k = net.keys()
+		s1 = switches[0]
+		s2 = switches[1]		
+		st = 2
+		dt = 2
+
+	print(f"Starting workload at {str(datetime.now())}")
+
 	while timer < duration:
 		time.sleep(10)
-		print("Processing workload: "+str(int((timer/duration)*100))+"%")
+		percentComplete = int((timer/duration)*100)
+		print("Processing workload: "+str(percentComplete)+"%")
+		if args.disconnect:
+			if percentComplete == 10:
+				net.pingAll()
+				printLinksBetween(net, s1, s2)
+				print(f"***********Setting link down from {s1.name} <-> {s2.name} at {str(datetime.now())}")						
+				net.delLinkBetween(s1, s2)
+				printLinksBetween(net, s1, s2)
+				net.pingAll()
+			elif percentComplete == 40:
+				print(f"***********Setting link up from {s1.name} <-> {s2.name} at {str(datetime.now())}")
+				net.addLink(s1, s2, st, dt)									
+				printLinksBetween(net, s1, s2)
+				net.pingAll()
+			elif percentComplete == 60:
+				net.pingAll()	
 		timer += 10
 
-	print("Workload finished")
+	print(f"Workload finished at {str(datetime.now())}")	
 
 
 

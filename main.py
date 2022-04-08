@@ -126,7 +126,7 @@ def validateInput(args):
 if __name__ == '__main__': 
 
 	parser = argparse.ArgumentParser(description='Emulate data sync in mission critical networks.')
-	parser.add_argument('topo', type=str, help='Network topology')
+	parser.add_argument('--topo', dest='topo', type=str, default='tests/simple.graphml', help='Network topology')
 	parser.add_argument('--nbroker', dest='nBroker', type=int, default=0,
                     help='Number of brokers')
 	parser.add_argument('--nzk', dest='nZk', type=int, default=0, help='Number of Zookeeper instances')
@@ -156,7 +156,28 @@ if __name__ == '__main__':
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
+	parser.add_argument('--relocate', dest='relocate', action='store_true')
+	parser.add_argument('--disconnect', dest='disconnect', action='store_true')
+
 	args = parser.parse_args()
+
+	# TODO: TEMP - hardcode for testing
+	args.topo = 'tests/input/simple-three-node.graphml'
+	args.nBroker = 3
+	args.nZk = 3
+	args.nTopics = 3
+	args.replication = 3
+	args.mSizeString = 'fixed,1000'
+	args.mRate = 30.0
+	args.consumerRate = 0.5
+	args.messageFilePath = 'message-data/xml/Cars103.xml'
+	args.topicCheckInterval = 0.1	
+	args.duration = 300
+	args.compression = 'gzip'
+	args.replicaMaxWait = 5000
+	args.replicaMinBytes = 200000
+	args.disconnect = True
+	# END
 
 	print(args)
 	validateInput(args)
@@ -216,6 +237,10 @@ if __name__ == '__main__':
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
+
+	#TODO: Temp hardcode to run plotting
+	os.system("sudo python3 modifiedLatencyPlotScript.py --number-of-switches 3 --log-dir logs/kafka/nodes:3_mSize:fixed,1000_mRate:30.0_topics:3_replication:3/")
+	os.system("sudo python3 bandwidthPlotScript.py --number-of-switches 3 --port-type access-port --message-size fixed,1000 --message-rate 30.0 --ntopics 3 --replication 3 --log-dir logs/kafka/nodes:3_mSize:fixed,1000_mRate:30.0_topics:3_replication:3/ --switch-ports S1-P1,S2-P1,S3-P1")	
 
 
 

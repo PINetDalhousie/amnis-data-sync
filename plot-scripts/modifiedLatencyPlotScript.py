@@ -77,8 +77,8 @@ def getProdDetails(prodId):
                     if formattedProdId+"-"+msgId+"-topic-"+topicId in consLogs[consId].keys():
                         msgConsTime = consLogs[consId][formattedProdId+"-"+msgId+"-topic-"+topicId]
 
-                        prodTime = datetime.strptime(msgProdTime, "%Y-%m-%d %H:%M:%S.%f")
-                        consTime = datetime.strptime(msgConsTime, "%Y-%m-%d %H:%M:%S.%f")
+                        prodTime = datetime.strptime(msgProdTime, "%Y-%m-%d %H:%M:%S,%f")
+                        consTime = datetime.strptime(msgConsTime, "%Y-%m-%d %H:%M:%S,%f")
                         latencyMessage = consTime - prodTime
 
                         #print(latencyMessage)
@@ -143,8 +143,8 @@ def getConsDetails(consId, prodId, msgProdTime, topicId, msgId):
 #                 msgConsTime = line.split(",")[0]
                 msgConsTime = line.split(" INFO:Prod ID:")[0]
                 
-                prodTime = datetime.strptime(msgProdTime, "%Y-%m-%d %H:%M:%S.%f")
-                consTime = datetime.strptime(msgConsTime, "%Y-%m-%d %H:%M:%S.%f")
+                prodTime = datetime.strptime(msgProdTime, "%Y-%m-%d %H:%M:%S,%f")
+                consTime = datetime.strptime(msgConsTime, "%Y-%m-%d %H:%M:%S,%f")
                 latencyMessage = consTime - prodTime
                 
                 consCount+=1  
