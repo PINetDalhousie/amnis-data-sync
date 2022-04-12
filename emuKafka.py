@@ -147,6 +147,10 @@ def placeKafkaBrokers(net, inputTopoFile):
 
 			if 'sparkConfig' in data: 
 				sparkApp, topicsToConsume = readSparkConfig(data["sparkConfig"])
+
+				consDetails = {"nodeId": node[1], "consumeFromTopic": topicsToConsume}
+				consDetailsList.append(consDetails)
+				
 				sparkDetails = {"nodeId": node[1], "applicationPath": sparkApp, "topicsToConsume": topicsToConsume}
 				sparkDetailsList.append(sparkDetails)
             

@@ -13,15 +13,6 @@ import itertools
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
 
-def readProdConfig(prodConfigPath):
-	f = open(prodConfigPath, "r")
-	prodFile = f.readline()
-	prodTopic = f.readline()
-
-	f.close()
-
-	return prodFile, prodTopic
-
 def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList):
 
 	acks = args.acks
@@ -49,55 +40,10 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDet
 	for node in net.hosts:
 		netNodes[node.name] = node
 
-
-	#accessing list of dictionaries
-	#prodConfig = [{'nodeId': '1', 'producerType': 'SFST', 'produceFromFile': 'filePath1', 'produceInTopic': 'topic-0'}, {'nodeId': '2', 'producerType': 'SFST', 'produceFromFile': 'filePath1', 'produceInTopic': 'topic-0'}]
-	# for i in prodDetailsList:
-	# 	for (k,v) in zip(i.keys(), i.values()):
-	# 		if k == 'nodeId':
-	# 			pNode = v
-	# 			prodID = "h"+pNode=0
-	# for nodeList in nodeClassification.values():
-	# 	for prod in zip(nodeList, producerConfigFile) :
-	# 		prodFile, prodTopic = readProdConfig(prodConfig)
-
-	# 		messageFilePath = prodFile.strip()
-	# 		proc = node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)
-	# 		+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)
-	# 		+" "+str(prodTopic)+" &", shell=True) #, stdout=PIPE, stderr=PIPE)
-	# 		""" (output, error) = proc.communicate()
-	# 		print("output=")
-	# 		print(output)
-	# 		print(error) """
-	# 	i += 1
-	# 			prodNode = netNodes[prodID]
-				
-	# 			nodeClass = randint(1,len(tClasses))
-	# 			nodeClassification[nodeClass].append(prodNode)
-
 	j =0
 	for j in prodDetailsList:
 		j['tClasses'] = str(randint(1,len(tClasses)))
-	# print(*[(key,value) for i in prodDetailsList for (key,value) in zip(i.keys(), i.values())], sep = "\n")
-		
-
-	# for nodeList in nodeClassification.values():
-	# 	for (node,prodConfig) in zip(nodeList, producerConfigFile) :
-	# 		prodFile, prodTopic = readProdConfig(prodConfig)
-	# 		print("node:"+str(node))
-	# 		print("input file: "+prodFile.strip())
-	# 		print("produce data in topic: "+prodTopic)
-	# 		messageFilePath = prodFile.strip()
-	# 		proc = node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)
-	# 		+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)
-	# 		+" "+str(prodTopic)+" &", shell=True) #, stdout=PIPE, stderr=PIPE)
-	# 		""" (output, error) = proc.communicate()
-	# 		print("output=")
-	# 		print(output)
-	# 		print(error) """
-	# 	i += 1
-
-
+	
 	for i in prodDetailsList:
 		nodeId = 'h' + i['nodeId']
 		
@@ -122,13 +68,6 @@ def spawnConsumers(net, nTopics, cRate, args, consDetailsList, sparkSocket):
 	replication = args.replication  
 	topicCheckInterval = args.topicCheckInterval   
 
-	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
-	#print("Data consumed")
-
-# 	for node in net.hosts:
-# 		if str(node.name) == "h2":        
-# 			node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
-
 	netNodes = {}
 	if sparkSocket == 1:
 		portId = 65450
@@ -138,16 +77,6 @@ def spawnConsumers(net, nTopics, cRate, args, consDetailsList, sparkSocket):
 	for node in net.hosts:
 		netNodes[node.name] = node
         
-	# for (cNode, cTopicFile) in zip(consumerPlace, consumerTopicFile):
-	# 	consTopic = readConsConfig(cTopicFile)
-	# 	consID = "h"+str(cNode)      
-	# 	node = netNodes[consID]
-	# 	node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "
-	# 	+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(portId)
-	# 	+" "+str(consTopic)+" &", shell=True)
-	# 	if sparkSocket == 1:        
-	# 		portId += 1        
-
 	for cons in consDetailsList:
 		consNode = cons["nodeId"]
 		consTopic = cons["consumeFromTopic"][0]
@@ -159,30 +88,6 @@ def spawnConsumers(net, nTopics, cRate, args, consDetailsList, sparkSocket):
 		if sparkSocket == 1:        
 			portId += 1
 
-
-        
-def spawnClients(net, nTopics, cRate, args, consDetailsList):
-	fetchMinBytes = args.fetchMinBytes
-	fetchMaxWait = args.fetchMaxWait
-	sessionTimeout = args.sessionTimeout
-	brokers = args.nBroker    
-	mSizeString = args.mSizeString
-	mRate = args.mRate    
-	replication = args.replication  
-	topicCheckInterval = args.topicCheckInterval    
-    
-	netNodes = {}
-
-	for node in net.hosts:
-		netNodes[node.name] = node
-        
-	for cons in consDetailsList:
-		consNode = cons["nodeId"]
-		consTopic = cons["consumeFromTopic"][0]
-		consID = "h"+consNode      
-		node = netNodes[consID]
-		node.popen("python3 client.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)    
-
 def spawnSparkClients(net, sparkDetailsList):
 	netNodes = {}
 	port = 12345
@@ -190,18 +95,23 @@ def spawnSparkClients(net, sparkDetailsList):
 	for node in net.hosts:
 		netNodes[node.name] = node
 
-	for sprk in sparkDetailsList:
-		sparkNode = sprk["nodeId"]
-		sparkApp = sprk["applicationPath"]
-		sparkTopic = sprk["topicsToConsume"][0]
-		print("spark node: "+sparkNode)
-		print("spark App: "+sparkApp)
+	node = netNodes["h1"]
+	print("host node: "+str(node.name))
+	node.cmd("sudo ~/.local/bin/spark-submit sparkClient.py"+" "+str(node.name)+" "+str(port), shell=True)
+	
 
-		sprkID = "h"+sparkNode
-		node = netNodes[sprkID]
-		print("node is: "+str(node))
-		# node.popen("~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port)+" &", shell=True) 
-		node.popen("python3 "+sparkApp+" "+str(node.name)+" "+str(port)+" &", shell=True)    
+	# for sprk in sparkDetailsList:
+	# 	sparkNode = sprk["nodeId"]
+	# 	sparkApp = sprk["applicationPath"]
+	# 	sparkTopic = sprk["topicsToConsume"][0]
+	# 	print("spark node: "+sparkNode)
+	# 	print("spark App: "+sparkApp)
+
+	# 	sprkID = "h"+sparkNode
+	# 	node = netNodes[sprkID]
+	# 	print("node is: "+str(node.name))
+	# 	print("port is: "+str(port))
+	# 	node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
 
 
 def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):
@@ -249,23 +159,19 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	print("Producers created")
 
 	spawnConsumers(net, nTopics, consumerRate, args, consDetailsList, sparkSocket)
-	time.sleep(15)
+	time.sleep(2)
 	print("Consumers created")
 
 	spawnSparkClients(net, sparkDetailsList)
-	time.sleep(2)
+	time.sleep(10)
 	print("Spark Clients created")
+   
 
-	# spawnClients(net, nTopics, consumerRate, args, consDetailsList)
-	# time.sleep(2)
-	# print("Clients created")
-    
+	# timer = 0
 
-	timer = 0
+	# while timer < duration:
+	# 	time.sleep(10)
+	# 	print("Processing workload: "+str(int((timer/duration)*100))+"%")
+	# 	timer += 10
 
-	while timer < duration:
-		time.sleep(10)
-		print("Processing workload: "+str(int((timer/duration)*100))+"%")
-		timer += 10
-
-	print("Workload finished")
+	# print("Workload finished")

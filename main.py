@@ -217,10 +217,9 @@ if __name__ == '__main__':
 # 	print("Simulation complete")
 
 	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList)
-	print("Simulation complete")
 
 	# CLI(net)
-    
+	print("Simulation complete")
 
 	# to kill all the running subprocesses
 	killSubprocs(brokerPlace, zkPlace)
