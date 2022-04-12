@@ -168,11 +168,17 @@ if __name__ == '__main__':
 	#Instantiate network
 	emulatedTopo = emuNetwork.CustomTopo(args.topo)
 
-	net = Mininet(topo = emulatedTopo,
+	# Create network
+	net = Mininet(topo = None,
 			controller=RemoteController,
 			link = TCLink,
 			autoSetMacs = True,
-			autoStaticArp = True)
+			autoStaticArp = True,
+			build=False)
+
+	# Add topo to network
+	net.topo = emulatedTopo
+	net.build()
 
 	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
 
@@ -187,11 +193,14 @@ if __name__ == '__main__':
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
 	#Start network
+	print("Starting Network")
 	net.start()
-	logging.info('Network started')
+	for switch in net.switches:
+		net.get(switch.name).start([])
 
-	emuNetwork.configureNetwork(args.topo)
-	time.sleep(1)
+	logging.info('Network started')
+	#emuNetwork.configureNetwork(args.topo)
+	#time.sleep(5)
 
 	print("Testing network connectivity")
 	net.pingAll()
