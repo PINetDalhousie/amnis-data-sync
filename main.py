@@ -162,11 +162,11 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	# TODO: TEMP - hardcode for testing
-	args.topo = 'tests/input/simple-three-node.graphml'
-	args.nBroker = 3
-	args.nZk = 3
-	args.nTopics = 3
-	args.replication = 3
+	args.topo = 'tests/input/GD-six-node-topo.graphml'
+	args.nBroker = 6
+	args.nZk = 6
+	args.nTopics = 6
+	args.replication = 6
 	args.mSizeString = 'fixed,1000'
 	args.mRate = 30.0
 	args.consumerRate = 0.5
@@ -187,7 +187,7 @@ if __name__ == '__main__':
 	time.sleep(2)
 
 	#Instantiate network
-	emulatedTopo = emuNetwork.CustomTopo(args.topo)
+	emulatedTopo = emuNetwork.CustomTopo(args.topo)	
 
 	net = Mininet(topo = emulatedTopo,
 			controller=RemoteController,
@@ -239,8 +239,8 @@ if __name__ == '__main__':
 	emuZk.cleanZkState(zkPlace)
 
 	#TODO: Temp hardcode to run plotting
-	os.system("sudo python3 modifiedLatencyPlotScript.py --number-of-switches 3 --log-dir logs/kafka/nodes:3_mSize:fixed,1000_mRate:30.0_topics:3_replication:3/")
-	os.system("sudo python3 bandwidthPlotScript.py --number-of-switches 3 --port-type access-port --message-size fixed,1000 --message-rate 30.0 --ntopics 3 --replication 3 --log-dir logs/kafka/nodes:3_mSize:fixed,1000_mRate:30.0_topics:3_replication:3/ --switch-ports S1-P1,S2-P1,S3-P1")	
+	#os.system("sudo python3 modifiedLatencyPlotScript.py --number-of-switches 3 --log-dir logs/kafka/nodes:3_mSize:fixed,1000_mRate:30.0_topics:3_replication:3/")
+	#os.system("sudo python3 bandwidthPlotScript.py --number-of-switches 3 --port-type access-port --message-size fixed,1000 --message-rate 30.0 --ntopics 3 --replication 3 --log-dir logs/kafka/nodes:3_mSize:fixed,1000_mRate:30.0_topics:3_replication:3/ --switch-ports S1-P1,S2-P1,S3-P1")	
 
 
 

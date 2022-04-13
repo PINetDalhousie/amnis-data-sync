@@ -75,8 +75,9 @@ def printLinksBetween(net , n1, n2):
 	linksBetween = net.linksBetween(n1, n2)
 	print(f"Links between {n1.name} {n2.name} {linksBetween}")	
 	if len(linksBetween) > 0:
-		print(linksBetween[0].intf1)
-		print(linksBetween[0].intf2)
+		for link in linksBetween:			
+			print(link.intf1)
+			print(link.intf2)
 	
 
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):
@@ -158,10 +159,10 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 		#TODO: Pick random node to disconnect
 		k = net.keys()
-		s1 = switches[0]
-		s2 = switches[1]		
-		st = 2
-		dt = 2
+		h = hosts[1]
+		s = switches[1]		
+		st = 1
+		dt = 1
 
 	print(f"Starting workload at {str(datetime.now())}")
 
@@ -172,15 +173,15 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		if args.disconnect:
 			if percentComplete == 10:
 				net.pingAll()
-				printLinksBetween(net, s1, s2)
-				print(f"***********Setting link down from {s1.name} <-> {s2.name} at {str(datetime.now())}")						
-				net.delLinkBetween(s1, s2)
-				printLinksBetween(net, s1, s2)
+				printLinksBetween(net, h, s)
+				print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
+				net.configLinkStatus(s.name, h.name, "down")	
+				printLinksBetween(net, h, s)
 				net.pingAll()
 			elif percentComplete == 40:
-				print(f"***********Setting link up from {s1.name} <-> {s2.name} at {str(datetime.now())}")
-				net.addLink(s1, s2, st, dt)									
-				printLinksBetween(net, s1, s2)
+				print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
+				net.configLinkStatus(s.name, h.name, "up")												
+				printLinksBetween(net, h, s)
 				net.pingAll()
 			elif percentComplete == 60:
 				net.pingAll()	
