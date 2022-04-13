@@ -53,6 +53,11 @@
 	<data key="dt">4</data>
     </edge>
     
+    <edge source="s5" target="s1">
+	<data key="st">5</data>
+	<data key="dt">5</data>
+    </edge>
+    
     
   </graph>
 </graphml>
