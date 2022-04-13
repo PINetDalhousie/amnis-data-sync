@@ -172,11 +172,12 @@ if __name__ == '__main__':
 	args.consumerRate = 0.5
 	args.messageFilePath = 'message-data/xml/Cars103.xml'
 	args.topicCheckInterval = 0.1	
-	args.duration = 300
+	args.duration = 100
 	args.compression = 'gzip'
 	args.replicaMaxWait = 5000
 	args.replicaMinBytes = 200000
 	args.disconnect = True
+	args.relocate = False
 	# END
 
 	print(args)

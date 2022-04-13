@@ -3,6 +3,7 @@
 from datetime import datetime
 from mininet.net import Mininet
 from mininet.cli import CLI
+from mininet.node import Host
 
 from random import seed, randint
 
@@ -147,7 +148,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 	timer = 0
 
-	if args.disconnect:
+	if args.disconnect or args.relocate:
 		# Get hosts and switches
 		hosts = []	
 		for h in net.hosts:
@@ -161,6 +162,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		k = net.keys()
 		h = hosts[1]
 		s = switches[1]		
+		s2 = switches[2]	
 		st = 1
 		dt = 1
 
@@ -171,26 +173,47 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		percentComplete = int((timer/duration)*100)
 		print("Processing workload: "+str(percentComplete)+"%")
 		if args.disconnect:
-			if percentComplete == 10:
-				net.pingAll()
-				printLinksBetween(net, h, s)
-				print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
-				net.configLinkStatus(s.name, h.name, "down")	
-				printLinksBetween(net, h, s)
-				net.pingAll()
-			elif percentComplete == 40:
-				print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
-				net.configLinkStatus(s.name, h.name, "up")												
-				printLinksBetween(net, h, s)
-				net.pingAll()
-			elif percentComplete == 60:
-				net.pingAll()	
+			processDisconnect(percentComplete, net, h, s)
+		elif args.relocate:
+			processRelocate(percentComplete, net, h, s, s2)
 		timer += 10
 
 	print(f"Workload finished at {str(datetime.now())}")	
 
 
 
+
+
+def processRelocate(percentComplete, net, h, s, s2):
+	if percentComplete == 10:
+		net.pingAll()
+		printLinksBetween(net, h, s)
+		print(f"***********Deleting link from {h.name} <-> {s.name} at {str(datetime.now())}")								
+		net.delLinkBetween(net.get(h.name), s)		
+		printLinksBetween(net, h, s)
+		net.pingAll()
+	elif percentComplete == 40:		
+		print(f"***********Adding link from {h.name} <-> {s2.name} at {str(datetime.now())}")
+		link = net.addLink(net.get(h.name), s2, 4, 4)					
+		s2.attach(link.intf2) 
+		net.configHosts()
+		printLinksBetween(net, h, s2)
+		net.pingAll()	
+
+
+def processDisconnect(percentComplete, net, h, s):
+	if percentComplete == 10:
+		net.pingAll()
+		printLinksBetween(net, h, s)
+		print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
+		net.configLinkStatus(s.name, h.name, "down")	
+		printLinksBetween(net, h, s)
+		net.pingAll()
+	elif percentComplete == 40:
+		print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
+		net.configLinkStatus(s.name, h.name, "up")								
+		printLinksBetween(net, h, s)
+		net.pingAll()
 
 
 
