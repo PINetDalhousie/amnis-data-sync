@@ -147,8 +147,11 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 # 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	timer = 0
+	disconnect = args.disconnectDuration > 0
+	disconnectTimer = args.disconnectDuration
+	isDisconnected = False
 
-	if args.disconnect or args.relocate:
+	if disconnect or args.relocate:
 		# Get hosts and switches
 		hosts = []	
 		for h in net.hosts:
@@ -166,15 +169,23 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		st = 1
 		dt = 1
 
-	print(f"Starting workload at {str(datetime.now())}")
+	print(f"Starting workload at {str(datetime.now())}")		
 
 	while timer < duration:
 		time.sleep(10)
 		percentComplete = int((timer/duration)*100)
 		print("Processing workload: "+str(percentComplete)+"%")
-		if args.disconnect:
-			processDisconnect(percentComplete, net, h, s)
-		elif args.relocate:
+		if disconnect:
+			if not isDisconnected:			
+				disconnectHost(net, h, s)
+				isDisconnected = True
+			elif isDisconnected and disconnectTimer <= 0: 			
+				reconnectHost(net, h, s)
+				isDisconnected = False
+				disconnect = False
+			if isDisconnected:
+				disconnectTimer -= 10
+		if args.relocate:
 			processRelocate(percentComplete, net, h, s, s2)
 		timer += 10
 
@@ -200,20 +211,18 @@ def processRelocate(percentComplete, net, h, s, s2):
 		printLinksBetween(net, h, s2)
 		net.pingAll()	
 
+def disconnectHost(net, h, s):	
+	printLinksBetween(net, h, s)
+	print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
+	net.configLinkStatus(s.name, h.name, "down")	
+	printLinksBetween(net, h, s)
+	net.pingAll()
 
-def processDisconnect(percentComplete, net, h, s):
-	if percentComplete == 10:
-		net.pingAll()
-		printLinksBetween(net, h, s)
-		print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
-		net.configLinkStatus(s.name, h.name, "down")	
-		printLinksBetween(net, h, s)
-		net.pingAll()
-	elif percentComplete == 40:
-		print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
-		net.configLinkStatus(s.name, h.name, "up")								
-		printLinksBetween(net, h, s)
-		net.pingAll()
+def reconnectHost(net, h, s):
+	print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
+	net.configLinkStatus(s.name, h.name, "up")								
+	printLinksBetween(net, h, s)
+	net.pingAll()
 
 
 

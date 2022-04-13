@@ -123,6 +123,11 @@ def validateInput(args):
 	if(args.topicCheckInterval * args.nTopics) > args.duration:
 		print("WARNING: Not all topics will be checked within the given duration of the simulation. Simulation Time:" +  str(args.duration) + " seconds. Time Required to Check All Topics at Least Once: "+  str(args.topicCheckInterval * args.nTopics) + " seconds.")
 
+	# Check disconnect duration
+	if (args.disconnectDuration >= args.duration):
+		print("ERROR: Disconnect duration should be less than simulation duration.")
+		sys.exit(1)
+
 if __name__ == '__main__': 
 
 	parser = argparse.ArgumentParser(description='Emulate data sync in mission critical networks.')
@@ -157,30 +162,30 @@ if __name__ == '__main__':
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
 	parser.add_argument('--relocate', dest='relocate', action='store_true')
-	parser.add_argument('--disconnect', dest='disconnect', action='store_true')
+	parser.add_argument('--disconnect', dest='disconnectDuration', type=int, default=0, help='Duration of the disconnection (in seconds)')
 
 	args = parser.parse_args()
 
 	# TODO: TEMP - hardcode for testing
-	args.topo = 'tests/input/GD-six-node-topo.graphml'
-	args.nBroker = 6
-	args.nZk = 6
-	args.nTopics = 6
-	args.replication = 6
-	args.mSizeString = 'fixed,1000'
-	args.mRate = 30.0
-	args.consumerRate = 0.5
-	args.messageFilePath = 'message-data/xml/Cars103.xml'
-	args.topicCheckInterval = 0.1	
-	args.duration = 100
-	args.compression = 'gzip'
-	args.replicaMaxWait = 5000
-	args.replicaMinBytes = 200000
-	args.disconnect = True
-	args.relocate = False
+	# args.topo = 'tests/input/GD-six-node-topo.graphml'
+	# args.nBroker = 6
+	# args.nZk = 6
+	# args.nTopics = 6
+	# args.replication = 6
+	# args.mSizeString = 'fixed,1000'
+	# args.mRate = 30.0
+	# args.consumerRate = 0.5
+	# args.messageFilePath = 'message-data/xml/Cars103.xml'
+	# args.topicCheckInterval = 0.1	
+	# args.duration = 100
+	# args.compression = 'gzip'
+	# args.replicaMaxWait = 5000
+	# args.replicaMinBytes = 200000
+	# args.disconnectDuration = 30
+	# args.relocate = False
 	# END
 
-	print(args)
+	print(args)	
 	validateInput(args)
 	
 	#Clean up mininet state
