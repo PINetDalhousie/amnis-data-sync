@@ -5,7 +5,7 @@ from mininet.net import Mininet
 from mininet.cli import CLI
 from mininet.node import Host
 
-from random import seed, randint
+from random import seed, randint, choice
 
 import time
 import os
@@ -148,26 +148,21 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 	timer = 0
 	disconnect = args.disconnectDuration > 0
-	disconnectTimer = args.disconnectDuration
-	isDisconnected = False
 
-	if disconnect or args.relocate:
-		# Get hosts and switches
-		hosts = []	
-		for h in net.hosts:
-			hosts.append(net.getNodeByName(h.name))
+	if disconnect:
+		disconnectTimer = args.disconnectDuration
+		isDisconnected = False
+		hosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
+		seed()
+		randomHost = choice(list(hosts.items()))				
+		h = net.getNodeByName(randomHost[0])		
+		s = net.getNodeByName(randomHost[1][1][0])		
+		print(f"Host {h.name} to disconnect from switch {s.name} for {disconnectTimer}s")
+	elif args.relocate:
+		print("")	
+		s2 = None
+
 		
-		switches = []
-		for s in net.switches:
-			switches.append(net.getNodeByName(s.name))
-
-		#TODO: Pick random node to disconnect
-		k = net.keys()
-		h = hosts[1]
-		s = switches[1]		
-		s2 = switches[2]	
-		st = 1
-		dt = 1
 
 	print(f"Starting workload at {str(datetime.now())}")		
 
@@ -185,7 +180,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 				disconnect = False
 			if isDisconnected:
 				disconnectTimer -= 10
-		if args.relocate:
+		elif args.relocate:
 			processRelocate(percentComplete, net, h, s, s2)
 		timer += 10
 
@@ -211,17 +206,14 @@ def processRelocate(percentComplete, net, h, s, s2):
 		printLinksBetween(net, h, s2)
 		net.pingAll()	
 
-def disconnectHost(net, h, s):	
-	printLinksBetween(net, h, s)
+def disconnectHost(net, h, s):		
 	print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
-	net.configLinkStatus(s.name, h.name, "down")	
-	printLinksBetween(net, h, s)
+	net.configLinkStatus(s.name, h.name, "down")		
 	net.pingAll()
 
 def reconnectHost(net, h, s):
 	print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
-	net.configLinkStatus(s.name, h.name, "up")								
-	printLinksBetween(net, h, s)
+	net.configLinkStatus(s.name, h.name, "up")									
 	net.pingAll()
 
 
