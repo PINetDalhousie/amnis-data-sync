@@ -181,7 +181,7 @@ if __name__ == '__main__':
 	# args.compression = 'gzip'
 	# args.replicaMaxWait = 5000
 	# args.replicaMinBytes = 200000
-	# args.disconnectDuration = 30
+	# args.disconnectDuration = 0
 	# args.relocate = False
 	# END
 

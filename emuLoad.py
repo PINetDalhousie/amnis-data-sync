@@ -148,6 +148,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 	timer = 0
 	disconnect = args.disconnectDuration > 0
+	relocate = args.relocate
 
 	if disconnect:
 		disconnectTimer = args.disconnectDuration
@@ -158,9 +159,19 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		h = net.getNodeByName(randomHost[0])		
 		s = net.getNodeByName(randomHost[1][1][0])		
 		print(f"Host {h.name} to disconnect from switch {s.name} for {disconnectTimer}s")
-	elif args.relocate:
-		print("")	
-		s2 = None
+	elif relocate:
+		seed()
+		hosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
+		randomHost = choice(list(hosts.items()))
+		h = net.getNodeByName(randomHost[0])		
+		s = net.getNodeByName(randomHost[1][1][0])	
+		switches = {k:v for k,v in net.topo.ports.items() if 's' in k}
+		randomSwitch = choice(list(switches.items()))		
+		# Check that the random switch is not the same as the first 
+		while s.name == randomSwitch[0]:		
+			randomSwitch = choice(list(switches.items()))	
+		s2 = net.getNodeByName(randomSwitch[0])
+		print(f"{h.name} to relocate from {s.name} to {s2.name}")
 
 		
 
@@ -180,31 +191,30 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 				disconnect = False
 			if isDisconnected:
 				disconnectTimer -= 10
-		elif args.relocate:
-			processRelocate(percentComplete, net, h, s, s2)
+		elif relocate:
+			delLink(net, h, s)
+			addLink(net, h, s2)
+			relocate = False
 		timer += 10
 
 	print(f"Workload finished at {str(datetime.now())}")	
 
 
 
+def delLink(net, h, s):
+	printLinksBetween(net, h, s)
+	print(f"***********Deleting link from {h.name} <-> {s.name} at {str(datetime.now())}")								
+	net.delLinkBetween(net.get(h.name), s)		
+	printLinksBetween(net, h, s)
+	net.pingAll()
 
-
-def processRelocate(percentComplete, net, h, s, s2):
-	if percentComplete == 10:
-		net.pingAll()
-		printLinksBetween(net, h, s)
-		print(f"***********Deleting link from {h.name} <-> {s.name} at {str(datetime.now())}")								
-		net.delLinkBetween(net.get(h.name), s)		
-		printLinksBetween(net, h, s)
-		net.pingAll()
-	elif percentComplete == 40:		
-		print(f"***********Adding link from {h.name} <-> {s2.name} at {str(datetime.now())}")
-		link = net.addLink(net.get(h.name), s2, 4, 4)					
-		s2.attach(link.intf2) 
-		net.configHosts()
-		printLinksBetween(net, h, s2)
-		net.pingAll()	
+def addLink(net, h, s2):
+	print(f"***********Adding link from {h.name} <-> {s2.name} at {str(datetime.now())}")	
+	link = net.addLink(net.get(h.name), s2)
+	s2.attach(link.intf2) 
+	net.configHosts()
+	printLinksBetween(net, h, s2)
+	net.pingAll()
 
 def disconnectHost(net, h, s):		
 	print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
