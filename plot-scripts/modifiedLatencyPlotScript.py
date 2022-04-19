@@ -56,7 +56,7 @@ def getProdDetails(prodId):
     
     with open(logDir+'/prod/prod-'+str(prodId)+'.log') as f:
         for line in f:
-            if "topic-" in line:
+            if "Topic: topic-" in line:
 #                 msgProdTime = line.split(",")[0]
                 msgProdTime = line.split(" INFO:Topic:")[0]
                 topicSplit = line.split("topic-")

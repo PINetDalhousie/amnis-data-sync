@@ -177,7 +177,7 @@ if __name__ == '__main__':
 	# args.consumerRate = 0.5
 	# args.messageFilePath = 'message-data/xml/Cars103.xml'
 	# args.topicCheckInterval = 0.1	
-	# args.duration = 100
+	# args.duration = 300
 	# args.compression = 'gzip'
 	# args.replicaMaxWait = 5000
 	# args.replicaMinBytes = 200000
@@ -254,8 +254,8 @@ if __name__ == '__main__':
 	emuZk.cleanZkState(zkPlace)
 
 	#TODO: Temp hardcode to run plotting
-	#os.system("sudo python3 modifiedLatencyPlotScript.py --number-of-switches 3 --log-dir logs/kafka/nodes:3_mSize:fixed,1000_mRate:30.0_topics:3_replication:3/")
-	#os.system("sudo python3 bandwidthPlotScript.py --number-of-switches 3 --port-type access-port --message-size fixed,1000 --message-rate 30.0 --ntopics 3 --replication 3 --log-dir logs/kafka/nodes:3_mSize:fixed,1000_mRate:30.0_topics:3_replication:3/ --switch-ports S1-P1,S2-P1,S3-P1")	
+	#os.system(f"sudo python3 modifiedLatencyPlotScript.py --number-of-switches {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/")
+	#os.system(f"sudo python3 bandwidthPlotScript.py --number-of-switches {args.nBroker} --port-type access-port --message-size fixed,1000 --message-rate 30.0 --ntopics {args.nBroker} --replication {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/ --switch-ports S1-P1,S2-P1,S3-P1,S4-P1,S5-P1,S6-P1")	
 
 
 
