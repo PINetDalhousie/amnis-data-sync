@@ -19,8 +19,21 @@ class CustomTopo(Topo):
 			print(str(e))
 			sys.exit(1)
 
-		for node in inputTopo.nodes:
-			if node[0] == 'h':
+		self.seerSwitches = []
+		self.devicePorts = {}	
+
+		for node, data in inputTopo.nodes(data=True):
+			if 'host_type' in data:
+				type = data['host_type']
+				if  type == 'SEER':
+					switch = self.addSwitch(node,dpid=node[1], cls=OVSKernelSwitch, protocols='OpenFlow13')
+					self.seerSwitches.append(switch)
+				elif type == 'HOST':
+					host = self.addHost(node, cls=Host)
+				elif type == 'SWITCH':
+					switch = self.addSwitch(node,dpid=node[1], cls=OVSKernelSwitch, failMode='standalone')
+			
+			elif node[0] == 'h':
 				host = self.addHost(node, cls=Host)
 			elif node[0] == 's':
 				switch = self.addSwitch(node,dpid=node[1],cls=OVSKernelSwitch, failMode='standalone')
@@ -29,6 +42,22 @@ class CustomTopo(Topo):
 				sys.exit(1)
 
 		for source, target, data in inputTopo.edges(data=True):
+			
+			sPort = None
+			if 'sport' in data:
+				sPort = data['sport']
+			if source not in self.devicePorts:
+				self.devicePorts[source] = [sPort]
+			else:
+				self.devicePorts[source].append(sPort)
+
+			dPort = None
+			if 'dport' in data:
+				dPort = data['dport']
+			if target not in self.devicePorts:
+				self.devicePorts[target] = [dPort]
+			else:
+				self.devicePorts[target].append(dPort)
 
 			linkBandwidth = 1000
 			if 'bandwidth' in data:
@@ -41,8 +70,8 @@ class CustomTopo(Topo):
 			#print("Link bandwidth: "+ str(linkBandwidth))
 			#print("Link delay: "+ str(linkDelay))
 
-			self.addLink(source, target, data['sport'], data['dport'], bw=linkBandwidth, delay=linkDelay)
-
+			self.addLink(source, target, sPort, dPort, bw=linkBandwidth, delay=linkDelay)
+		print(self.devicePorts)
 			#self.addLink(source, target, data['sport'], data['dport'])
 
 

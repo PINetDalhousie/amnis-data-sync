@@ -20,7 +20,7 @@ while True:
         
 		bandwidthLog = open("logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/bandwidth/bandwidth-log" + str(i+1) + ".txt", "a")
 
-		statsProcess = subprocess.Popen("sudo ovs-ofctl dump-ports s"+str(i+1), shell=True, stdout=subprocess.PIPE)
+		statsProcess = subprocess.Popen("sudo ovs-ofctl dump-ports s"+str(i+1) + " --protocols=OpenFlow10,OpenFlow13", shell=True, stdout=subprocess.PIPE)
 		stdout = statsProcess.communicate()[0]
 		bandwidthLog.write(stdout.decode("utf-8"))  #converting bytes to string
 		bandwidthLog.close()

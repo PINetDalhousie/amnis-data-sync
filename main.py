@@ -156,6 +156,8 @@ if __name__ == '__main__':
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
+	parser.add_argument('--controller-ip', dest='controllerIp', type=str, default='127.0.0.1', help='IP address of remote SDN controller for SEER devices')
+	
 	args = parser.parse_args()
 
 	print(args)
@@ -176,6 +178,14 @@ if __name__ == '__main__':
 			autoStaticArp = True,
 			build=False)
 
+	c0 = ''
+	if emulatedTopo.seerSwitches:
+		c0=net.addController(name='c0',
+                      controller=RemoteController,
+                      ip=args.controllerIp,
+                      protocol='tcp',
+                      port=6653)
+
 	# Add topo to network
 	net.topo = emulatedTopo
 	net.build()
@@ -195,12 +205,18 @@ if __name__ == '__main__':
 	#Start network
 	print("Starting Network")
 	net.start()
+	for controller in net.controllers:
+		controller.start()
+
 	for switch in net.switches:
-		net.get(switch.name).start([])
+		if switch.name in emulatedTopo.seerSwitches:
+			net.get(switch.name).start([c0])
+		else:
+			net.get(switch.name).start([])
 
 	logging.info('Network started')
 	#emuNetwork.configureNetwork(args.topo)
-	#time.sleep(5)
+	time.sleep(5)
 
 	print("Testing network connectivity")
 	net.pingAll()
@@ -209,7 +225,7 @@ if __name__ == '__main__':
 	#Start monitoring tasks
 	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
 	pID += 1
-
+	
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
 
