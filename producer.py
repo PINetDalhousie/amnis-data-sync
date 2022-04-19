@@ -143,9 +143,12 @@ try:
 		newNodeID = nodeID.zfill(2)
 		bNodeID = bytes(newNodeID, 'utf-8')
 		bMsg = bNodeID + bMsgID + bytearray(message)
-		topicID = randint(0, nTopics-1)
-		topicName = 'topic-'+str(topicID)
+		
+		#for producing data in random topic
+		# topicID = randint(0, nTopics-1)
+		# topicName = 'topic-'+str(topicID)
 
+		#for producing data in fixed topic from producer config
 		topicName = prodTopic
 
 		producer.send(topicName, bMsg)

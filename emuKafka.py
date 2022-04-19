@@ -8,7 +8,6 @@ import subprocess
 import time
 import networkx as nx
 
-from emuLoad import readProdConfig
 
 def readTopicConfig(topicConfigPath):
 	topicNames = []

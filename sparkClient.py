@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
@@ -13,7 +12,7 @@ try:
     # nodeName = "h1" 
     # nodeID = "1" 
     # host = "10.0.0."+nodeID
-    # port = 12345 
+    # port = 12345
 
     nodeName = sys.argv[1]
     nodeID = nodeName[1:]

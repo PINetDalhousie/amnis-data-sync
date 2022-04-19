@@ -95,23 +95,18 @@ def spawnSparkClients(net, sparkDetailsList):
 	for node in net.hosts:
 		netNodes[node.name] = node
 
-	node = netNodes["h1"]
-	print("host node: "+str(node.name))
-	node.cmd("sudo ~/.local/bin/spark-submit sparkClient.py"+" "+str(node.name)+" "+str(port), shell=True)
-	
+	for sprk in sparkDetailsList:
+		sparkNode = sprk["nodeId"]
+		sparkApp = sprk["applicationPath"]
+		sparkTopic = sprk["topicsToConsume"][0]
+		print("spark node: "+sparkNode)
+		print("spark App: "+sparkApp)
 
-	# for sprk in sparkDetailsList:
-	# 	sparkNode = sprk["nodeId"]
-	# 	sparkApp = sprk["applicationPath"]
-	# 	sparkTopic = sprk["topicsToConsume"][0]
-	# 	print("spark node: "+sparkNode)
-	# 	print("spark App: "+sparkApp)
-
-	# 	sprkID = "h"+sparkNode
-	# 	node = netNodes[sprkID]
-	# 	print("node is: "+str(node.name))
-	# 	print("port is: "+str(port))
-	# 	node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
+		sprkID = "h"+sparkNode
+		node = netNodes[sprkID]
+		print("node is: "+str(node.name))
+		print("port is: "+str(port))
+		node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
 
 
 def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):
@@ -125,6 +120,8 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	consumerRate = args.consumerRate
 	duration = args.duration
 
+	# give some time to warm up the brokers
+	time.sleep(5)
 
 	print("Start workload")
 
@@ -159,12 +156,16 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	print("Producers created")
 
 	spawnConsumers(net, nTopics, consumerRate, args, consDetailsList, sparkSocket)
-	time.sleep(2)
+	time.sleep(10)
 	print("Consumers created")
+
+	# time.sleep(30)
 
 	spawnSparkClients(net, sparkDetailsList)
 	time.sleep(10)
 	print("Spark Clients created")
+
+	time.sleep(30)
    
 
 	# timer = 0

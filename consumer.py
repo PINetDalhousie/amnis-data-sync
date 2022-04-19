@@ -132,7 +132,8 @@ try:
 				for msg in consumer:
 					msgContent = str(msg.value, 'utf-8', errors='ignore')	# for testing the msg
 
-					sentMsg = msgContent.encode("utf-8")
+					sentMsg = msgContent[6:].encode("utf-8")
+					
 					logging.info("Message consumed and send to client:\n")
 					logging.info(sentMsg)
 					conn.send(sentMsg)
