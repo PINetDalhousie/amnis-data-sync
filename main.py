@@ -33,6 +33,7 @@ def killSubprocs(brokerPlace, zkPlace):
 	os.system("sudo pkill -9 -f bandwidth-monitor.py")
 	os.system("sudo pkill -9 -f producer.py")
 	os.system("sudo pkill -9 -f consumer.py")
+	os.system("sudo pkill -9 -f consumerSingle.py")
 
 	for bID in brokerPlace:
 		os.system("sudo pkill -9 -f server"+str(bID)+".properties") 
@@ -161,7 +162,8 @@ if __name__ == '__main__':
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
-	parser.add_argument('--relocate', dest='relocate', action='store_true')
+	parser.add_argument('--single-consumer', dest='singleConsumer', action='store_true', help='Use a single, always connected consumer (per node) for the entire simulation')
+	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')
 	parser.add_argument('--disconnect', dest='disconnectDuration', type=int, default=0, help='Duration of the disconnection (in seconds)')
 
 	args = parser.parse_args()
@@ -183,6 +185,7 @@ if __name__ == '__main__':
 	# args.replicaMinBytes = 200000
 	# args.disconnectDuration = 0
 	# args.relocate = False
+	# args.singleConsumer = False
 	# END
 
 	print(args)	

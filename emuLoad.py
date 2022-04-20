@@ -63,12 +63,15 @@ def spawnConsumers(net, nTopics, cRate, args):
 	mRate = args.mRate    
 	replication = args.replication  
 	topicCheckInterval = args.topicCheckInterval  
+	script ='consumer.py '
+	if args.singleConsumer:
+		script = 'consumerSingle.py ' 
 
 	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
 	#print("Data consumed")
 
 	for node in net.hosts:
-		node.popen("python3 consumerSingle.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
+		node.popen("python3 " + script +str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
 
 
 
