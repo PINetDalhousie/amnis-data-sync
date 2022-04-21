@@ -184,7 +184,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		time.sleep(10)
 		percentComplete = int((timer/duration)*100)
 		print("Processing workload: "+str(percentComplete)+"%")
-		if disconnect:
+		if disconnect and percentComplete >= 10:
 			if not isDisconnected:			
 				disconnectHost(net, h, s)
 				isDisconnected = True
