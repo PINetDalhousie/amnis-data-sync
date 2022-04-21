@@ -157,7 +157,10 @@ if __name__ == '__main__':
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
 	parser.add_argument('--controller-ip', dest='controllerIp', type=str, default='127.0.0.1', help='IP address of remote SDN controller for SEER devices')
-	
+	parser.add_argument('--seer-limit-rate', dest='seerLimitRate', type=int, default=1000, help='The rate at which the SEER Request will permit traffic to flow between two networks or a set of hosts. The rate is measured in Kilo bits per second.')
+	parser.add_argument('--seer-limit-time', dest='seerLimitTime', type=int, default=-1, help='The duration and interval between each SEER LIMIT Request.')
+	parser.add_argument('--seer-block-time', dest='seerBlockTime', type=int, default=-1, help='The duration and interval between each SEER BLOCK Request.')
+
 	args = parser.parse_args()
 
 	print(args)
@@ -225,7 +228,7 @@ if __name__ == '__main__':
 	#Start monitoring tasks
 	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
 	pID += 1
-	
+
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
 

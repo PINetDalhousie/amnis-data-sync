@@ -3,7 +3,9 @@
 from mininet.net import Mininet
 from mininet.cli import CLI
 
-from random import seed, randint
+from random import seed, randint, choice, sample
+
+import seerRequests
 
 import time
 import os
@@ -69,6 +71,7 @@ def spawnConsumers(net, nTopics, cRate, args):
 		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
 
 
+
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):
 
 	print("Start workload")
@@ -125,6 +128,8 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
 	time.sleep(1)
 	print("Producers created")
+	
+	seer_processes = seerRequests.spawnSeerRequests(net, args)
 
 # 	spawnConsumers(net, nTopics, consumerRate, args)
 # 	time.sleep(1)
@@ -140,7 +145,8 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		time.sleep(10)
 		print("Processing workload: "+str(int((timer/duration)*100))+"%")
 		timer += 10
-
+		
+	seerRequests.deleteSeerRequests(args, seer_processes)
 	print("Workload finished")
 
 
