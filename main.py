@@ -132,7 +132,8 @@ def validateInput(args):
 if __name__ == '__main__': 
 
 	parser = argparse.ArgumentParser(description='Emulate data sync in mission critical networks.')
-	parser.add_argument('--topo', dest='topo', type=str, default='tests/simple.graphml', help='Network topology')
+	#parser.add_argument('--topo', dest='topo', type=str, default='tests/simple.graphml', help='Network topology')
+	parser.add_argument('topo', type=str, help='Network topology')
 	parser.add_argument('--nbroker', dest='nBroker', type=int, default=0,
                     help='Number of brokers')
 	parser.add_argument('--nzk', dest='nZk', type=int, default=0, help='Number of Zookeeper instances')
