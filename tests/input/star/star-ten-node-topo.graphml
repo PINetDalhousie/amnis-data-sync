@@ -6,6 +6,8 @@
 
   <key id="st" for="edge" attr.name="sport" attr.type="int"/>
   <key id="dt" for="edge" attr.name="dport" attr.type="int"/>
+  <key id="lat" for="edge" attr.name="latency" attr.type="int"/>
+  <key id="bw" for="edge" attr.name="bandwidth" attr.type="int"/>
 
   <graph id="simple-topo" edgedefault="undirected">
     <node id="h1"/>
@@ -29,6 +31,7 @@
     <node id="s8"/>
     <node id="s9"/>
     <node id="s10"/>
+    <node id="s11"/>
 
     <edge source="h1" target="s1">
 	<data key="st">1</data>
@@ -72,41 +75,55 @@
     </edge> 	
 	
     
-    <edge source="s2" target="s1">
+    <edge source="s1" target="s11">
+        <data key="st">100</data>
+        <data key="dt">100</data>
+        <data key="lat">500</data>
+    </edge>
+    <edge source="s2" target="s11">
 	<data key="st">2</data>
 	<data key="dt">2</data>
+        <data key="lat">500</data>
     </edge>
-	<edge source="s3" target="s1">
+	<edge source="s3" target="s11">
 	<data key="st">3</data>
 	<data key="dt">3</data>
+        <data key="lat">500</data>
     </edge>
-	<edge source="s4" target="s1">
+	<edge source="s4" target="s11">
 	<data key="st">4</data>
 	<data key="dt">4</data>
+        <data key="lat">500</data>
     </edge>
-    <edge source="s5" target="s1">
+    <edge source="s5" target="s11">
 	<data key="st">5</data>
 	<data key="dt">5</data>
+        <data key="lat">500</data>
     </edge>
-	<edge source="s6" target="s1">
+	<edge source="s6" target="s11">
 	<data key="st">6</data>
 	<data key="dt">6</data>
+        <data key="lat">500</data>
     </edge>
-	<edge source="s7" target="s1">
+	<edge source="s7" target="s11">
 	<data key="st">7</data>
 	<data key="dt">7</data>
+        <data key="lat">500</data>
     </edge>
-	<edge source="s8" target="s1">
+	<edge source="s8" target="s11">
 	<data key="st">8</data>
 	<data key="dt">8</data>
+        <data key="lat">500</data>
     </edge>
-	<edge source="s9" target="s1">
+	<edge source="s9" target="s11">
 	<data key="st">9</data>
 	<data key="dt">9</data>
+        <data key="lat">500</data>
     </edge>
-	<edge source="s10" target="s1">
+	<edge source="s10" target="s11">
 	<data key="st">10</data>
 	<data key="dt">10</data>
+        <data key="lat">500</data>
     </edge>
 	
   </graph>
