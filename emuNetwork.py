@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from mininet.topo import Topo
+from mininet.node import OVSKernelSwitch, Host
 
 import sys
 import subprocess
@@ -20,9 +21,9 @@ class CustomTopo(Topo):
 
 		for node in inputTopo.nodes:
 			if node[0] == 'h':
-				host = self.addHost(node)
+				host = self.addHost(node, cls=Host)
 			elif node[0] == 's':
-				switch = self.addSwitch(node,dpid=node[1])
+				switch = self.addSwitch(node,dpid=node[1],cls=OVSKernelSwitch, failMode='standalone')
 			else:
 				print("ERROR: Wrong node identifier.")
 				sys.exit(1)

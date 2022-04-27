@@ -33,6 +33,7 @@ def killSubprocs(brokerPlace, zkPlace):
 	os.system("sudo pkill -9 -f bandwidth-monitor.py")
 	os.system("sudo pkill -9 -f producer.py")
 	os.system("sudo pkill -9 -f consumer.py")
+	os.system("sudo pkill -9 -f consumerSingle.py")
 
 	for bID in brokerPlace:
 		os.system("sudo pkill -9 -f server"+str(bID)+".properties") 
@@ -123,9 +124,15 @@ def validateInput(args):
 	if(args.topicCheckInterval * args.nTopics) > args.duration:
 		print("WARNING: Not all topics will be checked within the given duration of the simulation. Simulation Time:" +  str(args.duration) + " seconds. Time Required to Check All Topics at Least Once: "+  str(args.topicCheckInterval * args.nTopics) + " seconds.")
 
+	# Check disconnect duration
+	if (args.disconnectDuration >= args.duration):
+		print("ERROR: Disconnect duration should be less than simulation duration.")
+		sys.exit(1)
+
 if __name__ == '__main__': 
 
 	parser = argparse.ArgumentParser(description='Emulate data sync in mission critical networks.')
+	#parser.add_argument('--topo', dest='topo', type=str, default='tests/simple.graphml', help='Network topology')
 	parser.add_argument('topo', type=str, help='Network topology')
 	parser.add_argument('--nbroker', dest='nBroker', type=int, default=0,
                     help='Number of brokers')
@@ -156,9 +163,33 @@ if __name__ == '__main__':
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
+	parser.add_argument('--single-consumer', dest='singleConsumer', action='store_true', help='Use a single, always connected consumer (per node) for the entire simulation')
+	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')
+	parser.add_argument('--disconnect', dest='disconnectDuration', type=int, default=0, help='Duration of the disconnection (in seconds)')
+
 	args = parser.parse_args()
 
-	print(args)
+	# TODO: TEMP - hardcode for testing
+	# args.topo = 'tests/input/GD-six-node-topo.graphml'
+	# args.nBroker = 6
+	# args.nZk = 6
+	# args.nTopics = 6
+	# args.replication = 6
+	# args.mSizeString = 'fixed,1000'
+	# args.mRate = 30.0
+	# args.consumerRate = 0.5
+	# args.messageFilePath = 'message-data/xml/Cars103.xml'
+	# args.topicCheckInterval = 0.1	
+	# args.duration = 300
+	# args.compression = 'gzip'
+	# args.replicaMaxWait = 5000
+	# args.replicaMinBytes = 200000
+	# args.disconnectDuration = 0
+	# args.relocate = False
+	# args.singleConsumer = False
+	# END
+
+	print(args)	
 	validateInput(args)
 	
 	#Clean up mininet state
@@ -166,13 +197,19 @@ if __name__ == '__main__':
 	time.sleep(2)
 
 	#Instantiate network
-	emulatedTopo = emuNetwork.CustomTopo(args.topo)
+	emulatedTopo = emuNetwork.CustomTopo(args.topo)	
 
-	net = Mininet(topo = emulatedTopo,
+	# Create network
+	net = Mininet(topo = None,
 			controller=RemoteController,
 			link = TCLink,
 			autoSetMacs = True,
-			autoStaticArp = True)
+			autoStaticArp = True,
+			build=False)
+
+	# Add topo to network
+	net.topo = emulatedTopo
+	net.build()
 
 	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
 
@@ -187,11 +224,14 @@ if __name__ == '__main__':
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
 	#Start network
+	print("Starting Network")
 	net.start()
-	logging.info('Network started')
+	for switch in net.switches:
+		net.get(switch.name).start([])
 
-	emuNetwork.configureNetwork(args.topo)
-	time.sleep(1)
+	logging.info('Network started')
+	#emuNetwork.configureNetwork(args.topo)
+	#time.sleep(5)
 
 	print("Testing network connectivity")
 	net.pingAll()
@@ -216,6 +256,10 @@ if __name__ == '__main__':
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
+
+	#TODO: Temp hardcode to run plotting
+	#os.system(f"sudo python3 modifiedLatencyPlotScript.py --number-of-switches {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/")
+	#os.system(f"sudo python3 bandwidthPlotScript.py --number-of-switches {args.nBroker} --port-type access-port --message-size fixed,1000 --message-rate 30.0 --ntopics {args.nBroker} --replication {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/ --switch-ports S1-P1,S2-P1,S3-P1,S4-P1,S5-P1,S6-P1")	
 
 
 

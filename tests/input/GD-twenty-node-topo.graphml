@@ -201,13 +201,7 @@
 	<data key="lat">1</data>    
 	<data key="st">4</data>
 	<data key="dt">2</data>
-    </edge>    
-    <edge source="s4" target="s5">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">3</data>
-	<data key="dt">3</data>
-    </edge>    
+    </edge>      
 
     <edge source="s2" target="s7">
 	<data key="bw">1000</data>
@@ -221,12 +215,6 @@
 	<data key="st">3</data>
 	<data key="dt">3</data>
     </edge>    
-    <edge source="s7" target="s8">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">3</data>
-	<data key="dt">2</data>
-    </edge>
     <edge source="s4" target="s9">
 	<data key="bw">1000</data>
 	<data key="lat">1</data>    
@@ -238,38 +226,20 @@
 	<data key="lat">1</data>    
 	<data key="st">5</data>
 	<data key="dt">2</data>
-    </edge>    	
-    <edge source="s9" target="s10">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">3</data>
-	<data key="dt">3</data>
-    </edge>    	   
+    </edge>    	   	   
 
     <edge source="s8" target="s11">
 	<data key="bw">1000</data>
 	<data key="lat">1</data>    
 	<data key="st">4</data>
 	<data key="dt">2</data>
-    </edge>    
-    <edge source="s6" target="s11">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">4</data>
-	<data key="dt">3</data>
-    </edge>    
+    </edge>       
     <edge source="s5" target="s12">
 	<data key="bw">1000</data>
 	<data key="lat">1</data>    
 	<data key="st">4</data>
 	<data key="dt">2</data>
-    </edge>    
-    <edge source="s10" target="s12">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">4</data>
-	<data key="dt">3</data>
-    </edge>    
+    </edge>      
     <edge source="s12" target="s14">
 	<data key="bw">1000</data>
 	<data key="lat">1</data>    
@@ -281,13 +251,7 @@
 	<data key="lat">1</data>    
 	<data key="st">4</data>
 	<data key="dt">3</data>
-    </edge>    	
-    <edge source="s10" target="s14">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">5</data>
-	<data key="dt">2</data>
-    </edge>    
+    </edge>    	  
     <edge source="s13" target="s17">
 	<data key="bw">1000</data>
 	<data key="lat">1</data>    
@@ -299,13 +263,7 @@
 	<data key="lat">1</data>    
 	<data key="st">5</data>
 	<data key="dt">2</data>
-    </edge>    
-    <edge source="s6" target="s13">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">5</data>
-	<data key="dt">2</data>
-    </edge>    
+    </edge>       
     <edge source="s11" target="s15">
 	<data key="bw">1000</data>
 	<data key="lat">1</data>    
@@ -317,13 +275,7 @@
 	<data key="lat">1</data>    
 	<data key="st">4</data>
 	<data key="dt">2</data>
-    </edge>    
-    <edge source="s15" target="s16">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">3</data>
-	<data key="dt">3</data>
-    </edge>    
+    </edge>       
     <edge source="s16" target="s19">
 	<data key="bw">1000</data>
 	<data key="lat">1</data>    
@@ -335,13 +287,7 @@
 	<data key="lat">1</data>    
 	<data key="st">4</data>
 	<data key="dt">2</data>
-    </edge>    
-    <edge source="s18" target="s19">
-	<data key="bw">1000</data>
-	<data key="lat">1</data>    
-	<data key="st">3</data>
-	<data key="dt">2</data>
-    </edge>    
+    </edge>     
 
   </graph>
 </graphml>
