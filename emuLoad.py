@@ -7,6 +7,7 @@ from mininet.node import Host
 
 from random import seed, randint, choice
 
+import logging
 import time
 import os
 import sys
@@ -132,6 +133,10 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	#    
 	#print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
+	# Set the network delay back to to graph.ml values before spawning consumers and producers
+	if args.latencyAfterSetup:
+		setNetworkDelay(net)
+		time.sleep(1)
 
 	spawnConsumers(net, nTopics, consumerRate, args)
 	time.sleep(1)
@@ -221,18 +226,33 @@ def addLink(net, h, s2):
 
 def disconnectHost(net, h, s):		
 	print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
+	logging.info('Disconnected %s <-> %s at %s', h.name, s.name,  str(datetime.now()))
 	net.configLinkStatus(s.name, h.name, "down")		
 	net.pingAll()
 
 def reconnectHost(net, h, s):
 	print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
+	logging.info('Connected %s <-> %s at %s', h.name, s.name,  str(datetime.now()))
 	net.configLinkStatus(s.name, h.name, "up")									
 	net.pingAll()
 
-
-
-
-
-
-
-
+def setNetworkDelay(net, newDelay=None):
+	nodes = net.switches + net.hosts	 
+	print(f"Checking network nodes to set new delay")
+	logging.info('Setting nework delay at %s', str(datetime.now()))
+	for node in nodes:
+		for intf in node.intfList(): # loop on interfaces of node
+			if intf.link: # get link that connects to interface (if any)
+				# Check if the link is switch to switch
+				if intf.link.intf1.name[0] == 's' and intf.link.intf2.name[0] == 's':
+					if newDelay is None:
+						# Use the values from graph.ml
+						intf1Delay = intf.link.intf1.params['delay']
+						intf.link.intf1.config(delay=intf1Delay)
+						intf2Delay = intf.link.intf2.params['delay']
+						intf.link.intf2.config(delay=intf2Delay)
+					else:						
+						# Use the passed in param				
+						intf.link.intf1.config(delay=newDelay)
+						intf.link.intf2.config(delay=newDelay)
+					#print(intf.link.intf1.node.lastCmd + "\n" + intf.link.intf2.node.lastCmd)					

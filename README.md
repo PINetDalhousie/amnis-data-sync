@@ -78,7 +78,9 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --single-consumer```
   
-  
+  11) Set the network latency between switches to apply after kafka has set up. This is to used to let kafka get set up on a low latency, then run the simulation using high latency.
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --latency-after-setup```
   
   
   

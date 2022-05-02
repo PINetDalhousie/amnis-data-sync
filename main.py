@@ -127,7 +127,7 @@ def validateInput(args):
 	# Check disconnect duration
 	if (args.disconnectDuration >= args.duration):
 		print("ERROR: Disconnect duration should be less than simulation duration.")
-		sys.exit(1)
+		sys.exit(1)				
 
 if __name__ == '__main__': 
 
@@ -166,15 +166,16 @@ if __name__ == '__main__':
 	parser.add_argument('--single-consumer', dest='singleConsumer', action='store_true', help='Use a single, always connected consumer (per node) for the entire simulation')
 	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')
 	parser.add_argument('--disconnect', dest='disconnectDuration', type=int, default=0, help='Duration of the disconnection (in seconds)')
+	parser.add_argument('--latency-after-setup', dest='latencyAfterSetup', action='store_true', help='Lower the network latency before setting up Kafka, then set it back once Kafka is set up.')	
 
 	args = parser.parse_args()
 
 	# TODO: TEMP - hardcode for testing
-	# args.topo = 'tests/input/GD-six-node-topo.graphml'
-	# args.nBroker = 6
-	# args.nZk = 6
-	# args.nTopics = 6
-	# args.replication = 6
+	# args.topo = 'tests/input/star/star-ten-node-topo.graphml'
+	# args.nBroker = 10
+	# args.nZk = 10
+	# args.nTopics = 10
+	# args.replication = 10
 	# args.mSizeString = 'fixed,1000'
 	# args.mRate = 30.0
 	# args.consumerRate = 0.5
@@ -187,6 +188,7 @@ if __name__ == '__main__':
 	# args.disconnectDuration = 0
 	# args.relocate = False
 	# args.singleConsumer = False
+	# args.setNetworkDelay = True
 	# END
 
 	print(args)	
@@ -233,6 +235,10 @@ if __name__ == '__main__':
 	#emuNetwork.configureNetwork(args.topo)
 	#time.sleep(5)
 
+	# Set network delay to a low value to allow Kafka to set up properly
+	if args.latencyAfterSetup:
+		emuLoad.setNetworkDelay(net, '1ms')
+
 	print("Testing network connectivity")
 	net.pingAll()
 	print("Finished network connectivity test")
@@ -243,7 +249,7 @@ if __name__ == '__main__':
 
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
-
+					
 	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args)
 	print("Simulation complete")
 
