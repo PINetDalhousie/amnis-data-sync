@@ -60,16 +60,27 @@ try:
 	
 	# Poll the data
 	logging.info('Connect to broker looking for topic %s. Timeout: %s.', topicName, str(timeout))
+	messages = {}
 	while True:
-		startTime = time.time()
+		startTime = time.time()		
 		for msg in consumer:
-			msgContent = str(msg.value, 'utf-8', errors='ignore')
-			prodID = msgContent[:2]
-			bMsgID = bytearray(msgContent[2:6], 'utf-8')
-			msgID = int.from_bytes(bMsgID, 'big')
-			topic = msg.topic
-			offset = str(msg.offset)                    
-			logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)))           
+			try:
+				# TODO: Remove the ignore errors
+				msgContent = str(msg.value, 'utf-8', errors='ignore')
+				prodID = msgContent[:2]
+				bMsgID = bytearray(msgContent[2:6], 'utf-8')
+				msgID = int.from_bytes(bMsgID, 'big')
+				topic = msg.topic
+				offset = str(msg.offset)    
+
+				key = prodID+"-"+str(msgID)+"-"+topic
+				if key in messages:
+					logging.warn('ProdID %s MSG %s Topic %s already read. Not logging.', prodID, str(msgID), topic)				         
+				else:
+					messages[key] = offset
+					logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)))           			
+			except Exception as e:
+				logging.error(e + " from messageID %s", str(msgID))				
 		stopTime = time.time()
 		topicCheckWait = topicCheckInterval -(stopTime - startTime)
 		if(topicCheckWait > 0):

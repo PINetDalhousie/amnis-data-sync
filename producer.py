@@ -19,7 +19,7 @@ def processXmlFileMessage(file):
 		# Randomize values in XML file
 		line = re.sub('[0-9]+', randomNum, line)
 		processedFile += line
-	return processedFile.encode()
+	return processedFile.encode(encoding='utf-8')	
 
 def processFileMessage(file):
 	message = file.read().encode()

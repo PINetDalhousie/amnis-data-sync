@@ -133,18 +133,20 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	#    
 	#print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
-	# Set the network delay back to to graph.ml values before spawning consumers and producers
+
+
+	spawnConsumers(net, nTopics, consumerRate, args)
+	print(f"Consumers created at {str(datetime.now())}")
+	time.sleep(5)	
+
+	# Set the network delay back to to .graphml values before spawning producers so we get accurate latency
 	if args.latencyAfterSetup:
 		setNetworkDelay(net)
 		time.sleep(1)
 
-	spawnConsumers(net, nTopics, consumerRate, args)
-	time.sleep(1)
-	print("Consumers created")
-    
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
+	print(f"Producers created at {str(datetime.now())}")
 	time.sleep(1)
-	print("Producers created")
 
 # 	spawnConsumers(net, nTopics, consumerRate, args)
 # 	time.sleep(1)
