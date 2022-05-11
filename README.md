@@ -36,6 +36,12 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
 
   ```sudo python3 main.py -h```
   
+  ## Quick start
+
+  Run a quick test with the run.sh script. This will run the simulation with standard arguments, then run the plotting scripts. Pass in a test name as the only argument, which will be the resulting directory name under ./logs/kafka/.
+
+  ```sudo ./run.sh quick-test```
+
   ## Sample command lines
   
   1) Emulate and sync data in a small network.
