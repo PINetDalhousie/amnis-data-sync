@@ -198,6 +198,9 @@ if __name__ == '__main__':
 	cleanProcess = subprocess.Popen("sudo mn -c", shell=True)
 	time.sleep(2)
 
+	# Log the test args
+	logging.info("Test args:\n %s", args)
+
 	#Instantiate network
 	emulatedTopo = emuNetwork.CustomTopo(args.topo)	
 
