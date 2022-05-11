@@ -11,15 +11,21 @@ import re
 import random
 import os
 
-def processXmlFileMessage(file):
+def readXmlFileMessage(file):
 	lines = file.readlines()
-	processedFile = ' '
+	readFile = ' '
 	for line in lines:
-		randomNum = str(random.randint(1,999))
-		# Randomize values in XML file
-		line = re.sub('[0-9]+', randomNum, line)
-		processedFile += line
-	return processedFile.encode(encoding='utf-8')	
+		readFile += line
+	logging.info("Read xml file is : %s", readFile)
+	return readFile
+
+def processXmlMessage(message):
+	processedMessage = ' '
+	randomNum = str(random.randint(1,999))
+	# Randomize values in XML message
+	processedMessage = re.sub('[0-9]+', randomNum, message)	
+	encodedMessage = processedMessage.encode()	
+	return encodedMessage
 
 def processFileMessage(file):
 	message = file.read().encode()
@@ -30,7 +36,7 @@ def readMessageFromFile(filePath):
 	_, fileExt = os.path.splitext(filePath)
 
 	if(fileExt.lower() == '.xml'):
-		message = processXmlFileMessage(file)
+		message = readXmlFileMessage(file)
 	#elif(fileExt.lower == '.svg'):
 	#	message = processSvgFile(file)
 	else:
@@ -114,17 +120,20 @@ try:
 			linger_ms=linger,
 			request_timeout_ms=requestTimeout)
 
-
+	# Read the message once and save in cache
+	if(messageFilePath != 'None'):
+		readMessage = readMessageFromFile(messageFilePath)	
+		logging.info("Messages generated from file")
+	else:
+		logging.info("Messages generated")
 
 	while True:
 		if(messageFilePath != 'None'):
-			message = readMessageFromFile(messageFilePath)
-			logging.info("Message Generated From File")
+			message = processXmlMessage(readMessage)			
 		else:
-			message = generateMessage(mSizeParams)
-			logging.info("Generated Message")
-		
-		bMsgID = msgID.to_bytes(4, 'big')
+			message = generateMessage(mSizeParams)			
+		newMsgID = str(msgID).zfill(6)
+		bMsgID = bytes(newMsgID, 'utf-8')
 		newNodeID = nodeID.zfill(2)
 		bNodeID = bytes(newNodeID, 'utf-8')
 		bMsg = bNodeID + bMsgID + bytearray(message)
@@ -132,7 +141,7 @@ try:
 		topicName = 'topic-'+str(topicID)
 
 		producer.send(topicName, bMsg)
-		logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)
+		logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, newMsgID, message)
 # 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
 		msgID += 1
 		time.sleep(1.0/(mRate*tClass))
