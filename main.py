@@ -222,10 +222,10 @@ if __name__ == '__main__':
 	killSubprocs(brokerPlace, zkPlace)
 	emuLogs.cleanLogs()
 	emuKafka.cleanKafkaState(brokerPlace)
-	emuZk.cleanZkState(zkPlace)
+	#emuZk.cleanZkState(zkPlace)
 
 	emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
-	emuZk.configureZkCluster(zkPlace)
+	#emuZk.configureZkCluster(zkPlace)
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
 	#Start network
@@ -250,7 +250,7 @@ if __name__ == '__main__':
 	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
 	pID += 1
 
-	emuZk.runZk(net, zkPlace)
+	#emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
 					
 	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args)
@@ -264,7 +264,7 @@ if __name__ == '__main__':
 
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)
-	emuZk.cleanZkState(zkPlace)
+	#emuZk.cleanZkState(zkPlace)
 
 	#TODO: Temp hardcode to run plotting
 	#os.system(f"sudo python3 modifiedLatencyPlotScript.py --number-of-switches {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/")

@@ -10,42 +10,42 @@ import time
 def configureKafkaCluster(brokerPlace, zkPlace, args):
 	print("Configure kafka cluster")
 
-	propertyFile = open("kafka/config/server.properties", "r")
+	propertyFile = open("kafka-3.1.0/config/kraft/server.properties", "r")
 	serverProperties = propertyFile.read()
 
 	for bID in brokerPlace:
-		os.system("sudo mkdir kafka/kafka" + str(bID) + "/")
+		os.system("sudo mkdir kafka-3.1.0/kafka" + str(bID) + "/")
 
 		bProperties = serverProperties
-		bProperties = bProperties.replace("broker.id=0", "broker.id="+str(bID))
+		bProperties = bProperties.replace("node.id=1", "node.id="+str(bID))
 		bProperties = bProperties.replace(
-			"#advertised.listeners=PLAINTEXT://your.host.name:9092", 
+			"advertised.listeners=PLAINTEXT://localhost:9092", 
 			"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
 		bProperties = bProperties.replace("log.dirs=/tmp/kafka-logs",
-			"log.dirs=./kafka/kafka" + str(bID))
+			"log.dirs=./kafka-3.1.0/kafka" + str(bID))
 
-		bProperties = bProperties.replace("#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))
-		bProperties = bProperties.replace("#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
+		#bProperties = bProperties.replace("#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))
+		#bProperties = bProperties.replace("#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
 
-		#Specify zookeeper addresses to connect
-		zkAddresses = ""
-		zkPort = 2181
+		# #Specify zookeeper addresses to connect
+		# zkAddresses = ""
+		# zkPort = 2181
 
-		for i in range(len(zkPlace)-1):
-			zkAddresses += "localhost:"+str(zkPort)+","
-			zkPort += 1
+		# for i in range(len(zkPlace)-1):
+		# 	zkAddresses += "localhost:"+str(zkPort)+","
+		# 	zkPort += 1
 
-		zkAddresses += "localhost:"+str(zkPort)
+		# zkAddresses += "localhost:"+str(zkPort)
 
-		bProperties = bProperties.replace(
-			"zookeeper.connect=localhost:2181",
-			"zookeeper.connect="+zkAddresses)
+		# bProperties = bProperties.replace(
+		# 	"zookeeper.connect=localhost:2181",
+		# 	"zookeeper.connect="+zkAddresses)
 
 		#bProperties = bProperties.replace(
 		#	"zookeeper.connection.timeout.ms=18000",
 		#	"zookeeper.connection.timeout.ms=30000")
 
-		bFile = open("kafka/config/server" + str(bID) + ".properties", "w")
+		bFile = open("kafka-3.1.0/config/kraft/server" + str(bID) + ".properties", "w")
 		bFile.write(bProperties)
 		bFile.close()
 
@@ -86,6 +86,7 @@ def placeKafkaBrokers(net, nBroker, nZk):
 def runKafka(net, brokerPlace, brokerWaitTime=200):
 
 	netNodes = {}
+	uuid = 'JmL9ihFRQmSabrNWrYSpjg'
 
 	for node in net.hosts:
 		netNodes[node.name] = node
@@ -97,35 +98,36 @@ def runKafka(net, brokerPlace, brokerWaitTime=200):
 		startingHost = netNodes[bID]
 		
 		print("Creating Kafka broker at node "+str(bNode))
-
-		startingHost.popen("kafka/bin/kafka-server-start.sh kafka/config/server"+str(bNode)+".properties &", shell=True)
+		startingHost.popen("kafka-3.1.0/bin/kafka-storage.sh format -t "+ uuid +"-c ./config/kraft/server"+str(bNode)+".properties &", shell=True)		
+		time.sleep(1)
+		startingHost.popen("kafka-3.1.0/bin/kafka-server-start.sh kafka-3.1.0/config/kraft/server"+str(bNode)+".properties &", shell=True)
 		
 		time.sleep(1)
 
 	brokerWait = True
 	totalTime = 0
 	for bNode in brokerPlace:
-	    while brokerWait:
-	        print("Testing Connection to Broker " + str(bNode) + "...")
-	        out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0." + str(bNode) + " 9092")
-	        stopTime = time.time()
-	        totalTime = stopTime - startTime
-	        if(exitCode == 0):
-	            brokerWait = False
+		while brokerWait:
+			print("Testing Connection to Broker " + str(bNode) + "...")
+			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0." + str(bNode) + " 9092")
+			stopTime = time.time()
+			totalTime = stopTime - startTime
+			if(exitCode == 0):
+				brokerWait = False
 	        #elif(totalTime > brokerWaitTime):
 	        #    print("ERROR: Timed out waiting for Kafka brokers to start")
 	        #    sys.exit(1)
-	        else:
-	            print("Waiting for Broker " + str(bNode) + " to Start...")
-	            time.sleep(10)
-	    brokerWait = True
+			else:
+				print("Waiting for Broker " + str(bNode) + " to Start...")
+				time.sleep(10)
+		brokerWait = True
 	print("Successfully Created Kafka Brokers in " + str(totalTime) + " seconds")
 
 
 def cleanKafkaState(brokerPlace):
 	for bID in brokerPlace:
-		os.system("sudo rm -rf kafka/kafka" + str(bID) + "/")
-		os.system("sudo rm -f kafka/config/server" + str(bID) + ".properties")
+		os.system("sudo rm -rf kafka-3.1.0/kafka" + str(bID) + "/")
+		os.system("sudo rm -f kafka-3.1.0/config/kraft/server" + str(bID) + ".properties")
 
 
 
