@@ -132,8 +132,8 @@ def validateInput(args):
 if __name__ == '__main__': 
 
 	parser = argparse.ArgumentParser(description='Emulate data sync in mission critical networks.')
-	#parser.add_argument('--topo', dest='topo', type=str, default='tests/simple.graphml', help='Network topology')
-	parser.add_argument('topo', type=str, help='Network topology')
+	parser.add_argument('--topo', dest='topo', type=str, default='tests/simple.graphml', help='Network topology')
+	#parser.add_argument('topo', type=str, help='Network topology')
 	parser.add_argument('--nbroker', dest='nBroker', type=int, default=0,
                     help='Number of brokers')
 	parser.add_argument('--nzk', dest='nZk', type=int, default=0, help='Number of Zookeeper instances')
@@ -171,24 +171,24 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	# TODO: TEMP - hardcode for testing
-	# args.topo = 'tests/input/star/star-ten-node-topo.graphml'
-	# args.nBroker = 10
-	# args.nZk = 10
-	# args.nTopics = 10
-	# args.replication = 10
-	# args.mSizeString = 'fixed,1000'
-	# args.mRate = 30.0
-	# args.consumerRate = 0.5
-	# args.messageFilePath = 'message-data/xml/Cars103.xml'
-	# args.topicCheckInterval = 0.1	
-	# args.duration = 300
-	# args.compression = 'gzip'
-	# args.replicaMaxWait = 5000
-	# args.replicaMinBytes = 200000
-	# args.disconnectDuration = 0
-	# args.relocate = False
-	# args.singleConsumer = False
-	# args.setNetworkDelay = True
+	args.topo = 'tests/input/simple-three-node.graphml'
+	args.nBroker = 3
+	args.nZk = 3
+	args.nTopics = 3
+	args.replication = 3
+	args.mSizeString = 'fixed,1000'
+	args.mRate = 1.0
+	args.consumerRate = 0.5
+	args.messageFilePath = 'message-data/xml/Cars103.xml'
+	args.topicCheckInterval = 0.1	
+	args.duration = 100
+	args.compression = 'gzip'
+	args.replicaMaxWait = 5000
+	args.replicaMinBytes = 200000
+	args.disconnectDuration = 0
+	args.relocate = False
+	args.singleConsumer = False
+	args.setNetworkDelay = False
 	# END
 
 	print(args)	
@@ -247,8 +247,8 @@ if __name__ == '__main__':
 	print("Finished network connectivity test")
 		
 	#Start monitoring tasks
-	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
-	pID += 1
+	#popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
+	#pID += 1
 
 	#emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)

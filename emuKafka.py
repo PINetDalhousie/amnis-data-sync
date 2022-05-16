@@ -12,17 +12,25 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 
 	propertyFile = open("kafka-3.1.0/config/kraft/server.properties", "r")
 	serverProperties = propertyFile.read()
+	controllerPort = 9093
 
 	for bID in brokerPlace:
 		os.system("sudo mkdir kafka-3.1.0/kafka" + str(bID) + "/")
 
 		bProperties = serverProperties
-		bProperties = bProperties.replace("node.id=1", "node.id="+str(bID))
-		bProperties = bProperties.replace(
-			"advertised.listeners=PLAINTEXT://localhost:9092", 
-			"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
-		bProperties = bProperties.replace("log.dirs=/tmp/kafka-logs",
-			"log.dirs=./kafka-3.1.0/kafka" + str(bID))
+		# bProperties = bProperties.replace("node.id=1", "node.id="+str(bID))
+		# #bProperties = bProperties.replace("controller.quorum.voters=1@localhost", "controller.quorum.voters="+str(bID)+"@"+"10.0.0." + str(bID))
+		# bProperties = bProperties.replace(
+		# 	"listeners=PLAINTEXT://localhost:9092,CONTROLLER://:9093", 
+		# 	"listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092,CONTROLLER://localhost:9093")
+		# controllerPort += 1
+		# bProperties = bProperties.replace(
+		# 	"advertised.listeners=PLAINTEXT://localhost:9092", 
+		# 	"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
+		# bProperties = bProperties.replace("log.dirs=/tmp/kraft-combined-logs",
+		# 	"log.dirs=./kafka-3.1.0-logs/kafka" + str(bID))
+		
+			
 
 		#bProperties = bProperties.replace("#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))
 		#bProperties = bProperties.replace("#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
@@ -45,9 +53,9 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 		#	"zookeeper.connection.timeout.ms=18000",
 		#	"zookeeper.connection.timeout.ms=30000")
 
-		bFile = open("kafka-3.1.0/config/kraft/server" + str(bID) + ".properties", "w")
-		bFile.write(bProperties)
-		bFile.close()
+		#bFile = open("kafka-3.1.0/config/kraft/server" + str(bID) + ".properties", "w")
+		#bFile.write(bProperties)
+		#bFile.close()
 
 	propertyFile.close()
 
@@ -94,22 +102,39 @@ def runKafka(net, brokerPlace, brokerWaitTime=200):
 	startTime = time.time()
 	for bNode in brokerPlace:
 		bID = "h"+str(bNode)
+		startingHost = netNodes[bID]		
+		print("Setting Kafka storage for node "+str(bNode))
+		startingHost.popen("kafka-3.1.0/bin/kafka-storage.sh format -t "+ uuid +"-c kafka-3.1.0/config/kraft/server"+str(bNode)+".properties &", shell=True)		
+		time.sleep(1)		
 
-		startingHost = netNodes[bID]
-		
-		print("Creating Kafka broker at node "+str(bNode))
-		startingHost.popen("kafka-3.1.0/bin/kafka-storage.sh format -t "+ uuid +"-c ./config/kraft/server"+str(bNode)+".properties &", shell=True)		
-		time.sleep(1)
+	for bNode in brokerPlace:
+		bID = "h"+str(bNode)
+		startingHost = netNodes[bID]		
+		print("Creating Kafka broker at node "+str(bNode))		
 		startingHost.popen("kafka-3.1.0/bin/kafka-server-start.sh kafka-3.1.0/config/kraft/server"+str(bNode)+".properties &", shell=True)
 		
 		time.sleep(1)
 
 	brokerWait = True
-	totalTime = 0
+	totalTime = 0	
 	for bNode in brokerPlace:
 		while brokerWait:
 			print("Testing Connection to Broker " + str(bNode) + "...")
-			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0." + str(bNode) + " 9092")
+			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.1 9092")
+			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.1 19092")
+			out, err, exitCode = startingHost.pexec("nc -z -v localhost 9092")
+			out, err, exitCode = startingHost.pexec("nc -z -v localhost 19092")
+
+			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.2 9093")
+			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.2 19093")
+			out, err, exitCode = startingHost.pexec("nc -z -v localhost 9093")
+			out, err, exitCode = startingHost.pexec("nc -z -v localhost 19093")
+			
+			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.3 9094")
+			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.3 19094")
+			out, err, exitCode = startingHost.pexec("nc -z -v localhost 9094")
+			out, err, exitCode = startingHost.pexec("nc -z -v localhost 19094")
+			
 			stopTime = time.time()
 			totalTime = stopTime - startTime
 			if(exitCode == 0):
@@ -127,7 +152,7 @@ def runKafka(net, brokerPlace, brokerWaitTime=200):
 def cleanKafkaState(brokerPlace):
 	for bID in brokerPlace:
 		os.system("sudo rm -rf kafka-3.1.0/kafka" + str(bID) + "/")
-		os.system("sudo rm -f kafka-3.1.0/config/kraft/server" + str(bID) + ".properties")
+		#os.system("sudo rm -f kafka-3.1.0/config/kraft/server" + str(bID) + ".properties")
 
 
 
