@@ -102,10 +102,8 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		issuingNode = net.hosts[issuingID]
 		
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
-
-		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
-# 		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions "+str(nHosts)+" --topic topic-"+str(i)+" &", shell=True)        
-		print(out)
+		
+		issuingNode.popen("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions "+str(nHosts)+" --topic topic-"+str(i)+" &", shell=True)
 		topicNodes.append(issuingNode)
 	
 	stopTime = time.time()
