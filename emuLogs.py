@@ -4,9 +4,17 @@ import os
 import logging
 
 import matplotlib.pyplot as plt
+from mininet.util import pmonitor
+
+ZOOKEEPER_LOG_FILE = "zk-log.txt"
+BROKER_LOG_FILE = "broker-log.txt"
 
 
 def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):  
+	os.system("sudo rm -rf logs/kafka/" + ZOOKEEPER_LOG_FILE)
+
+	os.system("sudo rm -rf logs/kafka/" + BROKER_LOG_FILE)
+
 	os.system("sudo rm -rf logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/bandwidth/"+"; sudo mkdir -p logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/bandwidth/")
     
 	os.system("sudo rm -rf logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/"+"; sudo mkdir -p logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/")    
@@ -21,3 +29,10 @@ def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):
 def cleanLogs():
 # 	os.system("sudo rm -rf logs/kafka/")
 	os.system("sudo rm -rf kafka/logs/")    
+
+def logMininetProcesses(popens, logFileName):
+    logFilePath = "logs/kafka/" + logFileName
+    bandwidthLog = open(logFilePath, "a")
+    for host, line in pmonitor(popens):
+        if host:
+            bandwidthLog.write("<%s>: %s" % (host.name, line))
