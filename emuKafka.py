@@ -14,50 +14,45 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 
 	propertyFile = open("kafka-3.1.0/config/kraft/server.properties", "r")
 	serverProperties = propertyFile.read()
-	controllerPort = 9093
+	
+	# Specify controller addresses to connect
+	controllerAddresses = ""
+	controllerPort = 19092
 
+	for i in range(len(brokerPlace)-1):
+		controllerAddresses += str(i+1) + "@10.0.0." + str(i+1) + ":" +str(controllerPort)+","
+		controllerPort += 1
+
+	controllerAddresses += str(len(brokerPlace)) + "@10.0.0." + str(len(brokerPlace)) + ":" +str(controllerPort)
+
+	controllerPort = 19092
 	for bID in brokerPlace:
 		os.system("sudo mkdir kafka-3.1.0/kafka" + str(bID) + "/")
 
 		bProperties = serverProperties
-		# bProperties = bProperties.replace("node.id=1", "node.id="+str(bID))
-		# #bProperties = bProperties.replace("controller.quorum.voters=1@localhost", "controller.quorum.voters="+str(bID)+"@"+"10.0.0." + str(bID))
-		# bProperties = bProperties.replace(
-		# 	"listeners=PLAINTEXT://localhost:9092,CONTROLLER://:9093", 
-		# 	"listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092,CONTROLLER://localhost:9093")
-		# controllerPort += 1
-		# bProperties = bProperties.replace(
-		# 	"advertised.listeners=PLAINTEXT://localhost:9092", 
-		# 	"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
-		# bProperties = bProperties.replace("log.dirs=/tmp/kraft-combined-logs",
-		# 	"log.dirs=./kafka-3.1.0-logs/kafka" + str(bID))
-		
-			
+		bProperties = bProperties.replace("node.id=1", "node.id="+str(bID))
+		bProperties = bProperties.replace("controller.quorum.voters=1@localhost", 
+		"controller.quorum.voters=" + controllerAddresses)
+		bProperties = bProperties.replace(
+			"listeners=PLAINTEXT://:9092,CONTROLLER://:9093", 
+			"listeners=PLAINTEXT://:9092,CONTROLLER://10.0.0." + str(bID) + ":" + str(controllerPort))
+		controllerPort += 1
+		bProperties = bProperties.replace(
+			"advertised.listeners=PLAINTEXT://localhost:9092", 
+			"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
+		bProperties = bProperties.replace("log.dirs=/tmp/kraft-combined-logs",
+			"log.dirs=./kafka-3.1.0/logs/kafka" + str(bID))
 
-		#bProperties = bProperties.replace("#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))
-		#bProperties = bProperties.replace("#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
+		bProperties = bProperties.replace(
+			"listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL", 
+			"#listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL")
+							
+		bProperties = bProperties.replace("#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))
+		bProperties = bProperties.replace("#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
 
-		# #Specify zookeeper addresses to connect
-		# zkAddresses = ""
-		# zkPort = 2181
-
-		# for i in range(len(zkPlace)-1):
-		# 	zkAddresses += "localhost:"+str(zkPort)+","
-		# 	zkPort += 1
-
-		# zkAddresses += "localhost:"+str(zkPort)
-
-		# bProperties = bProperties.replace(
-		# 	"zookeeper.connect=localhost:2181",
-		# 	"zookeeper.connect="+zkAddresses)
-
-		#bProperties = bProperties.replace(
-		#	"zookeeper.connection.timeout.ms=18000",
-		#	"zookeeper.connection.timeout.ms=30000")
-
-		#bFile = open("kafka-3.1.0/config/kraft/server" + str(bID) + ".properties", "w")
-		#bFile.write(bProperties)
-		#bFile.close()
+		bFile = open("kafka-3.1.0/config/kraft/server" + str(bID) + ".properties", "w")
+		bFile.write(bProperties)
+		bFile.close()
 
 	propertyFile.close()
 
@@ -158,7 +153,7 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 def cleanKafkaState(brokerPlace):
 	for bID in brokerPlace:
 		os.system("sudo rm -rf kafka-3.1.0/kafka" + str(bID) + "/")
-		#os.system("sudo rm -f kafka-3.1.0/config/kraft/server" + str(bID) + ".properties")
+		os.system("sudo rm -f kafka-3.1.0/config/kraft/server" + str(bID) + ".properties")
 
 
 
