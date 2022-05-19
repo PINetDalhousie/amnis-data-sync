@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
+import multiprocessing
 from mininet.net import Mininet
+from mininet.util import pmonitor
 
 import os
 import sys
@@ -91,50 +93,54 @@ def placeKafkaBrokers(net, nBroker, nZk):
 
 
 
-def runKafka(net, brokerPlace, brokerWaitTime=200):
+# Function to log open processes running on host
+def monitorCmd(popens, logDir):	
+	for host, line in pmonitor(popens):
+		if host:
+			kraftLog = open(logDir +"/kraft/server-" + host.name + ".log", "a")
+			kraftLog.write("<%s>: %s" % (host.name, line))
+
+
+def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 
 	netNodes = {}
+	# Run the following in terminal to get new uuid:
+	# ./bin/kafka-storage.sh random-uuid
 	uuid = 'JmL9ihFRQmSabrNWrYSpjg'
+	
+	# Make kraft log foldr
+	os.system("sudo mkdir -p " + logDir + "/kraft/")
 
 	for node in net.hosts:
 		netNodes[node.name] = node
 		
 	startTime = time.time()
-	for bNode in brokerPlace:
-		bID = "h"+str(bNode)
-		startingHost = netNodes[bID]		
+	for bNode in brokerPlace:					
 		print("Setting Kafka storage for node "+str(bNode))
-		startingHost.popen("kafka-3.1.0/bin/kafka-storage.sh format -t "+ uuid +"-c kafka-3.1.0/config/kraft/server"+str(bNode)+".properties &", shell=True)		
+		os.system(f"kafka-3.1.0/bin/kafka-storage.sh format -t {uuid} -c kafka-3.1.0/config/kraft/server{str(bNode)}.properties")				
 		time.sleep(1)		
 
+
+	popens = {}
 	for bNode in brokerPlace:
 		bID = "h"+str(bNode)
 		startingHost = netNodes[bID]		
-		print("Creating Kafka broker at node "+str(bNode))		
-		startingHost.popen("kafka-3.1.0/bin/kafka-server-start.sh kafka-3.1.0/config/kraft/server"+str(bNode)+".properties &", shell=True)
-		
+		h = netNodes[bID]		
+		print("Creating Kafka broker at node "+str(bNode))	
+		popens[h] = h.popen("kafka-3.1.0/bin/kafka-server-start.sh kafka-3.1.0/config/kraft/server"+str(bNode)+".properties &", shell=True)									
 		time.sleep(1)
+
+	# Start the process logging monitor for mininet hosts		
+	process = multiprocessing.Process(target=monitorCmd, args=(popens, logDir))
+	process.start()
+	time.sleep(10)
 
 	brokerWait = True
 	totalTime = 0	
-	for bNode in brokerPlace:
+	for bNode in brokerPlace:		
 		while brokerWait:
 			print("Testing Connection to Broker " + str(bNode) + "...")
-			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.1 9092")
-			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.1 19092")
-			out, err, exitCode = startingHost.pexec("nc -z -v localhost 9092")
-			out, err, exitCode = startingHost.pexec("nc -z -v localhost 19092")
-
-			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.2 9093")
-			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.2 19093")
-			out, err, exitCode = startingHost.pexec("nc -z -v localhost 9093")
-			out, err, exitCode = startingHost.pexec("nc -z -v localhost 19093")
-			
-			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.3 9094")
-			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0.3 19094")
-			out, err, exitCode = startingHost.pexec("nc -z -v localhost 9094")
-			out, err, exitCode = startingHost.pexec("nc -z -v localhost 19094")
-			
+			out, err, exitCode = startingHost.pexec("nc -z -v 10.0.0." + str(bNode) + " 9092")			
 			stopTime = time.time()
 			totalTime = stopTime - startTime
 			if(exitCode == 0):

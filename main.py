@@ -187,7 +187,7 @@ if __name__ == '__main__':
 	args.replicaMinBytes = 200000
 	args.disconnectDuration = 0
 	args.relocate = False
-	args.singleConsumer = False
+	args.singleConsumer = True
 	args.setNetworkDelay = False
 	# END
 
@@ -224,7 +224,7 @@ if __name__ == '__main__':
 	emuKafka.cleanKafkaState(brokerPlace)
 	#emuZk.cleanZkState(zkPlace)
 
-	emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
+	logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
 	#emuZk.configureZkCluster(zkPlace)
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
@@ -251,7 +251,7 @@ if __name__ == '__main__':
 	#pID += 1
 
 	#emuZk.runZk(net, zkPlace)
-	emuKafka.runKafka(net, brokerPlace)
+	emuKafka.runKafka(net, brokerPlace, logDir)
 					
 	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args)
 	print("Simulation complete")
