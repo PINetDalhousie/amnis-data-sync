@@ -144,6 +144,9 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		setNetworkDelay(net)
 		time.sleep(1)
 
+	print(f"Sleeping for {args.consumerSetupSleep} to allow consumers to connect")
+	time.sleep(args.consumerSetupSleep)
+
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
 	print(f"Producers created at {str(datetime.now())}")
 	time.sleep(1)

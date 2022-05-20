@@ -167,6 +167,7 @@ if __name__ == '__main__':
 	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')
 	parser.add_argument('--disconnect', dest='disconnectDuration', type=int, default=0, help='Duration of the disconnection (in seconds)')
 	parser.add_argument('--latency-after-setup', dest='latencyAfterSetup', action='store_true', help='Lower the network latency before setting up Kafka, then set it back once Kafka is set up.')	
+	parser.add_argument('--consumer-setup-sleep', dest='consumerSetupSleep', type=int, default=120, help='Duration to sleep between setting up consumers and producers (in seconds).')
 
 	args = parser.parse_args()
 

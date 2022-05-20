@@ -8,7 +8,7 @@ cp ./plot-scripts/modifiedLatencyPlotScript.py ./
 echo "Result directory is $RESULT_DIR"
 
 echo "********Running sim"
-sudo python3 main.py tests/input/star/star-ten-node-topo.graphml --nbroker $SWITCHES --nzk $SWITCHES --message-rate 30.0 --replication $SWITCHES --message-file message-data/xml/Cars103.xml --time 300 --replica-min-bytes 200000 --replica-max-wait 5000 --ntopics $SWITCHES --topic-check 0.1 --consumer-rate 0.5 --compression gzip --latency-after-setup --single-consumer
+sudo python3 main.py tests/input/star/star-ten-node-topo.graphml --nbroker $SWITCHES --nzk $SWITCHES --message-rate 30.0 --replication $SWITCHES --message-file message-data/xml/Cars103.xml --time 300 --replica-min-bytes 200000 --replica-max-wait 5000 --ntopics $SWITCHES --topic-check 0.1 --consumer-rate 0.5 --compression gzip --single-consumer
 
 echo "********Renaming logs folder"
 sudo mv logs/kafka/$DIR $RESULT_DIR
