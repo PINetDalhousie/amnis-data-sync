@@ -199,9 +199,6 @@ if __name__ == '__main__':
 	cleanProcess = subprocess.Popen("sudo mn -c", shell=True)
 	time.sleep(2)
 
-	# Log the test args
-	logging.info("Test args:\n %s", args)
-
 	#Instantiate network
 	emulatedTopo = emuNetwork.CustomTopo(args.topo)	
 
@@ -225,10 +222,13 @@ if __name__ == '__main__':
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
 
-	emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
+	logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
 	emuZk.configureZkCluster(zkPlace)
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
+	# Log the test args
+	logging.info("Test args:\n %s", args)
+
 	#Start network
 	print("Starting Network")
 	net.start()
@@ -259,6 +259,9 @@ if __name__ == '__main__':
 
 	# to kill all the running subprocesses
 	killSubprocs(brokerPlace, zkPlace)
+
+	# Log events
+	emuLogs.logEvents(logDir, args.nBroker)
 
 	net.stop()
 	logging.info('Network stopped')

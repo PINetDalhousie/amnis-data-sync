@@ -5,7 +5,9 @@ import logging
 
 import argparse
 from datetime import datetime, timedelta
+import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import seaborn as sns
 import pandas as pd
 
@@ -185,6 +187,58 @@ def plotLatencyScatter():
     plt.savefig(logDir+"latency Plot",bbox_inches="tight")
                             
 
+def plotLatencyScatterSorted(switches):
+    consumersLatency = []
+    timesSent = []
+    for consId in range(switches):
+        consumersLatency.append({})
+        timesSent.append({})
+    
+    with open(logDir+"/latency-log.txt", "r") as f:
+        for lineNum, line in enumerate(f,1):         #to get the line number            
+            if "Latency of this message: " in line:                
+                lineSplit = line.split(" ")                
+                consID = lineSplit[11]
+                timeSent = lineSplit[15]
+                
+                firstSplit = line.split("Latency of this message: 0:")
+                latency = float(firstSplit[1][0:2])*60.0 + float(firstSplit[1][3:5])
+                
+                timesSent[int(consID)-1][lineNum] = timeSent.replace(",", ".")                
+                consumersLatency[int(consID)-1][lineNum] = latency
+                    
+    # Sort based on time sent
+    yAxisList= []
+    xAxisList = []
+    for i in range(len(timesSent)):
+        y = []
+        x = []
+        j=0
+        for k in sorted(timesSent[i].items(), key=lambda x: x[1]) :                    
+            lat = consumersLatency[i][k[0]]
+            y.append(lat)
+            x.append(j)
+            j = j+1
+        xAxisList.append(x)
+        yAxisList.append(y)
+
+    # Add colors and plot each scatter
+    colors = cm.rainbow(np.linspace(0, 1, len(yAxisList)))
+    k = 0
+    for dataset,color in zip(yAxisList,colors):
+        print(f"len of dataset is {len(dataset)}")
+        plt.scatter(xAxisList[k],dataset,color=color, label=str(k+1), s=4.0)
+        k = k+1
+
+    # Create rest of plot
+    plt.xlabel('Message')
+    plt.ylabel('Latency(s)')
+    plt.title("Latency Measurement")
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
+          fancybox=True, shadow=True, ncol=5, markerscale=4)
+    plt.savefig(logDir+"latency-plot-sorted",bbox_inches="tight")
+
+
 def plotLatencyPDF():
     global latencyYAxis
 
@@ -242,11 +296,12 @@ for prodId in range(switches):
     getProdDetails(prodId+1)
 
 plotLatencyScatter()
+clearExistingPlot()
 
+plotLatencyScatterSorted(switches)
 clearExistingPlot()
 
 plotLatencyPDF()
-
 clearExistingPlot()
 
 plotLatencyCDF()
