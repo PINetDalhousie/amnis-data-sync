@@ -107,7 +107,7 @@ def spawnSparkClients(net, sparkDetailsList):
 		print("node is: "+str(node.name))
 		print("port is: "+str(port))
 		node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
-
+		
 
 def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):
 
@@ -159,7 +159,7 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	time.sleep(10)
 	print("Consumers created")
 
-	# time.sleep(30)
+	time.sleep(30)
 
 	spawnSparkClients(net, sparkDetailsList)
 	time.sleep(10)
@@ -168,11 +168,11 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	time.sleep(30)
    
 
-	# timer = 0
+	timer = 0
 
-	# while timer < duration:
-	# 	time.sleep(10)
-	# 	print("Processing workload: "+str(int((timer/duration)*100))+"%")
-	# 	timer += 10
+	while timer < duration:
+		time.sleep(10)
+		print("Processing workload: "+str(int((timer/duration)*100))+"%")
+		timer += 10
 
-	# print("Workload finished")
+	print("Workload finished")

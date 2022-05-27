@@ -19,17 +19,17 @@ try:
     host = "10.0.0."+nodeID
     port = int(sys.argv[2])
 
-    logging.basicConfig(filename="logs/kafka/"+"nodes:1_mSize:fixed,10_mRate:1.0_topics:1_replication:1"+"/cons/client-"+nodeID+".log",\
-            format='%(asctime)s %(levelname)s:%(message)s',\
-            level=logging.INFO)
-    logger = logging.getLogger(__name__)
+    # logging.basicConfig(filename="logs/kafka/"+"nodes:1_mSize:fixed,10_mRate:1.0_topics:1_replication:1"+"/cons/client-"+nodeID+".log",\
+    #         format='%(asctime)s %(levelname)s:%(message)s',\
+    #         level=logging.INFO)
+    # logger = logging.getLogger(__name__)
 
-    logging.info("node is: "+nodeID)
-    logging.info("host: "+host)
-    logging.info("port: "+str(port))
+    # logging.info("node is: "+nodeID)
+    # logging.info("host: "+host)
+    # logging.info("port: "+str(port))
 
-    logger.setLevel(logging.DEBUG)
-    logger.debug("1 - DEBUG - Print the message")
+    # logger.setLevel(logging.DEBUG)
+    # logger.debug("1 - DEBUG - Print the message")
 
     
     spark = SparkSession.builder \
@@ -42,9 +42,9 @@ try:
         .format('socket')\
         .option('host', host)\
         .option('port', port)\
-        .load()\
-        .selectExpr("CAST(value AS STRING)")
-    logging.info(sdfRides)
+        .load()
+        # .selectExpr("CAST(value AS STRING)")
+    # logging.info(sdfRides)
 
         
     taxiRidesSchema = StructType([ \
@@ -67,7 +67,7 @@ try:
 
     sdfRides = parse_data_from_kafka_message(sdfRides, taxiRidesSchema)
 
-    query = sdfRides.groupBy("driverId").count()
+    # query = sdfRides.groupBy("driverId").count()
 
     # writing the aggregated spark dataframe
     # query.writeStream \
@@ -77,14 +77,13 @@ try:
     #     .start() \
     #     .awaitTermination()
 
-    # writing the dataframe in a csv file
-    sdfRides.writeStream \
-    .format("csv") \
-    .option("path", "/tmp/filesink_output") \
-    .option("checkpointLocation", "/tmp/checkpoint/filesink_checkpoint") \
-    .start() \
-    .awaitTermination()
+    query = sdfRides.writeStream.queryName("uber_ride_query")\
+        .outputMode("append").format("csv")\
+        .option("path", "/home/ubuntu/Documents/uber_parc")\
+        .option("checkpointLocation", "/home/ubuntu/Documents/uber_check")\
+        .trigger(processingTime='60 seconds').start()
+    query.awaitTermination()
 
 except Exception as e:
-	logging.error(e)
+	# logging.error(e)
 	sys.exit(1)
