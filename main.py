@@ -165,7 +165,9 @@ if __name__ == '__main__':
 
 	parser.add_argument('--single-consumer', dest='singleConsumer', action='store_true', help='Use a single, always connected consumer (per node) for the entire simulation')
 	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')
-	parser.add_argument('--disconnect', dest='disconnectDuration', type=int, default=0, help='Duration of the disconnection (in seconds)')
+	parser.add_argument('--disconnect-duration', dest='disconnectDuration', type=int, default=60, help='Duration of the disconnection (in seconds)')
+	parser.add_argument('--disconncet-random', dest='disconnectRandom', action='store_true', help='Disconnect a single random host')
+	parser.add_argument('--disconnect-hosts', dest='disconnectHosts', type=str, help='Disconnect a list of hosts (h1,h2..hn)')
 	parser.add_argument('--latency-after-setup', dest='latencyAfterSetup', action='store_true', help='Lower the network latency before setting up Kafka, then set it back once Kafka is set up.')	
 	parser.add_argument('--consumer-setup-sleep', dest='consumerSetupSleep', type=int, default=120, help='Duration to sleep between setting up consumers and producers (in seconds).')
 
@@ -186,10 +188,11 @@ if __name__ == '__main__':
 	# args.compression = 'gzip'
 	# args.replicaMaxWait = 5000
 	# args.replicaMinBytes = 200000
-	# args.disconnectDuration = 0
+	# args.disconnectDuration = 60
+	# args.disconnectRandom = True
+	# args.disconnectHosts = 'h1,h5,h8'
 	# args.relocate = False
-	# args.singleConsumer = False
-	# args.setNetworkDelay = True
+	# args.singleConsumer = False	
 	# END
 
 	print(args)	

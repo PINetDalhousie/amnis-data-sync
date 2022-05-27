@@ -78,7 +78,11 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   
   9) Include a disconnect of a random host for a specified duration (in seconds) during the simulation.
 
-  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --disconnect 20```
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --disconnect-random --disconnect-duration 20```
+
+  10) Include a disconnect of specific hosts for a specified duration (in seconds) during the simulation.
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --disconnect-hosts h1,h2,h5 --disconnect-duration 20```
   
   10) Run the simulation using the single consumer behaviour - one consumer per host that subscribes to all topics and is always connected.
 

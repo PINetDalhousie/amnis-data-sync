@@ -160,18 +160,26 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 # 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	timer = 0
-	disconnect = args.disconnectDuration > 0
+	isDisconnect = args.disconnectRandom or args.disconnectHosts is not None
 	relocate = args.relocate
 
-	if disconnect:
+	if isDisconnect:
 		disconnectTimer = args.disconnectDuration
 		isDisconnected = False
-		hosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
-		seed()
-		randomHost = choice(list(hosts.items()))				
-		h = net.getNodeByName(randomHost[0])		
-		s = net.getNodeByName(randomHost[1][1][0])		
-		print(f"Host {h.name} to disconnect from switch {s.name} for {disconnectTimer}s")
+		hostsToDisconnect = []
+		netHosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
+		if args.disconnectRandom:
+			seed()
+			randomHost = choice(list(netHosts.items()))				
+			h = net.getNodeByName(randomHost[0])		
+			hostsToDisconnect.append(h)
+			s = net.getNodeByName(randomHost[1][1][0])		
+			print(f"Host {h.name} to disconnect from switch {s.name} for {disconnectTimer}s")
+		elif args.disconnectHosts is not None:
+			hostNames = args.disconnectHosts.split(',')			
+			for hostName in hostNames:
+				h = net.getNodeByName(hostName)
+				hostsToDisconnect.append(h)
 	elif relocate:
 		seed()
 		hosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
@@ -194,14 +202,14 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		time.sleep(10)
 		percentComplete = int((timer/duration)*100)
 		print("Processing workload: "+str(percentComplete)+"%")
-		if disconnect and percentComplete >= 10:
+		if isDisconnect and percentComplete >= 10:
 			if not isDisconnected:			
-				disconnectHost(net, h, s)
+				disconnectHosts(net, netHosts, hostsToDisconnect)
 				isDisconnected = True
 			elif isDisconnected and disconnectTimer <= 0: 			
-				reconnectHost(net, h, s)
+				reconnectHosts(net, netHosts, hostsToDisconnect)
 				isDisconnected = False
-				disconnect = False
+				isDisconnect = False
 			if isDisconnected:
 				disconnectTimer -= 10
 		elif relocate:
@@ -229,17 +237,29 @@ def addLink(net, h, s2):
 	printLinksBetween(net, h, s2)
 	net.pingAll()
 
+def disconnectHosts(net, netHosts, hosts):	
+	for h in hosts:
+		netHost = netHosts[h.name]		
+		s = net.getNodeByName(netHost[1][0])		
+		disconnectHost(net, h, s)
+	#net.pingAll()
+
 def disconnectHost(net, h, s):		
 	print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
 	logging.info('Disconnected %s <-> %s at %s', h.name, s.name,  str(datetime.now()))
-	net.configLinkStatus(s.name, h.name, "down")		
-	net.pingAll()
+	net.configLinkStatus(s.name, h.name, "down")			
+
+def reconnectHosts(net, netHosts, hosts):
+	for h in hosts:
+		netHost = netHosts[h.name]		
+		s = net.getNodeByName(netHost[1][0])
+		reconnectHost(net, h, s)
+	#net.pingAll()
 
 def reconnectHost(net, h, s):
 	print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
 	logging.info('Connected %s <-> %s at %s', h.name, s.name,  str(datetime.now()))
-	net.configLinkStatus(s.name, h.name, "up")									
-	net.pingAll()
+	net.configLinkStatus(s.name, h.name, "up")										
 
 def setNetworkDelay(net, newDelay=None):
 	nodes = net.switches + net.hosts	 

@@ -225,8 +225,7 @@ def plotLatencyScatterSorted(switches):
     # Add colors and plot each scatter
     colors = cm.rainbow(np.linspace(0, 1, len(yAxisList)))
     k = 0
-    for dataset,color in zip(yAxisList,colors):
-        print(f"len of dataset is {len(dataset)}")
+    for dataset,color in zip(yAxisList,colors):        
         plt.scatter(xAxisList[k],dataset,color=color, label=str(k+1), s=4.0)
         k = k+1
 
