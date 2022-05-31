@@ -12,9 +12,9 @@ BROKER_LOG_FILE = "broker-log.txt"
 
 def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):  
 	logDir = "logs/kafka/nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)	
-	os.system("sudo rm -rf logs/kafka/" + ZOOKEEPER_LOG_FILE)
+	os.system("sudo rm -rf " + logDir + "/" + ZOOKEEPER_LOG_FILE)
 
-	os.system("sudo rm -rf logs/kafka/" + BROKER_LOG_FILE)
+	os.system("sudo rm -rf " + logDir + "/" + BROKER_LOG_FILE)
 
 	os.system("sudo rm -rf " + logDir + "/bandwidth/; " + "sudo mkdir -p " + logDir + "/bandwidth/")
 	os.system("sudo rm -rf " + logDir + "/prod/; " + "sudo mkdir -p " + logDir + "/prod/")    
@@ -30,8 +30,7 @@ def cleanLogs():
 	#os.system("sudo rm -rf logs/kafka/")
 	os.system("sudo rm -rf kafka/logs/")   	
 
-def logMininetProcesses(popens, logFileName):
-    logFilePath = "logs/kafka/" + logFileName
+def logMininetProcesses(popens, logFilePath):
     bandwidthLog = open(logFilePath, "a")
     for host, line in pmonitor(popens):
         if host:

@@ -87,7 +87,7 @@ def placeKafkaBrokers(net, nBroker, nZk):
     return brokerPlace, zkPlace
 
 
-def runKafka(net, brokerPlace, brokerWaitTime=200):
+def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 
     netNodes = {}
 
@@ -108,7 +108,8 @@ def runKafka(net, brokerPlace, brokerWaitTime=200):
 
         time.sleep(1)
 
-    process = multiprocessing.Process(target=emuLogs.logMininetProcesses, args=(popens,emuLogs.BROKER_LOG_FILE))
+    logPath = logDir + "/" + emuLogs.BROKER_LOG_FILE
+    process = multiprocessing.Process(target=emuLogs.logMininetProcesses, args=(popens, logPath))
     process.start()
 
     brokerWait = True

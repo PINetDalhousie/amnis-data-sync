@@ -12,6 +12,8 @@ import time
 import os
 import sys
 
+from emuLogs import ZOOKEEPER_LOG_FILE
+
 
 def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 
@@ -85,7 +87,19 @@ def printLinksBetween(net , n1, n2):
 			print(link.intf2)
 	
 
-def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):
+def readCurrentZkLeader(logDir):
+	leader = None
+	with open(logDir+"/" + ZOOKEEPER_LOG_FILE) as f:
+		for line in f:
+			if "LEADING - LEADER ELECTION TOOK " in line:
+				first = line.split(">")[0]
+				leader = first[1:]
+				print(f'Leader is {leader}')
+				break
+	return leader
+
+
+def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, logDir, args, topicWaitTime=100):
 
 	print("Start workload")
 
@@ -160,7 +174,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 # 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	timer = 0
-	isDisconnect = args.disconnectRandom or args.disconnectHosts is not None
+	isDisconnect = args.disconnectRandom or args.disconnectHosts is not None or args.disconnectLeader
 	relocate = args.relocate
 
 	if isDisconnect:
@@ -180,6 +194,10 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 			for hostName in hostNames:
 				h = net.getNodeByName(hostName)
 				hostsToDisconnect.append(h)
+		elif args.disconnectLeader:
+			leaderNode = readCurrentZkLeader(logDir)
+			h = net.getNodeByName(leaderNode)
+			hostsToDisconnect.append(h)
 	elif relocate:
 		seed()
 		hosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
