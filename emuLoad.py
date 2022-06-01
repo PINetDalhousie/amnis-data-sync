@@ -106,7 +106,8 @@ def spawnSparkClients(net, sparkDetailsList):
 		node = netNodes[sprkID]
 		print("node is: "+str(node.name))
 		print("port is: "+str(port))
-		node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
+		out= node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
+		print(out)
 		
 
 def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):

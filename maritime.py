@@ -1,6 +1,7 @@
 
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
+from pyspark.sql.functions import *
 
 import sys
 import logging
@@ -16,17 +17,17 @@ try:
     host = "10.0.0."+nodeID
     port = int(sys.argv[2])
 
-    logging.basicConfig(filename="logs/kafka/"+"nodes:1_mSize:fixed,10_mRate:1.0_topics:1_replication:1"+"/cons/client-"+nodeID+".log",\
-            format='%(asctime)s %(levelname)s:%(message)s',\
-            level=logging.INFO)
-    logger = logging.getLogger(__name__)
+    # logging.basicConfig(filename="logs/kafka/"+"nodes:1_mSize:fixed,10_mRate:1.0_topics:1_replication:1"+"/cons/client-"+nodeID+".log",\
+    #         format='%(asctime)s %(levelname)s:%(message)s',\
+    #         level=logging.INFO)
+    # logger = logging.getLogger(__name__)
 
-    logging.info("node is: "+nodeID)
-    logging.info("host: "+host)
-    logging.info("port: "+str(port))
+    # logging.info("node is: "+nodeID)
+    # logging.info("host: "+host)
+    # logging.info("port: "+str(port))
 
-    logger.setLevel(logging.DEBUG)
-    logger.debug("1 - DEBUG - Print the message")
+    # logger.setLevel(logging.DEBUG)
+    # logger.debug("1 - DEBUG - Print the message")
 
     
     spark = SparkSession.builder \
@@ -34,34 +35,19 @@ try:
         .getOrCreate()
 
     spark.sparkContext.setLogLevel('ERROR')
-    sdfRides = spark\
+    vessel = spark\
         .readStream\
         .format('socket')\
         .option('host', host)\
         .option('port', port)\
         .load()\
         .selectExpr("CAST(value AS STRING)")
-    logging.info(sdfRides)
+    # logging.info(sdfRides)
 
-    vesselSchema = StructType([ \
-        StructField("class", StringType()), StructField("device", StringType()), \
-        StructField("type", ShortType()), StructField("repeat", shortType()), \
-        StructField("mmsi", LongType()), StructField("scaled", BooleanType()), \
-        StructField("status", shortType()), StructField("status_text", StringType()), \
-        StructField("turn", ShortType()), StructField("speed", FloatType()), \
-        StructField("accuracy", BooleanType()), StructField("lon", FloatType()), \
-        StructField("lat", FloatType()), StructField("course", FloatType()), \
-        StructField("heading", FloatType()), StructField("second", FloatType()), \
-        StructField("maneuver", FloatType()), StructField("raim", BooleanType()), \
-        StructField("radio", LongType())])
-        
-    # vesselSchema = StructType([ \
-    #     StructField("class", LongType()), StructField("isStart", StringType()), \
-    #     StructField("endTime", TimestampType()), StructField("startTime", TimestampType()), \
-    #     StructField("startLon", FloatType()), StructField("startLat", FloatType()), \
-    #     StructField("endLon", FloatType()), StructField("endLat", FloatType()), \
-    #     StructField("passengerCnt", ShortType()), StructField("taxiId", LongType()), \
-    #     StructField("driverId", LongType())])
+    schema1 = StructType( [StructField('MMSI', IntegerType()),\
+    StructField('BaseDateTime', TimestampType()),\
+        StructField('LAT', DoubleType()),\
+            StructField('LON', DoubleType())])
 
 
     def parse_data_from_kafka_message(sdf, schema):
@@ -73,26 +59,22 @@ try:
             sdf = sdf.withColumn(field.name, col.getItem(idx).cast(field.dataType))
         return sdf.select([field.name for field in schema])
 
-    sdfRides = parse_data_from_kafka_message(sdfRides, taxiRidesSchema)
+    vessel = parse_data_from_kafka_message(vessel, schema1)
+    query = vessel.groupBy(window("BaseDateTime","1 hour"),"MMSI")\
+        .agg( (count("MMSI").alias("Number of Updates")))\
+            .orderBy("window.start")
 
-    query = sdfRides.groupBy("driverId").count()
-
-    # writing the aggregated spark dataframe
-    # query.writeStream \
-    #     .outputMode("complete") \
-    #     .format("console") \
-    #     .option("truncate", False) \
-    #     .start() \
-    #     .awaitTermination()
 
     # writing the dataframe in a csv file
-    sdfRides.writeStream \
+    output = query.writeStream \
     .format("csv") \
-    .option("path", "/tmp/filesink_output") \
-    .option("checkpointLocation", "/tmp/checkpoint/filesink_checkpoint") \
-    .start() \
-    .awaitTermination()
+    .option("path", "/tmp/maritime_output") \
+    .option("checkpointLocation", "/tmp/maritime_checkpoint") \
+    .start() 
+    
+    output.awaitTermination(30)
+    output.stop()
 
 except Exception as e:
-	logging.error(e)
+	# logging.error(e)
 	sys.exit(1)
