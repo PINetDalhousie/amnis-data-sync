@@ -94,7 +94,7 @@ def readCurrentZkLeader(logDir):
 			if "LEADING - LEADER ELECTION TOOK " in line:
 				first = line.split(">")[0]
 				zkLeader = first[1:]
-				print(f'Leader is {zkLeader}')
+				print(f'Zookeeper leader is {zkLeader}')
 				break
 	return zkLeader
 
@@ -102,6 +102,7 @@ def readCurrentZkLeader(logDir):
 def processDisconnect(net, logDir, args):	
 	hostsToDisconnect = []
 	netHosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
+
 	if args.disconnectRandom:
 		seed()
 		randomHost = choice(list(netHosts.items()))				
@@ -114,29 +115,34 @@ def processDisconnect(net, logDir, args):
 		for hostName in hostNames:
 			h = net.getNodeByName(hostName)
 			hostsToDisconnect.append(h)
-	elif args.disconnectZkLeader:
-		leaderNode = readCurrentZkLeader(logDir)
-		h = net.getNodeByName(leaderNode)
-		hostsToDisconnect.append(h)
 	elif args.disconnectTopicLeaders != 0:				
 		issuingNode = net.hosts[0]
 		print("Finding topic leaders at localhost:2181")
-		leaders = {}
+		zkLeaderNode = readCurrentZkLeader(logDir)
 		# Find topic leaders
 		for i in range(args.nTopics):
-			out = issuingNode.cmd("kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)
-			#print(out)		
+			out = issuingNode.cmd("kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
 			split1 = out.split('Leader: ')
 			split2 = split1[1].split('\t')
-			leaderNode = split2[0]
-			key = "topic-" + str(i)
-			leaders[key] = leaderNode
-			print(f"Leader for {key} is node {leaderNode}")
-		# Add those nodes to disconnect list
-		for i in range(args.disconnectTopicLeaders):
-			k = "topic-" + str(i)			
-			h = net.getNodeByName("h" + leaders[k])
+			topicLeaderNode = 'h' + split2[0]			
+			print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
+			if topicLeaderNode == zkLeaderNode:		
+				# Don't disconnect ZK	
+				print(f"Not adding {topicLeaderNode} to disconnect list as it is Zookeeper leader ")	
+				continue
+			else:
+				h = net.getNodeByName(topicLeaderNode)
+				if not hostsToDisconnect.__contains__(h):
+					hostsToDisconnect.append(h)
+			if args.disconnectTopicLeaders == len(hostsToDisconnect):
+				break		
+
+	if args.disconnectZkLeader:
+		zkLeaderNode = readCurrentZkLeader(logDir)
+		h = net.getNodeByName(zkLeaderNode)
+		if not hostsToDisconnect.__contains__(h):
 			hostsToDisconnect.append(h)
+
 	return netHosts, hostsToDisconnect
 
 
