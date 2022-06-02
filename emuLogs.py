@@ -22,3 +22,27 @@ def cleanLogs():
 	#os.system("sudo rm -rf logs/kafka/")
 	os.system("sudo rm -rf kafka/logs/")   
 	os.system("sudo rm -rf kafka-3.1.0/logs/") 
+
+
+def logEvents(logDir, switches):
+	# Log when consumers got first messages
+	for consId in range(1, switches+1):
+		f = open(logDir+'/cons/cons-'+str(consId)+'.log')
+		for lineNum, line in enumerate(f,1):         #to get the line number
+			if "Prod ID: " in line:
+				lineParts = line.split(" ")				
+				logDateTime = lineParts[0] + " " + lineParts[1]
+				logging.info("Consumer %s first received message: %s", consId, logDateTime)
+				break
+		f.close()
+	
+	# Log when producers sent first messages
+	for prodId in range(1, switches+1):
+		f = open(logDir+'/prod/prod-'+str(prodId)+'.log')
+		for lineNum, line in enumerate(f,1):         #to get the line number
+			if "Topic: topic-" in line:
+				lineParts = line.split(" ")				
+				logDateTime = lineParts[0] + " " + lineParts[1]
+				logging.info("Producer %s first sent message: %s", prodId, logDateTime)
+				break
+		f.close()
