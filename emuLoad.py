@@ -88,15 +88,56 @@ def printLinksBetween(net , n1, n2):
 	
 
 def readCurrentZkLeader(logDir):
-	leader = None
+	zkLeader = None
 	with open(logDir+"/" + ZOOKEEPER_LOG_FILE) as f:
 		for line in f:
 			if "LEADING - LEADER ELECTION TOOK " in line:
 				first = line.split(">")[0]
-				leader = first[1:]
-				print(f'Leader is {leader}')
+				zkLeader = first[1:]
+				print(f'Leader is {zkLeader}')
 				break
-	return leader
+	return zkLeader
+
+
+def processDisconnect(net, logDir, args):	
+	hostsToDisconnect = []
+	netHosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
+	if args.disconnectRandom:
+		seed()
+		randomHost = choice(list(netHosts.items()))				
+		h = net.getNodeByName(randomHost[0])		
+		hostsToDisconnect.append(h)
+		s = net.getNodeByName(randomHost[1][1][0])		
+		print(f"Host {h.name} to disconnect from switch {s.name} for {args.disconnectTimer}s")
+	elif args.disconnectHosts is not None:
+		hostNames = args.disconnectHosts.split(',')			
+		for hostName in hostNames:
+			h = net.getNodeByName(hostName)
+			hostsToDisconnect.append(h)
+	elif args.disconnectZkLeader:
+		leaderNode = readCurrentZkLeader(logDir)
+		h = net.getNodeByName(leaderNode)
+		hostsToDisconnect.append(h)
+	elif args.disconnectTopicLeaders != 0:				
+		issuingNode = net.hosts[0]
+		print("Finding topic leaders at localhost:2181")
+		leaders = {}
+		# Find topic leaders
+		for i in range(args.nTopics):
+			out = issuingNode.cmd("kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)
+			#print(out)		
+			split1 = out.split('Leader: ')
+			split2 = split1[1].split('\t')
+			leaderNode = split2[0]
+			key = "topic-" + str(i)
+			leaders[key] = leaderNode
+			print(f"Leader for {key} is node {leaderNode}")
+		# Add those nodes to disconnect list
+		for i in range(args.disconnectTopicLeaders):
+			k = "topic-" + str(i)			
+			h = net.getNodeByName("h" + leaders[k])
+			hostsToDisconnect.append(h)
+	return netHosts, hostsToDisconnect
 
 
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, logDir, args, topicWaitTime=100):
@@ -174,30 +215,14 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 # 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	timer = 0
-	isDisconnect = args.disconnectRandom or args.disconnectHosts is not None or args.disconnectLeader
+	isDisconnect = args.disconnectRandom or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
 	relocate = args.relocate
-
+	
+	# Set up disconnect
 	if isDisconnect:
-		disconnectTimer = args.disconnectDuration
 		isDisconnected = False
-		hostsToDisconnect = []
-		netHosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
-		if args.disconnectRandom:
-			seed()
-			randomHost = choice(list(netHosts.items()))				
-			h = net.getNodeByName(randomHost[0])		
-			hostsToDisconnect.append(h)
-			s = net.getNodeByName(randomHost[1][1][0])		
-			print(f"Host {h.name} to disconnect from switch {s.name} for {disconnectTimer}s")
-		elif args.disconnectHosts is not None:
-			hostNames = args.disconnectHosts.split(',')			
-			for hostName in hostNames:
-				h = net.getNodeByName(hostName)
-				hostsToDisconnect.append(h)
-		elif args.disconnectLeader:
-			leaderNode = readCurrentZkLeader(logDir)
-			h = net.getNodeByName(leaderNode)
-			hostsToDisconnect.append(h)
+		disconnectTimer = args.disconnectDuration
+		netHosts, hostsToDisconnect = processDisconnect(net, logDir, args)
 	elif relocate:
 		seed()
 		hosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
