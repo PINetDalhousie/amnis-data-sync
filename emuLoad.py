@@ -109,7 +109,7 @@ def processDisconnect(net, logDir, args):
 		h = net.getNodeByName(randomHost[0])		
 		hostsToDisconnect.append(h)
 		s = net.getNodeByName(randomHost[1][1][0])		
-		print(f"Host {h.name} to disconnect from switch {s.name} for {args.disconnectTimer}s")
+		print(f"Host {h.name} to disconnect from switch {s.name} for {args.disconnectDuration}s")
 	elif args.disconnectHosts is not None:
 		hostNames = args.disconnectHosts.split(',')			
 		for hostName in hostNames:
