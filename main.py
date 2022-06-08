@@ -166,6 +166,9 @@ if __name__ == '__main__':
 	parser.add_argument('--single-consumer', dest='singleConsumer', action='store_true', help='Use a single, always connected consumer (per node) for the entire simulation')
 	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')
 	parser.add_argument('--disconnect', dest='disconnectDuration', type=int, default=0, help='Duration of the disconnection (in seconds)')
+	parser.add_argument('--dc-kraft-leader', dest='disconnectKraftLeader', action='store_true', help='Disconnect the kraft leader')
+	parser.add_argument('--dc-topic-leaders', dest='disconnectTopicLeaders', type=int, default=0, help='Disconnect a number of topic leader nodes')
+	parser.add_argument('--kraft-broker-sleep', dest='kraftBrokerSleep', type=int, default=300, help='Sleep to allow brokers to connect (in seconds)')
 	parser.add_argument('--latency-after-setup', dest='latencyAfterSetup', action='store_true', help='Lower the network latency before setting up Kafka, then set it back once Kafka is set up.')	
 
 	args = parser.parse_args()
@@ -186,6 +189,8 @@ if __name__ == '__main__':
 	# args.replicaMaxWait = 5000
 	# args.replicaMinBytes = 200000
 	# args.disconnectDuration = 0
+	# args.disconnectTopicLeaders = 0
+	# args.disconnectKraftLeader = False
 	# args.relocate = False
 	# args.singleConsumer = False
 	# args.setNetworkDelay = True
@@ -253,7 +258,8 @@ if __name__ == '__main__':
 	#emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace, logDir)
 					
-	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, args)
+	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)
+
 	print("Simulation complete")
 
 	# to kill all the running subprocesses

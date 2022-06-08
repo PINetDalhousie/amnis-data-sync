@@ -85,9 +85,75 @@ def printLinksBetween(net , n1, n2):
 			print(link.intf2)
 	
 
-def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, args, topicWaitTime=100):
+def readCurrentKraftLeader(logDir):
+	kraftLeader = None
+	with open(logDir+"/kraft/" + 'server-h1.log') as f:
+		for line in f:			
+			if "Completed transition to Leader" in line:
+				first = line.split("localId=")[1]				
+				kraftLeader = "h" + first.split(",")[0]	
+				break
+			elif "Completed transition to FollowerState" in line:
+				first = line.split("leaderId=")[1]
+				kraftLeader = "h" + first.split(",")[0]				
+				break
+	print(f'Kraft leader is {kraftLeader}')
+	return kraftLeader
+
+
+def getTopicLeader(issuingNode, topicNum):
+	n = None
+	try:
+		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+topicNum, shell=True)							
+		if 'ERROR' in out or 'Error' in out:
+			print(out)
+		else:
+			split1 = out.split('Leader: ')
+			split2 = split1[1].split('\t')
+			n = 'h' + split2[0]			
+			print(f"Leader for topic-{topicNum} is node {n}")
+	except Exception as e:
+		print(e)
+	finally:
+		return n
+
+def processDisconnect(net, logDir, args):	
+	hostsToDisconnect = []
+	netHosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}	
+	if args.disconnectTopicLeaders != 0:				
+		issuingNode = net.hosts[0]
+		print("Finding topic leaders at localhost:2181")
+		kraftLeaderNode = readCurrentKraftLeader(logDir)
+		# Find topic leaders
+		for i in range(args.nTopics):			
+			topicLeaderNode = getTopicLeader(issuingNode, str(i))			
+			if topicLeaderNode == kraftLeaderNode:
+				# Don't disconnect leader
+				print(f"Not adding {topicLeaderNode} to disconnect list as it is Kraft leader ")	
+				continue
+			elif topicLeaderNode != None:
+				h = net.getNodeByName(topicLeaderNode)
+				if not hostsToDisconnect.__contains__(h):
+					hostsToDisconnect.append(h)
+			if args.disconnectTopicLeaders == len(hostsToDisconnect):
+				break		
+
+	if args.disconnectKraftLeader:
+		kraftLeaderNode = readCurrentKraftLeader(logDir)
+		h = net.getNodeByName(kraftLeaderNode)
+		if not hostsToDisconnect.__contains__(h):
+			hostsToDisconnect.append(h)
+
+	return netHosts, hostsToDisconnect
+
+
+def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, logDir, args, topicWaitTime=100):
 
 	print("Start workload")
+
+	if args.kraftBrokerSleep > 0:
+		print(f"Sleeping for {args.kraftBrokerSleep}s to allow brokers to connect")
+		time.sleep(args.kraftBrokerSleep)
 
 	seed(1)
 
@@ -127,18 +193,14 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 
 	timer = 0
-	disconnect = args.disconnectDuration > 0
+	isDisconnect = args.disconnectKraftLeader or args.disconnectTopicLeaders != 0
 	relocate = args.relocate
-
-	if disconnect:
-		disconnectTimer = args.disconnectDuration
+	
+	# Set up disconnect
+	if isDisconnect:
 		isDisconnected = False
-		hosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
-		seed()
-		randomHost = choice(list(hosts.items()))				
-		h = net.getNodeByName(randomHost[0])		
-		s = net.getNodeByName(randomHost[1][1][0])		
-		print(f"Host {h.name} to disconnect from switch {s.name} for {disconnectTimer}s")
+		disconnectTimer = args.disconnectDuration
+		netHosts, hostsToDisconnect = processDisconnect(net, logDir, args)
 	elif relocate:
 		seed()
 		hosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
@@ -161,23 +223,23 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		time.sleep(10)
 		percentComplete = int((timer/duration)*100)
 		print("Processing workload: "+str(percentComplete)+"%")
-		if disconnect and percentComplete >= 10:
+		if isDisconnect and percentComplete >= 10:
 			if not isDisconnected:			
-				disconnectHost(net, h, s)
-				isDisconnected = True
+				disconnectHosts(net, netHosts, hostsToDisconnect)
+				isDisconnected = True							
 			elif isDisconnected and disconnectTimer <= 0: 			
-				reconnectHost(net, h, s)
+				reconnectHosts(net, netHosts, hostsToDisconnect)
 				isDisconnected = False
-				disconnect = False
+				isDisconnect = False
 			if isDisconnected:
 				disconnectTimer -= 10
 		elif relocate:
 			delLink(net, h, s)
 			addLink(net, h, s2)
 			relocate = False
-		timer += 10
-
-	print(f"Workload finished at {str(datetime.now())}")	
+		timer += 10	
+		
+	print(f"Workload finished at {str(datetime.now())}")		
 
 
 
@@ -196,17 +258,29 @@ def addLink(net, h, s2):
 	printLinksBetween(net, h, s2)
 	net.pingAll()
 
+def disconnectHosts(net, netHosts, hosts):	
+	for h in hosts:
+		netHost = netHosts[h.name]		
+		s = net.getNodeByName(netHost[1][0])		
+		disconnectHost(net, h, s)
+	#net.pingAll()
+
 def disconnectHost(net, h, s):		
 	print(f"***********Setting link down from {h.name} <-> {s.name} at {str(datetime.now())}")						
 	logging.info('Disconnected %s <-> %s at %s', h.name, s.name,  str(datetime.now()))
-	net.configLinkStatus(s.name, h.name, "down")		
-	net.pingAll()
+	net.configLinkStatus(s.name, h.name, "down")			
+
+def reconnectHosts(net, netHosts, hosts):
+	for h in hosts:
+		netHost = netHosts[h.name]		
+		s = net.getNodeByName(netHost[1][0])
+		reconnectHost(net, h, s)
+	#net.pingAll()
 
 def reconnectHost(net, h, s):
 	print(f"***********Setting link up from {h.name} <-> {s.name} at {str(datetime.now())}")
 	logging.info('Connected %s <-> %s at %s', h.name, s.name,  str(datetime.now()))
-	net.configLinkStatus(s.name, h.name, "up")									
-	net.pingAll()
+	net.configLinkStatus(s.name, h.name, "up")										
 
 def setNetworkDelay(net, newDelay=None):
 	nodes = net.switches + net.hosts	 
@@ -227,4 +301,4 @@ def setNetworkDelay(net, newDelay=None):
 						# Use the passed in param				
 						intf.link.intf1.config(delay=newDelay)
 						intf.link.intf2.config(delay=newDelay)
-					#print(intf.link.intf1.node.lastCmd + "\n" + intf.link.intf2.node.lastCmd)					
+					#print(intf.link.intf1.node.lastCmd + "\n" + intf.link.intf2.node.lastCmd)	
