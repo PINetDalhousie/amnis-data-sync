@@ -76,9 +76,9 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60```
   
-  9) Include a disconnect of a random host for a specified duration (in seconds) during the simulation (default 60s).
+  9) Include a disconnect of 3 random hosts for a specified duration (in seconds) during the simulation (default 60s).
 
-  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-random --dc-duration 20```
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-random 3 --dc-duration 20```
 
   10) Include a disconnect of specific hosts for a specified duration (in seconds) during the simulation.
 

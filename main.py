@@ -127,7 +127,12 @@ def validateInput(args):
 	# Check disconnect duration
 	if (args.disconnectDuration >= args.duration):
 		print("ERROR: Disconnect duration should be less than simulation duration.")
-		sys.exit(1)				
+		sys.exit(1)		
+
+	# Check random disconnect
+	if (args.disconnectRandom > args.nBroker):
+		print("ERROR: Disconnect nodes should be less than broker nodes.")
+		sys.exit(1)			
 
 if __name__ == '__main__': 
 
@@ -166,7 +171,7 @@ if __name__ == '__main__':
 	parser.add_argument('--single-consumer', dest='singleConsumer', action='store_true', help='Use a single, always connected consumer (per node) for the entire simulation')
 	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')
 	parser.add_argument('--dc-duration', dest='disconnectDuration', type=int, default=60, help='Duration of the disconnection (in seconds)')
-	parser.add_argument('--dc-random', dest='disconnectRandom', action='store_true', help='Disconnect a single random host')
+	parser.add_argument('--dc-random', dest='disconnectRandom', type=int, default=0, help='Disconnect a number of random hosts')
 	parser.add_argument('--dc-zk-leader', dest='disconnectZkLeader', action='store_true', help='Disconnect the zookeeper leader')
 	parser.add_argument('--dc-topic-leaders', dest='disconnectTopicLeaders', type=int, default=0, help='Disconnect a number of topic leader nodes')
 	parser.add_argument('--dc-hosts', dest='disconnectHosts', type=str, help='Disconnect a list of hosts (h1,h2..hn)')
@@ -191,7 +196,7 @@ if __name__ == '__main__':
 	# args.replicaMaxWait = 5000
 	# args.replicaMinBytes = 200000
 	# args.disconnectDuration = 60
-	# args.disconnectRandom = False
+	# args.disconnectRandom = 0
 	# args.disconnectZkLeader = False
 	# args.disconnectHosts = None
 	# args.disconnectTopicLeaders = 0

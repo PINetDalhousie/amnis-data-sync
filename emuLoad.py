@@ -103,13 +103,16 @@ def processDisconnect(net, logDir, args):
 	hostsToDisconnect = []
 	netHosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}
 
-	if args.disconnectRandom:
+	if args.disconnectRandom != 0:
 		seed()
-		randomHost = choice(list(netHosts.items()))				
-		h = net.getNodeByName(randomHost[0])		
-		hostsToDisconnect.append(h)
-		s = net.getNodeByName(randomHost[1][1][0])		
-		print(f"Host {h.name} to disconnect from switch {s.name} for {args.disconnectDuration}s")
+		randomIndex = randint(0, len(netHosts) -1)
+		netHostsList = list(netHosts.items())
+		while args.disconnectRandom != len(hostsToDisconnect):			
+			h = net.getNodeByName(netHostsList[randomIndex][0])
+			if not hostsToDisconnect.__contains__(h):		
+				hostsToDisconnect.append(h)
+				print(f"Host {h.name} to be disconnected for {args.disconnectDuration}s")
+			randomIndex = randint(0, len(netHosts) -1)					
 	elif args.disconnectHosts is not None:
 		hostNames = args.disconnectHosts.split(',')			
 		for hostName in hostNames:
@@ -221,7 +224,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 # 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	timer = 0
-	isDisconnect = args.disconnectRandom or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
+	isDisconnect = args.disconnectRandom != 0 or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
 	relocate = args.relocate
 	
 	# Set up disconnect
