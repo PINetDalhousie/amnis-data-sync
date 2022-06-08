@@ -84,11 +84,11 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-hosts h1,h2,h5```
 
-  11) Disconnect the Zookeeper contoller (leader) for a specified duration (in seconds) during the simulation.
+  11) Disconnect the Zookeeper contoller (leader) for a specified duration (in seconds) during the simulation. May or not disconnect an extra node when used in combination with ```-dc-hosts```.
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-zk-leader```
 
-  12) Disconnect a specific number of nodes that are topic leaders for a specified duration (in seconds) during the simulation.
+  12) Disconnect a specific number of nodes that are topic leaders for a specified duration (in seconds) during the simulation. Do not disconnect the ZK leader unless ```--dc-zk-leader```` is specified. 
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-topic-leaders 3```
   
