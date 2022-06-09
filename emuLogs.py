@@ -4,10 +4,18 @@ import os
 import logging
 
 import matplotlib.pyplot as plt
+from mininet.util import pmonitor
+
+ZOOKEEPER_LOG_FILE = "zk-log.txt"
+BROKER_LOG_FILE = "broker-log.txt"
 
 
 def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):  
 	logDir = "logs/kafka/nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)	
+	os.system("sudo rm -rf " + logDir + "/" + ZOOKEEPER_LOG_FILE)
+
+	os.system("sudo rm -rf " + logDir + "/" + BROKER_LOG_FILE)
+
 	os.system("sudo rm -rf " + logDir + "/bandwidth/; " + "sudo mkdir -p " + logDir + "/bandwidth/")
 	os.system("sudo rm -rf " + logDir + "/prod/; " + "sudo mkdir -p " + logDir + "/prod/")    
 	os.system("sudo rm -rf " + logDir + "/cons/; " + "sudo mkdir -p " + logDir + "/cons/")
@@ -20,9 +28,14 @@ def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):
 
 def cleanLogs():
 	#os.system("sudo rm -rf logs/kafka/")
-	os.system("sudo rm -rf kafka/logs/")   
+	os.system("sudo rm -rf kafka/logs/")
 	os.system("sudo rm -rf kafka-3.1.0/logs/") 
 
+def logMininetProcesses(popens, logFilePath):
+    bandwidthLog = open(logFilePath, "a")
+    for host, line in pmonitor(popens):
+        if host:
+            bandwidthLog.write("<%s>: %s" % (host.name, line))
 
 def logEvents(logDir, switches):
 	# Log when consumers got first messages

@@ -6,6 +6,9 @@ import os
 import sys
 import subprocess
 import time
+import multiprocessing
+
+import emuLogs
 
 
 def configureZkCluster(zkPlace):
@@ -62,13 +65,13 @@ def configureZkCluster(zkPlace):
 
 
 
-def runZk(net, zkPlace, zkWaitTime=100):
+def runZk(net, zkPlace, logDir, zkWaitTime=100):
 
 	netNodes = {}
 
 	for node in net.hosts:
 		netNodes[node.name] = node
-	
+	popens = {}
 	startTime = time.time()
 	for zNode in zkPlace:
 		zID = "h"+str(zNode)
@@ -77,8 +80,14 @@ def runZk(net, zkPlace, zkWaitTime=100):
 		
 		print("Creating Zookeeper instance at node "+str(zNode))
 
-		startingHost.popen("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper"+str(zNode)+".properties &", shell=True)
+		popens[startingHost] = startingHost.popen("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper"+str(zNode)+".properties &", shell=True)
 		time.sleep(1)
+	
+	logPath = logDir + "/" + emuLogs.ZOOKEEPER_LOG_FILE
+	process = multiprocessing.Process(target=emuLogs.logMininetProcesses, args=(popens, logPath))
+	process.start()
+
+	
 	
 	zkWait = True
 	totalTime = 0

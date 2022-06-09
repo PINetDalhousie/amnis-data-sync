@@ -76,15 +76,27 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60```
   
-  9) Include a disconnect of a random host for a specified duration (in seconds) during the simulation.
+  9) Include a disconnect of 3 random hosts for a specified duration (in seconds) during the simulation (default 60s).
 
-  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --disconnect 20```
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-random 3 --dc-duration 20```
+
+  10) Include a disconnect of specific hosts for a specified duration (in seconds) during the simulation.
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-hosts h1,h2,h5```
+
+  11) Disconnect the Zookeeper contoller (leader) for a specified duration (in seconds) during the simulation. May or not disconnect an extra node when used in combination with ```-dc-hosts```.
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-zk-leader```
+
+  12) Disconnect a specific number of nodes that are topic leaders for a specified duration (in seconds) during the simulation. Do not disconnect the ZK leader unless ```--dc-zk-leader``` is specified. 
+
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --dc-topic-leaders 3```
   
-  10) Run the simulation using the single consumer behaviour - one consumer per host that subscribes to all topics and is always connected.
+  13) Run the simulation using the single consumer behaviour - one consumer per host that subscribes to all topics and is always connected.
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --single-consumer```
   
-  11) Set the network latency between switches to apply after kafka has set up. This is to used to let kafka get set up on a low latency, then run the simulation using high latency.
+  14) Set the network latency between switches to apply after kafka has set up. This is to used to let kafka get set up on a low latency, then run the simulation using high latency.
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --latency-after-setup```
   

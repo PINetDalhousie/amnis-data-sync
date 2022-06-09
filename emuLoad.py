@@ -12,6 +12,8 @@ import time
 import os
 import sys
 
+from emuLogs import ZOOKEEPER_LOG_FILE
+
 
 def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 
@@ -85,6 +87,18 @@ def printLinksBetween(net , n1, n2):
 			print(link.intf2)
 	
 
+def readCurrentZkLeader(logDir):
+	zkLeader = None
+	with open(logDir+"/" + ZOOKEEPER_LOG_FILE) as f:
+		for line in f:
+			if "LEADING - LEADER ELECTION TOOK " in line:
+				first = line.split(">")[0]
+				zkLeader = first[1:]
+				print(f'Zookeeper leader is {zkLeader}')
+				break
+	return zkLeader
+
+
 def readCurrentKraftLeader(logDir):
 	kraftLeader = None
 	with open(logDir+"/kraft/" + 'server-h1.log') as f:
@@ -120,7 +134,22 @@ def getTopicLeader(issuingNode, topicNum):
 def processDisconnect(net, logDir, args):	
 	hostsToDisconnect = []
 	netHosts = {k:v for k,v in net.topo.ports.items() if 'h' in k}	
-	if args.disconnectTopicLeaders != 0:				
+	if args.disconnectRandom != 0:
+		seed()
+		randomIndex = randint(0, len(netHosts) -1)
+		netHostsList = list(netHosts.items())
+		while args.disconnectRandom != len(hostsToDisconnect):			
+			h = net.getNodeByName(netHostsList[randomIndex][0])
+			if not hostsToDisconnect.__contains__(h):		
+				hostsToDisconnect.append(h)
+				print(f"Host {h.name} to be disconnected for {args.disconnectDuration}s")
+			randomIndex = randint(0, len(netHosts) -1)					
+	elif args.disconnectHosts is not None:
+		hostNames = args.disconnectHosts.split(',')			
+		for hostName in hostNames:
+			h = net.getNodeByName(hostName)
+			hostsToDisconnect.append(h)
+	elif args.disconnectTopicLeaders != 0:				
 		issuingNode = net.hosts[0]
 		print("Finding topic leaders at localhost:2181")
 		kraftLeaderNode = readCurrentKraftLeader(logDir)
@@ -141,6 +170,9 @@ def processDisconnect(net, logDir, args):
 	if args.disconnectKraftLeader:
 		kraftLeaderNode = readCurrentKraftLeader(logDir)
 		h = net.getNodeByName(kraftLeaderNode)
+	if args.disconnectZkLeader:
+		zkLeaderNode = readCurrentZkLeader(logDir)
+		h = net.getNodeByName(zkLeaderNode)
 		if not hostsToDisconnect.__contains__(h):
 			hostsToDisconnect.append(h)
 
@@ -187,13 +219,16 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		setNetworkDelay(net)
 		time.sleep(1)
 
+	print(f"Sleeping for {args.consumerSetupSleep} to allow consumers to connect")
+	time.sleep(args.consumerSetupSleep)
+
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
 	print(f"Producers created at {str(datetime.now())}")
 	time.sleep(1)
 
 
 	timer = 0
-	isDisconnect = args.disconnectKraftLeader or args.disconnectTopicLeaders != 0
+	isDisconnect = args.disconnectRandom != 0 or args.disconnectKraftLeader or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
 	relocate = args.relocate
 	
 	# Set up disconnect

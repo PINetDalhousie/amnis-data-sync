@@ -65,22 +65,20 @@ try:
 		startTime = time.time()		
 		for msg in consumer:
 			try:
-				# TODO: Remove the ignore errors
-				msgContent = str(msg.value, 'utf-8', errors='ignore')
+				msgContent = str(msg.value, 'utf-8')
 				prodID = msgContent[:2]
-				bMsgID = bytearray(msgContent[2:6], 'utf-8')
-				msgID = int.from_bytes(bMsgID, 'big')
+				msgID = msgContent[2:8]
 				topic = msg.topic
 				offset = str(msg.offset)    
 
-				key = prodID+"-"+str(msgID)+"-"+topic
+				key = prodID+"-"+msgID+"-"+topic
 				if key in messages:
-					logging.warn('ProdID %s MSG %s Topic %s already read. Not logging.', prodID, str(msgID), topic)				         
+					logging.warn('ProdID %s MSG %s Topic %s already read. Not logging.', prodID, msgID, topic)				         
 				else:
 					messages[key] = offset
-					logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, str(msgID), str(consumptionLag), topic, offset, str(len(msgContent)))           			
+					logging.info('Prod ID: %s; Message ID: %s; Latest: %s; Topic: %s; Offset: %s; Size: %s', prodID, msgID, str(consumptionLag), topic, offset, str(len(msgContent)))           			
 			except Exception as e:
-				logging.error(e + " from messageID %s", str(msgID))				
+				logging.error(e + " from messageID %s", msgID)				
 		stopTime = time.time()
 		topicCheckWait = topicCheckInterval -(stopTime - startTime)
 		if(topicCheckWait > 0):
