@@ -170,6 +170,8 @@ def processDisconnect(net, logDir, args):
 	if args.disconnectKraftLeader:
 		kraftLeaderNode = readCurrentKraftLeader(logDir)
 		h = net.getNodeByName(kraftLeaderNode)
+		if not hostsToDisconnect.__contains__(h):
+			hostsToDisconnect.append(h)
 	if args.disconnectZkLeader:
 		zkLeaderNode = readCurrentZkLeader(logDir)
 		h = net.getNodeByName(zkLeaderNode)
