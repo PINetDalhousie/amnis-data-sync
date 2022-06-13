@@ -104,8 +104,8 @@ def initConsStruct(switches):
 def readConsumerData():
 
     #print("Start reading cons data: " + str(datetime.now()))
-    for consId in range(1, switches):
-        #print(logDir+'cons/cons-'+str(consId)+'.log')
+    for consId in range(1, switches+1):
+         #print(logDir+'cons/cons-'+str(consId)+'.log')
         f = open(logDir+'cons/cons-'+str(consId)+'.log')
 
         for lineNum, line in enumerate(f,1):         #to get the line number
