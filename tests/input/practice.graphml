@@ -29,7 +29,7 @@
       <data key="zk">1</data>
       <data key="bk">1</data>
       <data key="prodType">SFST</data>
-      <data key="prodCfg">/home/monzurul/Desktop/sparkPractice/maritimeData/maritime_simplied_dataset1.csv,topic-0</data>    
+      <data key="prodCfg">message-data/csv/maritime_simplied_dataset1.csv,topic-0</data>    
       <data key="sparkCfg">practice.py,topic-0</data>       
 	  </node>            
     

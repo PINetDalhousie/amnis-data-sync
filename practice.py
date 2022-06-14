@@ -19,11 +19,15 @@ spark = SparkSession.builder.appName("maritimeSpark")\
     .master("local[4]").getOrCreate()
 spark.sparkContext.setLogLevel("ERROR")
 
+logging.basicConfig(filename="extra.log",\
+            format='%(asctime)s %(levelname)s:%(message)s',\
+            level=logging.INFO)
+
 streamStart = spark\
     .readStream.format('socket')\
         .option('host', host).option('port', port)\
-            .load()\
-                .selectExpr("CAST (value as STRING)")
+            .load()#\
+                # .selectExpr("CAST (value as STRING)")
 
 vesselSchema = StructType( [StructField('MMSI', IntegerType(), True),\
     StructField('BaseDateTime', TimestampType(), True),\
@@ -46,6 +50,6 @@ query = vesselDf.select("LAT").where("MMSI > 18")
 
 ds_file_sink = query.writeStream\
     .format("csv") \
-        .option("path", "/home/monzurul/Desktop/sparkPractice/fileSinkOutputDir")\
-            .option("checkpointLocation", "/home/monzurul/Desktop/sparkPractice/maritimeCheckpoint")\
+        .option("path", "/home/ubuntu/Documents/fileSinkOutputDir")\
+            .option("checkpointLocation", "/home/ubuntu/Documents/maritimeCheckpoint")\
     .start()

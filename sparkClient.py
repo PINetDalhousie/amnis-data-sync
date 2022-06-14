@@ -79,8 +79,8 @@ try:
 
     query = sdfRides.writeStream.queryName("uber_ride_query")\
         .outputMode("append").format("csv")\
-        .option("path", "/home/ubuntu/Documents/uber_parc")\
-        .option("checkpointLocation", "/home/ubuntu/Documents/uber_check")\
+        .option("path", "/home/ubuntu/Documents/uber_parc1")\
+        .option("checkpointLocation", "/home/ubuntu/Documents/uber_check1")\
         .trigger(processingTime='60 seconds').start()
     query.awaitTermination()
 

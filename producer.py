@@ -142,7 +142,8 @@ try:
 		bMsgID = msgID.to_bytes(4, 'big')
 		newNodeID = nodeID.zfill(2)
 		bNodeID = bytes(newNodeID, 'utf-8')
-		bMsg = bNodeID + bMsgID + bytearray(message)
+		# bMsg = bNodeID + bMsgID + bytearray(message)
+		bMsg = bytearray(message)
 		
 		#for producing data in random topic
 		# topicID = randint(0, nTopics-1)

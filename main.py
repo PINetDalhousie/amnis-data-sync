@@ -27,6 +27,16 @@ GROUP_MAX_SESSION_TIMEOUT_MS = 1800000
 
 REPLICA_LAG_TIME_MAX_MS = 30000
 
+# Add relevant dependency to connect Kafka with Spark
+def addDependency():
+    src = "/home/ubuntu/Desktop/amnis-data-sync/dependency/*"
+
+	# Local maven directory
+    dst = "/root/.ivy2"
+
+    os.system("sudo mkdir -p "+dst+"/cache "+dst+"/jars")
+    os.system("sudo cp -r "+src+" "+dst)
+	
 
 # Kill all subprocesses
 def killSubprocs(brokerPlace, zkPlace):	
@@ -124,6 +134,9 @@ def validateInput(args):
 		print("WARNING: Not all topics will be checked within the given duration of the simulation. Simulation Time:" +  str(args.duration) + " seconds. Time Required to Check All Topics at Least Once: "+  str(args.topicCheckInterval * args.nTopics) + " seconds.")
 
 if __name__ == '__main__': 
+
+	#Add dependency to connect kafka & Spark
+	addDependency()
 
 	parser = argparse.ArgumentParser(description='Emulate data sync in mission critical networks.')
 	parser.add_argument('topo', type=str, help='Network topology')

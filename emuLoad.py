@@ -106,7 +106,8 @@ def spawnSparkClients(net, sparkDetailsList):
 		node = netNodes[sprkID]
 		print("node is: "+str(node.name))
 		print("port is: "+str(port))
-		out= node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
+		# out= node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
+		out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp+" "+str(node.name), shell=True) 
 		print(out)
 		
 
@@ -156,11 +157,11 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	time.sleep(10)
 	print("Producers created")
 
-	spawnConsumers(net, nTopics, consumerRate, args, consDetailsList, sparkSocket)
-	time.sleep(10)
-	print("Consumers created")
+	# spawnConsumers(net, nTopics, consumerRate, args, consDetailsList, sparkSocket)
+	# time.sleep(10)
+	# print("Consumers created")
 
-	time.sleep(30)
+	# time.sleep(30)
 
 	spawnSparkClients(net, sparkDetailsList)
 	time.sleep(10)
