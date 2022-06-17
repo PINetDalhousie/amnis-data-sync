@@ -5,6 +5,8 @@ from mininet.cli import CLI
 from mininet.node import RemoteController
 from mininet.link import TCLink
 
+from datetime import datetime
+
 import os
 import sys
 import subprocess
@@ -247,7 +249,7 @@ if __name__ == '__main__':
 	for switch in net.switches:
 		net.get(switch.name).start([])
 
-	logging.info('Network started')
+	logging.info('Network started at ' + str(datetime.now()))
 	#emuNetwork.configureNetwork(args.topo)
 	#time.sleep(5)
 
@@ -268,32 +270,19 @@ if __name__ == '__main__':
 					
 	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)
 	print("Simulation complete")
+	logging.info('Simulation complete at ' + str(datetime.now()))
+
 
 	# to kill all the running subprocesses
 	killSubprocs(brokerPlace, zkPlace)
 
-	# Log events
-	emuLogs.logEvents(logDir, args.nBroker)
 
 	net.stop()
-	logging.info('Network stopped')
+	logging.info('Network stopped at ' + str(datetime.now()))
 
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
-
-	#TODO: Temp hardcode to run plotting
-	#os.system(f"sudo python3 modifiedLatencyPlotScript.py --number-of-switches {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/")
-	#os.system(f"sudo python3 bandwidthPlotScript.py --number-of-switches {args.nBroker} --port-type access-port --message-size fixed,1000 --message-rate 30.0 --ntopics {args.nBroker} --replication {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/ --switch-ports S1-P1,S2-P1,S3-P1,S4-P1,S5-P1,S6-P1")	
-
-
-
-
-
-
-
-
-
 
 
 

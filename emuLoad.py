@@ -86,6 +86,19 @@ def printLinksBetween(net , n1, n2):
 			print(link.intf1)
 			print(link.intf2)
 	
+def logTopicLeaders(net, logDir, args):
+	issuingNode = net.hosts[0]
+	print("Finding topic leaders at localhost:2181")
+	zkLeaderNode = readCurrentZkLeader(logDir)
+	logging.info("ZK Leader node is " + zkLeaderNode)	
+	for i in range(args.nTopics):
+		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
+		split1 = out.split('Leader: ')
+		split2 = split1[1].split('\t')
+		topicLeaderNode = 'h' + split2[0]			
+		print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
+		logging.info("topic-"+ str(i) +" leader is node " + topicLeaderNode)
+		
 
 def readCurrentZkLeader(logDir):
 	zkLeader = None
@@ -223,6 +236,9 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 # 		consumer_groups = net.hosts[i].cmd("kafka/bin/kafka-consumer-groups.sh --bootstrap-server 10.0.0."+str(i+1)+":9092 --list", shell=True)
 # 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
+	# Log the topic leaders
+	logTopicLeaders(net, logDir, args)
+	
 	timer = 0
 	isDisconnect = args.disconnectRandom != 0 or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
 	relocate = args.relocate
