@@ -264,7 +264,8 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 		
 
-	print(f"Starting workload at {str(datetime.now())}")		
+	print(f"Starting workload at {str(datetime.now())}")
+	logging.info('Starting workload at ' + str(datetime.now()))
 
 	while timer < duration:
 		time.sleep(10)
@@ -286,7 +287,9 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 			relocate = False
 		timer += 10
 
+	logTopicLeaders(net, logDir, args)
 	print(f"Workload finished at {str(datetime.now())}")	
+	logging.info('Workload finished at ' + str(datetime.now()))
 
 
 
