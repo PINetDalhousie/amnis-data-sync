@@ -194,47 +194,57 @@ def plotLatencyScatter():
                             
 
 
-def plotLactencyScatterConsumers(switches):
+def plotConsTopicLactencyScatter(switches):
     consumersLatency = []
     timesSent = []
     prodIDs = []
+    topicIDs = []
 
     os.makedirs(logDir+"cons-latency-plots", exist_ok=True)
+    os.makedirs(logDir+"topic-latency-plots", exist_ok=True)
 
     for consId in range(switches):
         consumersLatency.append({})
         timesSent.append({})
         prodIDs.append({})
+        topicIDs.append({})
     
     with open(logDir+"/latency-log.txt", "r") as f:
         for lineNum, line in enumerate(f,1):         #to get the line number            
             if "Latency of this message: " in line:                
                 lineSplit = line.split(" ")                
                 prodID = lineSplit[2]
+                topicID = lineSplit[8]
                 consID = lineSplit[11]
                 timeSent = lineSplit[15]
                 
                 firstSplit = line.split("Latency of this message: 0:")
                 latency = float(firstSplit[1][0:2])*60.0 + float(firstSplit[1][3:5])
                 
-                timesSent[int(consID)-1][lineNum] = timeSent.replace(",", ".")                
-                consumersLatency[int(consID)-1][lineNum] = latency
-                prodIDs[int(consID)-1][lineNum] = prodID
+                key = int(consID)-1
+                timesSent[key][lineNum] = timeSent.replace(",", ".")                
+                consumersLatency[key][lineNum] = latency
+                prodIDs[key][lineNum] = prodID
+                topicIDs[key][lineNum] = topicID  
                     
     # Sort based on time sent
     for i in range(len(timesSent)):
         y = []
         x = []
         prodIdSorted = []
+        topicIdSorted = []
         j=0
         for k in sorted(timesSent[i].items(), key=lambda x: x[1]) :
-            val = int(prodIDs[i][k[0]]) 
-            prodIdSorted.append(val)
+            prodID = int(prodIDs[i][k[0]]) 
+            prodIdSorted.append(prodID)
+            topicID = int(topicIDs[i][k[0]]) 
+            topicIdSorted.append(topicID)
             lat = consumersLatency[i][k[0]]
             y.append(lat)
             x.append(j)
             j = j+1
         
+        # Create Producer plot
         # Set colors
         fig, ax = plt.subplots()
         colors = cm.rainbow(np.linspace(0, 1, len(prodIdSorted)))
@@ -246,7 +256,22 @@ def plotLactencyScatterConsumers(switches):
         plt.title("Consumer " + str(i+1) + " Latency Measurement")
         plt.legend(*scatter.legend_elements(), loc='upper center', bbox_to_anchor=(0.5, -0.05),
             fancybox=True, shadow=True, ncol=5, markerscale=2, title="Producer")
-        plt.savefig(logDir+"cons-latency-plots/latency-plot-cons-"+str(i+1),bbox_inches="tight")
+        plt.savefig(logDir+"cons-latency-plots/latency-plot-prod-cons-"+str(i+1),bbox_inches="tight")
+        clearExistingPlot()
+
+        # Create topic plot
+        # Set colors
+        fig, ax = plt.subplots()
+        colors = cm.rainbow(np.linspace(0, 1, len(topicIdSorted)))
+        scatter = ax.scatter(x, y, c=topicIdSorted)
+
+        # Create rest of plot
+        plt.xlabel('Message')
+        plt.ylabel('Latency(s)')
+        plt.title("Consumer " + str(i+1) + " Latency Measurement")
+        plt.legend(*scatter.legend_elements(), loc='upper center', bbox_to_anchor=(0.5, -0.05),
+            fancybox=True, shadow=True, ncol=5, markerscale=2, title="Topic")
+        plt.savefig(logDir+"topic-latency-plots/latency-plot-topic-cons-"+str(i+1),bbox_inches="tight")
         clearExistingPlot()
 
 
@@ -370,7 +395,7 @@ clearExistingPlot()
 plotLatencyCDF()
 clearExistingPlot()
 
-plotLactencyScatterConsumers(switches)
+plotConsTopicLactencyScatter(switches)
 clearExistingPlot()
 
 # latencyLog = open(logDir+"/latency-log.txt", "a")
