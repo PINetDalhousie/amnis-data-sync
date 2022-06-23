@@ -18,6 +18,7 @@ import emuKafka
 import emuZk
 import emuLoad
 import emuLogs
+import emuSpark
 
 pID=0
 popens = {}
@@ -169,8 +170,6 @@ if __name__ == '__main__':
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
     
-	parser.add_argument('--spark-socket', dest='sparkSocket', type=int, default=0, help='Support for Spark')    
-
 	args = parser.parse_args()
 
 	# print(args)
@@ -189,8 +188,10 @@ if __name__ == '__main__':
 			autoSetMacs = True,
 			autoStaticArp = True)
 
-# 	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
-	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList = emuKafka.placeKafkaBrokers(net, args.topo)    
+	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo)
+
+	#Get Spark configuration
+	sparkDetailsList = emuSpark.placeKafkaBrokers(net, args.topo)    
 	
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
@@ -222,13 +223,6 @@ if __name__ == '__main__':
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
     
-	# CLI(net)    
-
-# 	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString,\
-# 		 args.consumerRate, args.duration, args,producerPlace, consumerPlace, args.sparkSocket,\
-# 			 producerTypePlace, producerConfigFile, consumerTopicFile, topicPlace)
-# 	print("Simulation complete")
-
 	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList)
 
 	# CLI(net)

@@ -57,63 +57,53 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDet
 
 
 
-def spawnConsumers(net, nTopics, cRate, args, consDetailsList, sparkSocket):
-
-	fetchMinBytes = args.fetchMinBytes
-	fetchMaxWait = args.fetchMaxWait
-	sessionTimeout = args.sessionTimeout
-	brokers = args.nBroker    
-	mSizeString = args.mSizeString
-	mRate = args.mRate    
-	replication = args.replication  
-	topicCheckInterval = args.topicCheckInterval   
+def spawnConsumers(net, consDetailsList):
 
 	netNodes = {}
-	if sparkSocket == 1:
-		portId = 65450
-	else:
-		portId = 0
 
 	for node in net.hosts:
 		netNodes[node.name] = node
         
 	for cons in consDetailsList:
 		consNode = cons["nodeId"]
-		consTopic = cons["consumeFromTopic"][0]
+		topicName = cons["consumeFromTopic"][0]
 		consID = "h"+consNode      
 		node = netNodes[consID]
-		node.popen("python3 consumer.py "+str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "
-		+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(portId)
-		+" "+str(consTopic)+" &", shell=True)
-		if sparkSocket == 1:        
-			portId += 1
+		node.popen("python3 consumer.py "+str(node.name)+" "+str(topicName)+" &", shell=True)
+
 
 def spawnSparkClients(net, sparkDetailsList):
 	netNodes = {}
-	port = 12345
 
 	for node in net.hosts:
 		netNodes[node.name] = node
 
 	for sprk in sparkDetailsList:
+		time.sleep(30)
+		
 		sparkNode = sprk["nodeId"]
+		sparkInputFrom = sprk["topicsToConsume"]
 		sparkApp = sprk["applicationPath"]
-		sparkTopic = sprk["topicsToConsume"][0]
+		sparkOutputTo = sprk["produceTo"]
 		print("spark node: "+sparkNode)
 		print("spark App: "+sparkApp)
+		print("spark input from: "+sparkInputFrom)
+		print("spark output to: "+sparkOutputTo)
+		print("*************************")
 
 		sprkID = "h"+sparkNode
 		node = netNodes[sprkID]
-		print("node is: "+str(node.name))
-		print("port is: "+str(port))
+
 		# out= node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
-		out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp+" "+str(node.name), shell=True) 
+		out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+					+" "+str(node.name)+" "+sparkInputFrom+" "+sparkOutputTo, shell=True) 
 		print(out)
+
+		# node.popen("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+		# 			+" "+str(node.name)+" "+sparkInputFrom+" "+sparkOutputTo+" &", shell=True) 
 		
 
 def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):
-
-	sparkSocket = args.sparkSocket
 	nTopics = args.nTopics
 	replication = args.replication
 	mSizeString = args.mSizeString
@@ -137,7 +127,8 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	startTime = time.time()
 
 	for topicName in topicPlace:
-		issuingID = randint(0, nHosts-1)
+		#Creating all topics in broker 1
+		issuingID = 0    #randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]
 
 		print("Creating topic "+topicName+" at broker "+str(issuingID+1))
@@ -150,14 +141,14 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	
 	stopTime = time.time()
 	totalTime = stopTime - startTime
-	print("Successfully Created " + str(nTopics) + " Topics in " + str(totalTime) + " seconds")
+	print("Successfully Created " + str(len(topicPlace)) + " Topics in " + str(totalTime) + " seconds")
 	
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList)
 	time.sleep(10)
 	print("Producers created")
 
-	# spawnConsumers(net, nTopics, consumerRate, args, consDetailsList, sparkSocket)
+	# spawnConsumers(net, consDetailsList)
 	# time.sleep(10)
 	# print("Consumers created")
 
@@ -167,7 +158,7 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	time.sleep(10)
 	print("Spark Clients created")
 
-	time.sleep(30)
+	time.sleep(60)
    
 
 	timer = 0

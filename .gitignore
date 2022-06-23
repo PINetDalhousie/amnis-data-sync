@@ -3,5 +3,3 @@ kafka/logs/
 logs/
 data/
 analyses/
-tests/input/practice.graphml
-practice.py

@@ -32,11 +32,6 @@ def readConsConfig(consConfig):
 
 	return consTopic
 
-def readSparkConfig(sparkConfig):
-	sparkApp = sparkConfig.split(",")[0]
-	topicsToConsume = sparkConfig.split(",")[1:]
-
-	return sparkApp, topicsToConsume
 
 def configureKafkaCluster(brokerPlace, zkPlace, args):
 	print("Configure kafka cluster")
@@ -104,11 +99,6 @@ def placeKafkaBrokers(net, inputTopoFile):
 	consDetails = {}
 	consDetailsKeys = {"nodeId", "consumeFromTopic"}
 
-	sparkDetailsList = []
-	sparkDetails = {}
-	sparkDetailsKeys = {"nodeId", "applicationPath", "topicsToConsume"}
-
-
 	#Read topo information
 	try:
 		inputTopo = nx.read_graphml(inputTopoFile)
@@ -143,15 +133,6 @@ def placeKafkaBrokers(net, inputTopoFile):
 				consTopics = readConsConfig(data["consumerConfig"])
 				consDetails = {"nodeId": node[1], "consumeFromTopic": consTopics}
 				consDetailsList.append(consDetails)
-
-			if 'sparkConfig' in data: 
-				sparkApp, topicsToConsume = readSparkConfig(data["sparkConfig"])
-
-				consDetails = {"nodeId": node[1], "consumeFromTopic": topicsToConsume}
-				consDetailsList.append(consDetails)
-				
-				sparkDetails = {"nodeId": node[1], "applicationPath": sparkApp, "topicsToConsume": topicsToConsume}
-				sparkDetailsList.append(sparkDetails)
             
 	# print("zookeepers:\n")
 	# print(*zkPlace)
@@ -164,10 +145,7 @@ def placeKafkaBrokers(net, inputTopoFile):
 	# print("consumer details")
 	# print(*consDetailsList)
 
-	# print("spark details")
-	# print(*sparkDetailsList)
-
-	return brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList
+	return brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList
 
 
 

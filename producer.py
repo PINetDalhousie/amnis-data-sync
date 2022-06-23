@@ -153,7 +153,7 @@ try:
 		topicName = prodTopic
 
 		producer.send(topicName, bMsg)
-		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID))
+		logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)
 # 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
 		msgID += 1
 		time.sleep(1.0/(mRate*tClass))
