@@ -1,10 +1,10 @@
 # Sentiment analysis
 
-<describe the application>
+TODO: describe the application
 
 ## Architecture
 
-<add a figure depicting the chain>
+TODO: add a figure depicting the chain
 
 ## Queries  
   
@@ -19,3 +19,9 @@
   Split
   
   Operator
+  
+## Running
+  
+ TODO: add command for running the application
+ 
+ '''sudo python3 main.py --input-file use-cases/app-testing/sentiment-analysis/sentiment-topo.graphml'''
