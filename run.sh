@@ -8,7 +8,8 @@ cp ./plot-scripts/modifiedLatencyPlotScript.py ./
 echo "Result directory is $RESULT_DIR"
 
 echo "********Running sim"
-sudo python3 main.py tests/input/star/star-ten-node-topo.graphml --nbroker $SWITCHES --nzk $SWITCHES --message-rate 30.0 --replication $SWITCHES --message-file message-data/xml/Cars103.xml --time 300 --replica-min-bytes 200000 --replica-max-wait 5000 --ntopics $SWITCHES --topic-check 0.1 --consumer-rate 0.5 --compression gzip --single-consumer
+#sudo python3 main.py tests/input/star/star-ten-node-topo.graphml --nbroker $SWITCHES --nzk $SWITCHES --message-rate 30.0 --replication $SWITCHES --message-file message-data/xml/Cars103.xml --time 300 --replica-min-bytes 200000 --replica-max-wait 5000 --ntopics $SWITCHES --topic-check 0.1 --consumer-rate 0.5 --compression gzip --single-consumer
+sudo python3 main.py tests/input/star/star-ten-node-topo.graphml --nbroker $SWITCHES --nzk $SWITCHES --message-rate 30.0 --replication $SWITCHES --message-file message-data/xml/Cars103.xml --time 300 --replica-min-bytes 200000 --replica-max-wait 5000 --ntopics $SWITCHES --topic-check 0.1 --consumer-rate 0.5 --compression gzip --single-consumer --batch-size 16384 --linger 5000 --dc-topic-leaders 1 --dc-duration 60
 
 echo "********Renaming logs folder"
 sudo mv logs/kafka/$DIR $RESULT_DIR
@@ -19,6 +20,12 @@ sudo python3 bandwidthPlotScript.py --number-of-switches $SWITCHES --port-type a
 
 echo "********Running latency plot script"
 sudo python3 modifiedLatencyPlotScript.py --number-of-switches $SWITCHES --log-dir $RESULT_DIR
+
+echo "********Moving pcap files"
+sudo chmod ugo+rwx /tmp/*pcap 
+PCAPS=logs/kafka/$1/pcaps/
+sudo mkdir $PCAPS
+sudo mv /tmp/*pcap $PCAPS
 
 rm ./bandwidthPlotScript.py
 rm ./modifiedLatencyPlotScript.py

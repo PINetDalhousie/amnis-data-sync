@@ -162,9 +162,20 @@ def processDisconnect(net, logDir, args):
 	return netHosts, hostsToDisconnect
 
 
+def traceWireshark(hostsToCapture, f):
+	for h in hostsToCapture:		
+		#temp = h.nameToIntf		
+		hostName = h.name
+		filename = "/tmp/"+ hostName + "-eth1" + "-" + f + ".pcap"
+		output = h.cmd("sudo tcpdump -i " + hostName +"-eth1 -w "+ filename +" &", shell=True)	
+		print(output)
+
+
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, logDir, args, topicWaitTime=100):
 
-	print("Start workload")
+	print("Start workload")	
+	if args.captureAll:
+		traceWireshark(net.hosts, "start")
 
 	seed(1)
 
@@ -237,7 +248,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 # 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	# Log the topic leaders
-	logTopicLeaders(net, logDir, args)
+	logTopicLeaders(net, logDir, args)	
 	
 	timer = 0
 	isDisconnect = args.disconnectRandom != 0 or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
@@ -273,10 +284,12 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		print("Processing workload: "+str(percentComplete)+"%")
 		if isDisconnect and percentComplete >= 10:
 			if not isDisconnected:			
-				disconnectHosts(net, netHosts, hostsToDisconnect)
+				disconnectHosts(net, netHosts, hostsToDisconnect)				
 				isDisconnected = True
 			elif isDisconnected and disconnectTimer <= 0: 			
 				reconnectHosts(net, netHosts, hostsToDisconnect)
+				if args.captureAll:
+					traceWireshark(hostsToDisconnect, "reconnect")
 				isDisconnected = False
 				isDisconnect = False
 			if isDisconnected:
