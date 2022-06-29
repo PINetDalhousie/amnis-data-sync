@@ -4,10 +4,10 @@ In this application, we use python's specialized NLP library 'Textblob' to analy
 
 ## Architecture
 
-#### Topology
+### Application Chain
 ![image](https://user-images.githubusercontent.com/6629591/176445094-7222ba18-619e-4d91-a805-272dfe57c100.png)
 
-#### Application Chain
+### Topology
 ![image](https://user-images.githubusercontent.com/6629591/176445449-13c86e17-037e-4650-9165-c241afa79b86.png)
 
 
