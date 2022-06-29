@@ -1,7 +1,18 @@
 #!/usr/bin/python3
 
 import sys
+import os
 import networkx as nx
+
+# Add relevant dependency to connect Kafka with Spark
+def addSparkDependency():
+    src = "dependency/*"
+
+	# Local maven directory
+    dst = "/root/.ivy2"
+
+    os.system("sudo mkdir -p "+dst+"/cache "+dst+"/jars")
+    os.system("sudo cp -r "+src+" "+dst)
 
 def readSparkConfig(sparkConfig):
     topicsToConsume = sparkConfig.split(",")[0]
@@ -10,7 +21,7 @@ def readSparkConfig(sparkConfig):
     
     return topicsToConsume, sparkApp, produceTo
     
-def placeKafkaBrokers(net, inputTopoFile):
+def getSparkDetails(net, inputTopoFile):
 
 	sparkDetailsList = []
 	sparkDetails = {}
@@ -42,3 +53,8 @@ def placeKafkaBrokers(net, inputTopoFile):
 	print(*sparkDetailsList)
 
 	return sparkDetailsList
+
+def cleanSparkDependency():
+# 	os.system("sudo rm -rf logs/kafka/")
+	os.system("sudo rm -rf /root/.ivy2/cache")
+	os.system("sudo rm -rf /root/.ivy2/jars")

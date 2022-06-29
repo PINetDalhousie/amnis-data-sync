@@ -144,10 +144,6 @@ try:
 		bNodeID = bytes(newNodeID, 'utf-8')
 		# bMsg = bNodeID + bMsgID + bytearray(message)
 		bMsg = bytearray(message)
-		
-		#for producing data in random topic
-		# topicID = randint(0, nTopics-1)
-		# topicName = 'topic-'+str(topicID)
 
 		#for producing data in fixed topic from producer config
 		topicName = prodTopic

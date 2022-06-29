@@ -28,17 +28,6 @@ GROUP_MAX_SESSION_TIMEOUT_MS = 1800000
 
 REPLICA_LAG_TIME_MAX_MS = 30000
 
-# Add relevant dependency to connect Kafka with Spark
-def addDependency():
-    src = "/home/ubuntu/Desktop/amnis-data-sync/dependency/*"
-
-	# Local maven directory
-    dst = "/root/.ivy2"
-
-    os.system("sudo mkdir -p "+dst+"/cache "+dst+"/jars")
-    os.system("sudo cp -r "+src+" "+dst)
-	
-
 # Kill all subprocesses
 def killSubprocs(brokerPlace, zkPlace):	
 	os.system("sudo pkill -9 -f bandwidth-monitor.py")
@@ -136,9 +125,6 @@ def validateInput(args):
 
 if __name__ == '__main__': 
 
-	#Add dependency to connect kafka & Spark
-	addDependency()
-
 	parser = argparse.ArgumentParser(description='Emulate data sync in mission critical networks.')
 	parser.add_argument('topo', type=str, help='Network topology')
 	parser.add_argument('--nbroker', dest='nBroker', type=int, default=0,
@@ -190,8 +176,11 @@ if __name__ == '__main__':
 
 	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo)
 
+	#Add dependency to connect kafka & Spark
+	emuSpark.addSparkDependency()
+
 	#Get Spark configuration
-	sparkDetailsList = emuSpark.placeKafkaBrokers(net, args.topo)    
+	sparkDetailsList = emuSpark.getSparkDetails(net, args.topo)    
 	
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
@@ -237,3 +226,6 @@ if __name__ == '__main__':
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
+
+	#Need to clean spark dependency before a new simulation
+	emuSpark.cleanSparkDependency()
