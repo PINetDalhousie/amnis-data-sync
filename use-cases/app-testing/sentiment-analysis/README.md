@@ -1,6 +1,6 @@
 # Sentiment analysis
 
-In this application, we use python's specialized NLP library 'Textblob' to analyse the subjectivity and objectivity of those tweets. We first connect to Twitter using developer API and store tweets on a specific topic into a CSV file. As part of the pre-processing, we clean the unnecessary details (e.g., links, usernames, hashtags, re-tweets). Data is ingested to Kafka topic and then to the Spark Structured Streaming (SS) dataframe for real-time analysis. Using user-defined functions in Apache Spark, we imply text classification rules on received data and finally get a score of subjectivity and polarity. Subjectivity will be in the floating range of [0.0,1.0] where 0.0 denotes as very subjective and 1.0 denotes very objective. Polarity varies within [0.0,-1.0]. For efficient reading, we collect all tweets of a specific minute in a single file and process those in a single batch.
+In this application, we use python's specialized NLP library 'Textblob' to analyse the subjectivity and objectivity of those tweets. We first connect to Twitter using developer API and store tweets on a specific topic. As part of the pre-processing, we clean the unnecessary details (e.g., links, usernames, hashtags, re-tweets). Data is ingested to Kafka topic and then to the Spark Structured Streaming(SS) dataframe for real-time analysis. Using user-defined functions in Apache Spark, we imply text classification rules on received data and finally get a score of subjectivity and polarity. Subjectivity will be in the floating range of [0.0,1.0] where 0.0 denotes as very subjective and 1.0 denotes very objective. Polarity varies within [0.0,-1.0]. 
 
 ## Architecture
 
@@ -28,7 +28,7 @@ In this application, we use python's specialized NLP library 'Textblob' to analy
   
 ## Input details
 1. data.csv : contains input data
-2. topicConfiguration.txt : associated topic names in each line
+2. topicConfiguration.tx  t : associated topic names in each line
 3. sentimentAnalysis.py : Spark SS application
 4. input.graphml:
    - contains topology description
