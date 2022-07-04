@@ -7,6 +7,8 @@ from pyspark.sql.functions import expr
 from pyspark.sql.functions import avg
 from pyspark.sql.functions import window
 
+import sys
+
 def isPointInPath(x, y, poly):
     """check if point x, y is in poly
     poly -- a list of tuples [(x, y), (x, y), ...]"""
@@ -108,7 +110,7 @@ sdf = sdfFaresWithWatermark \
         """))
 
 """ *** FEATURE ENGINEERING NEIGHBORHOODS *** """
-nbhds_df = spark.read.json("nbhd.jsonl") # nbhd.jsonl file has to be available!
+nbhds_df = spark.read.json("/home/ubuntu/Desktop/amnis-data-sync/use-cases/app-testing/ride-selection/nbhd.jsonl") # nbhd.jsonl file has to be available!
 lookupdict = nbhds_df.select("name","coord").rdd.collectAsMap()
 broadcastVar = spark.sparkContext.broadcast(lookupdict) #use broadcastVar.value from now on
 manhattan_bbox = [[-74.0489866963,40.681530375],[-73.8265135518,40.681530375],[-73.8265135518,40.9548628598],[-74.0489866963,40.9548628598],[-74.0489866963,40.681530375]]

@@ -39,12 +39,13 @@ if __name__ == "__main__":
         # port = int(sys.argv[2])
 
         nodeName = sys.argv[1]
-        sparkInputFrom = sys.argv[2]
-        sparkOutputTo = sys.argv[3]
+        sparkOutputTo = sys.argv[2]
 
         nodeID = nodeName[1:]
         host = "10.0.0."+nodeID
         kafkaNode = host + ":9092"
+
+        sparkInputFrom = "topic-0"
 
         # create Spark session
         spark = SparkSession.builder.appName("TwitterSentimentAnalysis").getOrCreate()
@@ -75,7 +76,7 @@ if __name__ == "__main__":
             .start()
             # .trigger(processingTime='60 seconds').start()
         
-        output.awaitTermination(30)
+        output.awaitTermination(50)
         output.stop()
 
     except Exception as e:

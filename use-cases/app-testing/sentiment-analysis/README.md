@@ -48,4 +48,4 @@ This is a python library supports various operation for Natural language process
      
 ## Running
    
- ```sudo python3 main.py use-cases/app-testing/sentiment-analysis/input.graphml --nzk 1 --nbroker 1```
+ ```sudo python3 main.py use-cases/app-testing/sentiment-analysis/input.graphml --nzk 1 --nbroker 2```
