@@ -30,8 +30,8 @@ This is a python library supports various operation for Natural language process
   User-defined function
   
 ## Input details
-1. data.csv : contains input data
-2. topicConfiguration.tx  t : associated topic names in each line
+1. data.txt : contains input data
+2. topicConfiguration.txt : associated topic names in each line
 3. sentimentAnalysis.py : Spark SS application
 4. input.graphml:
    - contains topology description
