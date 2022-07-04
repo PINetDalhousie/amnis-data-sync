@@ -15,18 +15,24 @@ def addSparkDependency():
     os.system("sudo cp -r "+src+" "+dst)
 
 def readSparkConfig(sparkConfig):
-    topicsToConsume = sparkConfig.split(",")[0]
-    sparkApp = sparkConfig.split(",")[1]
-    produceTo = sparkConfig.split(",")[2]
+    # topicsToConsume = sparkConfig.split(",")[0]
+    # sparkApp = sparkConfig.split(",")[1]
+    # produceTo = sparkConfig.split(",")[2]
     
-    return topicsToConsume, sparkApp, produceTo
+    # return topicsToConsume, sparkApp, produceTo
+
+    sparkApp = sparkConfig.split(",")[0]
+    produceTo = sparkConfig.split(",")[1]
+    
+    return sparkApp, produceTo
     
 def getSparkDetails(net, inputTopoFile):
 
 	sparkDetailsList = []
 	sparkDetails = {}
     #Spark can produceTo a topic or a CSV file
-	sparkDetailsKeys = {"nodeId", "topicsToConsume", "applicationPath", "produceTo"}
+	# sparkDetailsKeys = {"nodeId", "topicsToConsume", "applicationPath", "produceTo"}
+	sparkDetailsKeys = {"nodeId", "applicationPath", "produceTo"}
 
 
 	#Read topo information
@@ -43,10 +49,14 @@ def getSparkDetails(net, inputTopoFile):
 			print("node id: "+node[1])
 
 			if 'sparkConfig' in data: 
-				topicsToConsume, sparkApp, produceTo = readSparkConfig(data["sparkConfig"])
+				# topicsToConsume, sparkApp, produceTo = readSparkConfig(data["sparkConfig"])
 				
-				sparkDetails = {"nodeId": node[1], "topicsToConsume": topicsToConsume, \
-                                "applicationPath": sparkApp, "produceTo": produceTo}
+				# sparkDetails = {"nodeId": node[1], "topicsToConsume": topicsToConsume, \
+                #                 "applicationPath": sparkApp, "produceTo": produceTo}
+
+				sparkApp, produceTo = readSparkConfig(data["sparkConfig"])
+				sparkDetails = {"nodeId": node[1], "applicationPath": sparkApp, "produceTo": produceTo}
+				
 				sparkDetailsList.append(sparkDetails)
             
 	print("spark details")

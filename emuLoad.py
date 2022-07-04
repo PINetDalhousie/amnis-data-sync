@@ -82,25 +82,24 @@ def spawnSparkClients(net, sparkDetailsList):
 		time.sleep(30)
 		
 		sparkNode = sprk["nodeId"]
-		sparkInputFrom = sprk["topicsToConsume"]
+		# sparkInputFrom = sprk["topicsToConsume"]
 		sparkApp = sprk["applicationPath"]
 		sparkOutputTo = sprk["produceTo"]
 		print("spark node: "+sparkNode)
 		print("spark App: "+sparkApp)
-		print("spark input from: "+sparkInputFrom)
+		# print("spark input from: "+sparkInputFrom)
 		print("spark output to: "+sparkOutputTo)
 		print("*************************")
 
 		sprkID = "h"+sparkNode
 		node = netNodes[sprkID]
 
-		# out= node.cmd("sudo ~/.local/bin/spark-submit "+sparkApp+" "+str(node.name)+" "+str(port), shell=True) 
-		out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
-					+" "+str(node.name)+" "+sparkInputFrom+" "+sparkOutputTo, shell=True) 
-		print(out)
+		# out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+		# 			+" "+str(node.name)+" "+sparkInputFrom+" "+sparkOutputTo, shell=True) 
 
-		# node.popen("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
-		# 			+" "+str(node.name)+" "+sparkInputFrom+" "+sparkOutputTo+" &", shell=True) 
+		out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+					+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
+		print(out)
 		
 
 def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):
@@ -148,11 +147,11 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	time.sleep(10)
 	print("Producers created")
 
-	# spawnConsumers(net, consDetailsList)
-	# time.sleep(10)
-	# print("Consumers created")
+	spawnConsumers(net, consDetailsList)
+	time.sleep(10)
+	print("Consumers created")
 
-	# time.sleep(30)
+	time.sleep(30)
 
 	spawnSparkClients(net, sparkDetailsList)
 	time.sleep(10)
