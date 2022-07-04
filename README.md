@@ -22,13 +22,14 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   - Kafka-python 2.0.2
   - Matplotlib 3.3.4
   - Seaborn 0.11.2
+  - PySpark 3.2.1
 
   Most dependencies can be installed using `apt install`:
   
   ```bash
   $ sudo apt install python3-pip mininet default-jdk xterm netcat
   
-  $ sudo pip3 install mininet networkx kafka-python matplotlib python-snappy lz4 seaborn
+  $ sudo pip3 install mininet networkx kafka-python matplotlib python-snappy lz4 seaborn pyspark==3.2.1
   ```
   3. You are ready to go! Should be able to get help using:
 
@@ -67,14 +68,3 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   8) Set a duration for the simulation. OBS.: this is the time the workload will run, not the total simulation time
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60```
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
