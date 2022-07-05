@@ -39,7 +39,9 @@ In this application, we present a use-case where the taxi driver can yield highe
   Windowed grouped aggegation
   
 ## Input details
-1. nycTaxiRidesdata.csv, nycTaxiFaresdata.csv : contains input data
+1. About data
+   - nycTaxiRidesdata.csv: mostly geographical details of the ride
+   - nycTaxiFaresdata.csv : ride financial information
 2. topicConfiguration.txt : associated topic names in each line
 3. rideSelection.py : Spark SS application
 4. input.graphml:
@@ -47,9 +49,9 @@ In this application, we present a use-case where the taxi driver can yield highe
      - node details (switch, host)
      - edge details (bandwidth, latency, source port, destination port)
    - contains component(s) configurations 
-     - topicConfig : path to the topic configuration file
-     - zookeeper : 1 = hostnode contains a zookeeper instance
-     - broker : 1 = hostnode contains a zookeeper instance
+     - topicConfig: path to the topic configuration file
+     - zookeeper: 1 = hostnode contains a zookeeper instance
+     - broker: 1 = hostnode contains a zookeeper instance
      - producerType: producer type can be SFST/MFMT/RND; SFST denotes from Single File to Single Topic. MFMT,RND not supported right now.
      - producerConfig: for SFST, one pair of filePath, topicName
      - sparkConfig: sparkConfig will contain the input source, spark application path and output sink. Input source is a kafka topic, output sink can be kafka topic/a file directory.
