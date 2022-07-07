@@ -1,4 +1,4 @@
-# command to run this script: sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 wordcount.py
+# command to run this script: sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 sparkApp1.py
 
 import sys
 import logging
@@ -9,8 +9,9 @@ from pyspark.sql.functions import split
 
 try:
     nodeName = sys.argv[1]
-    sparkInputFrom = sys.argv[2]
-    sparkOutputTo = sys.argv[3]
+    sparkOutputTo = sys.argv[2]
+
+    sparkInputFrom = "inTopic"
 
     logging.basicConfig(filename="logs/output/spark1.log",\
 		format='%(asctime)s %(levelname)s:%(message)s',\

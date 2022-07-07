@@ -28,8 +28,8 @@ In this application, we facilated the running word-count application using a two
   Aggegation
   
 ## Input details
-1. randomText.txt: contains text data.
-2. topicConfiguration.txt : associated topic names in each line
+1. randomText1.txt: contains text data.
+2. topicConfiguration.txt : associated topic name(s) in each line
 3. Spark SS application
    - sparkApp1.py: first spark application
    - sparkApp2.py: second spark application

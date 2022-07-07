@@ -9,9 +9,10 @@ from pyspark.sql.functions import split
 
 try:
     nodeName = sys.argv[1]
-    sparkInputFrom = sys.argv[2]
-    sparkOutputTo = sys.argv[3]
+    sparkOutputTo = sys.argv[2]
 
+    sparkInputFrom = "outTopic"
+    
     logging.basicConfig(filename="logs/output/spark2.log",\
 		format='%(asctime)s %(levelname)s:%(message)s',\
 		level=logging.INFO)
