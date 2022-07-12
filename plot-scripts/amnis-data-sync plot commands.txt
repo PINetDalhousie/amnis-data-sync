@@ -5,7 +5,11 @@ To run bandwidthPlotScript.py, you can specify the argument value at a way like 
 To run latencyPlotScript.py, you can specify the argument value at a way like this:	
 
 	sudo python3 latencyPlotScript.py --number-of-switches 2 --log-dir amnis-data-sync/logs/kafka/nodes:2_mSize:fixed,10_mRate:1.0_topics:1_replication:1/
-	
+
+To run messagePlotScript.py, you can specify the argument value at a way like this:	
+
+	sudo python3 messagePlotScript.py --number-of-switches 2 --log-dir amnis-data-sync/logs/kafka/nodes:2_mSize:fixed,10_mRate:1.0_topics:1_replication:1/ --prod 1 --topic topic-0 --msg 6487
+
 N.B. 
 	** These plot scripts need to put in one directory above the project directory (amnis-data-sync)
 	** Here, the '--port-type' argument value could be access-port/trunc-port/central-hub for star topology. Related switch-port pairs should be give as input for the argument '--switch-ports'
