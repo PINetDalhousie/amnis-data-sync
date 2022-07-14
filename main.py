@@ -181,6 +181,7 @@ if __name__ == '__main__':
 	parser.add_argument('--consumer-setup-sleep', dest='consumerSetupSleep', type=int, default=120, help='Duration to sleep between setting up consumers and producers (in seconds).')
 
 	parser.add_argument('--capture-all', dest='captureAll', action='store_true', help='Capture the traffic of all the hosts')
+	parser.add_argument('--offsets-replication', dest='offsetsTopicReplication', type=int, default=1, help='The replication factor for the offsets topic')
 
 
 	args = parser.parse_args()

@@ -103,5 +103,6 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   15) Capture the network traffic of all nodes.
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --capture-all```
   
-  
+  16) Set the offsets topic replication factor.
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --offsets-replication 3```
   

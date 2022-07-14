@@ -33,6 +33,9 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
         bProperties = bProperties.replace(
             "#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
 
+        bProperties = bProperties.replace(
+            "offsets.topic.replication.factor=1", "offsets.topic.replication.factor="+str(args.offsetsTopicReplication))
+
         # Specify zookeeper addresses to connect
         zkAddresses = ""
         zkPort = 2181
