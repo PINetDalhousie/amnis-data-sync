@@ -12,7 +12,7 @@ In this application, we facilated the running word-count application using a two
 
 ### Topology
 
-![image](https://user-images.githubusercontent.com/6629591/179551041-a43c44be-dd51-4d98-a047-7fc4707c5aa9.png)
+![image](https://user-images.githubusercontent.com/6629591/179551245-59d0a6e8-50eb-4f29-b7e9-3558634e478d.png)
 
 
 ## Queries  
