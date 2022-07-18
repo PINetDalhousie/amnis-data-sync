@@ -8,10 +8,10 @@ This is a python library supports various operation for Natural language process
 ## Architecture
 
 ### Application Chain
-![image](https://user-images.githubusercontent.com/6629591/176445094-7222ba18-619e-4d91-a805-272dfe57c100.png)
+![image](https://user-images.githubusercontent.com/6629591/179554976-efa59ad7-baa8-44ca-b9cf-560db7c48ade.png)
 
 ### Topology
-![image](https://user-images.githubusercontent.com/6629591/176445449-13c86e17-037e-4650-9165-c241afa79b86.png)
+![image](https://user-images.githubusercontent.com/6629591/179555037-35379a7e-6e4e-46dc-a5ae-7f7865e898e0.png)
 
 
 
