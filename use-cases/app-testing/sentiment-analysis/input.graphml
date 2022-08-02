@@ -13,9 +13,7 @@
   <key id="prodType" for="node" attr.name="producerType" attr.type="string"/>   <!-- producer type can be SFST/MFMT/RND; MFMT,RND not supported right now. -->
   <key id="prodCfg" for="node" attr.name="producerConfig" attr.type="string"/>  <!-- for SFST: one pair of filePath, topicName; for MFMT: multiple pair of filePaths, topicNames; -->
   <key id="consCfg" for="node" attr.name="consumerConfig" attr.type="string"/>  <!-- consConfig will contain the topic name(s) from where the consumer will consume --> 
-  <key id="sparkCfg" for="node" attr.name="sparkConfig" attr.type="string"/>    <!-- sparkConfig will contain the input source,
-                                                                    spark application path and output sink. Input source is a
-                                                                    kafka topic, output sink can be kafka topic/a file directory. --> 
+  <key id="sparkCfg" for="node" attr.name="sparkConfig" attr.type="string"/>    <!-- sparkConfig will contain the spark application path and topic name(s)/output directory from where the spark ingest its processed output --> 
 
   <!-- edge attributes -->
   <key id="bw" for="edge" attr.name="bandwidth" attr.type="int"/>

@@ -97,10 +97,28 @@ def spawnSparkClients(net, sparkDetailsList):
 		# out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
 		# 			+" "+str(node.name)+" "+sparkInputFrom+" "+sparkOutputTo, shell=True) 
 
-		out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+		# out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+		# 			+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
+
+		out= node.cmd("sudo /home/monzurul/.local/lib/python3.8/site-packages/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
 					+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
 		print(out)
 		
+def spawnKafkaMySQLConnector(net, prodDetailsList):
+	netNodes = {}
+
+	for node in net.hosts:
+		netNodes[node.name] = node
+	
+	connNode = prodDetailsList[0]["nodeId"]
+	connID = "h"+connNode      
+	node = netNodes[connID]
+
+	print("=========")
+	print("connector starts on node: "+connID)
+	
+	node.popen("sudo kafka/bin/connect-standalone.sh kafka/config/connect-standalone.properties kafka/config/mysql-bulk-sink.properties > logs/connectorOutput.txt &", shell=True)
+	
 
 def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):
 	nTopics = args.nTopics
@@ -142,6 +160,10 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	totalTime = stopTime - startTime
 	print("Successfully Created " + str(len(topicPlace)) + " Topics in " + str(totalTime) + " seconds")
 	
+	#starting Kafka-MySQL connector
+	if args.mysqlConnector:
+		spawnKafkaMySQLConnector(net, prodDetailsList)
+		print("Kafka-MySQL connector instance created")
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList)
 	time.sleep(10)

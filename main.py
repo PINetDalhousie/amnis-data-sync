@@ -155,6 +155,8 @@ if __name__ == '__main__':
 
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
+
+	parser.add_argument('--mysql-connector', dest='mysqlConnector', type=int, default=0, help='Establish streaming connection between Kafka topic and external database(MySQL)')
     
 	args = parser.parse_args()
 
@@ -169,7 +171,7 @@ if __name__ == '__main__':
 	emulatedTopo = emuNetwork.CustomTopo(args.topo)
 
 	net = Mininet(topo = emulatedTopo,
-			controller=RemoteController,
+			# controller=RemoteController,
 			link = TCLink,
 			autoSetMacs = True,
 			autoStaticArp = True)
@@ -193,6 +195,9 @@ if __name__ == '__main__':
 	emuZk.configureZkCluster(zkPlace)
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
+	# Add NAT connectivity
+	net.addNAT().configDefault()
+
 	#Start network
 	net.start()
 	logging.info('Network started')
@@ -203,8 +208,7 @@ if __name__ == '__main__':
 	print("Testing network connectivity")
 	net.pingAll()
 	print("Finished network connectivity test")
-    
-		
+    		
 	#Start monitoring tasks
 	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
 	pID += 1
