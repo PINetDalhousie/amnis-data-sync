@@ -5,7 +5,7 @@ In this application, we present a use-case where the taxi driver can yield highe
 ## Architecture
 
 ### Application Chain
-![image](https://user-images.githubusercontent.com/6629591/179554427-309e59b1-e43a-463e-a735-1e1b845ca5fb.png)
+![image](https://user-images.githubusercontent.com/6629591/182680217-92a61549-0b9c-4e18-afc9-e5cf32d3b8e9.png)
 
 
 ### Topology
