@@ -13,6 +13,7 @@ import itertools
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
 
+
 def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList):
 
 	acks = args.acks
@@ -104,7 +105,7 @@ def spawnSparkClients(net, sparkDetailsList):
 					+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
 		print(out)
 		
-def spawnKafkaMySQLConnector(net, prodDetailsList):
+def spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath):
 	netNodes = {}
 
 	for node in net.hosts:
@@ -117,10 +118,10 @@ def spawnKafkaMySQLConnector(net, prodDetailsList):
 	print("=========")
 	print("connector starts on node: "+connID)
 	
-	node.popen("sudo kafka/bin/connect-standalone.sh kafka/config/connect-standalone.properties kafka/config/mysql-bulk-sink.properties > logs/connectorOutput.txt &", shell=True)
+	node.popen("sudo kafka/bin/connect-standalone.sh kafka/config/connect-standalone-new.properties "+ mysqlPath +" > logs/connectorOutput.txt &", shell=True)
 	
 
-def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, topicWaitTime=100):
+def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, mysqlPath, brokerPlace, topicWaitTime=100):
 	nTopics = args.nTopics
 	replication = args.replication
 	mSizeString = args.mSizeString
@@ -161,8 +162,8 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	print("Successfully Created " + str(len(topicPlace)) + " Topics in " + str(totalTime) + " seconds")
 	
 	#starting Kafka-MySQL connector
-	if args.mysqlConnector:
-		spawnKafkaMySQLConnector(net, prodDetailsList)
+	if mysqlPath != "":
+		spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath)
 		print("Kafka-MySQL connector instance created")
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList)

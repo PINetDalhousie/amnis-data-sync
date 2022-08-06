@@ -34,6 +34,8 @@ def getSparkDetails(net, inputTopoFile):
 	# sparkDetailsKeys = {"nodeId", "topicsToConsume", "applicationPath", "produceTo"}
 	sparkDetailsKeys = {"nodeId", "applicationPath", "produceTo"}
 
+	mysqlPath = ''
+
 
 	#Read topo information
 	try:
@@ -58,11 +60,17 @@ def getSparkDetails(net, inputTopoFile):
 				sparkDetails = {"nodeId": node[1], "applicationPath": sparkApp, "produceTo": produceTo}
 				
 				sparkDetailsList.append(sparkDetails)
+			
+			if 'mysqlConfig' in data:
+				mysqlPath = mysqlPath + data["mysqlConfig"]
+
             
 	print("spark details")
 	print(*sparkDetailsList)
 
-	return sparkDetailsList
+	print("mysql config path: "+mysqlPath)
+
+	return sparkDetailsList,mysqlPath
 
 def cleanSparkDependency():
 # 	os.system("sudo rm -rf logs/kafka/")

@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from re import I
 from mininet.net import Mininet
 from mininet.cli import CLI
 from mininet.node import RemoteController
@@ -19,6 +20,7 @@ import emuZk
 import emuLoad
 import emuLogs
 import emuSpark
+import emuMySQL
 
 pID=0
 popens = {}
@@ -182,14 +184,17 @@ if __name__ == '__main__':
 	emuSpark.addSparkDependency()
 
 	#Get Spark configuration
-	sparkDetailsList = emuSpark.getSparkDetails(net, args.topo)    
+	sparkDetailsList, mysqlPath = emuSpark.getSparkDetails(net, args.topo)
 	
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
 	emuLogs.cleanLogs()
+	emuMySQL.cleanMysqlState()
 	emuKafka.cleanKafkaState(brokerPlace)
 	emuZk.cleanZkState(zkPlace)
         
+	if mysqlPath != "":
+		emuMySQL.configureKafkaMysqlConnection(brokerPlace)    
 
 	emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
 	emuZk.configureZkCluster(zkPlace)
@@ -216,7 +221,7 @@ if __name__ == '__main__':
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
     
-	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList)
+	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, mysqlPath, brokerPlace)
 
 	# CLI(net)
 	print("Simulation complete")
@@ -226,6 +231,10 @@ if __name__ == '__main__':
 
 	net.stop()
 	logging.info('Network stopped')
+
+	# Clean kafka-MySQL connection state before new simulation
+	if mysqlPath != "":
+		emuMySQL.cleanMysqlState()
 
 	#Need to clean both kafka and zookeeper state before a new simulation
 	emuKafka.cleanKafkaState(brokerPlace)
