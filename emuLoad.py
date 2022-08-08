@@ -180,7 +180,7 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	time.sleep(10)
 	print("Spark Clients created")
 
-	time.sleep(60)
+	time.sleep(10)
    
 
 	timer = 0

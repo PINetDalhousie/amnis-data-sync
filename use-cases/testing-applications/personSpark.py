@@ -54,7 +54,8 @@ try:
         .option("topic", sparkOutputTo)\
         .option("checkpointLocation", "logs/output/personCheck")\
         .start()\
-        .awaitTermination()
+        .awaitTermination(30)\
+        .stop()
 
 except Exception as e:
         logging.error(e)
