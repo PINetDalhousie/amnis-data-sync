@@ -2,7 +2,7 @@
 
 Tool for emulating data synchronization in mission critical networks.
 
-The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-2.8.0.
+The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6, Kafka 2.13-2.8.0 and PySpark 3.2.1.
 
 ## Getting started
 
@@ -22,14 +22,13 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   - Kafka-python 2.0.2
   - Matplotlib 3.3.4
   - Seaborn 0.11.2
-  - PySpark 3.2.1
 
   Most dependencies can be installed using `apt install`:
   
   ```bash
   $ sudo apt install python3-pip mininet default-jdk xterm netcat
   
-  $ sudo pip3 install mininet networkx kafka-python matplotlib python-snappy lz4 seaborn pyspark==3.2.1
+  $ sudo pip3 install mininet networkx kafka-python matplotlib python-snappy lz4 seaborn
   ```
   3. You are ready to go! Should be able to get help using:
 

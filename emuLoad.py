@@ -96,12 +96,12 @@ def spawnSparkClients(net, sparkDetailsList):
 		node = netNodes[sprkID]
 
 		# out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
-		# 			+" "+str(node.name)+" "+sparkInputFrom+" "+sparkOutputTo, shell=True) 
-
-		# out= node.cmd("sudo ~/.local/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
 		# 			+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
 
-		out= node.cmd("sudo /home/monzurul/.local/lib/python3.8/site-packages/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+		# out= node.cmd("sudo /home/monzurul/.local/lib/python3.8/site-packages/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+		# 			+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
+
+		out= node.cmd("sudo spark/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
 					+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
 		print(out)
 		
