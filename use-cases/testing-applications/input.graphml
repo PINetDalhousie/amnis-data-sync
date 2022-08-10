@@ -32,7 +32,6 @@
       <data key="prodType">SFST</data>
       <data key="prodCfg">use-cases/testing-applications/data.txt,inTopic</data>
       <data key="consCfg">inTopic</data>
-      <!-- <data key="sparkCfg">/home/ubuntu/Desktop/amnis-data-sync/use-cases/app-testing/testing-applications/personSpark.py,outTopic</data> -->
 	  </node>            
     
     <node id="s1"/>
