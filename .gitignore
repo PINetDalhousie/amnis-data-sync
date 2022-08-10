@@ -4,3 +4,5 @@ logs/
 data/
 analyses/
 use-cases/testing-applications/
+kafka/kafka?/
+kafka/zookeeper?/
