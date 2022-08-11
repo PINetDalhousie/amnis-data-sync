@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  
+  <!-- node attributes -->
+  <key id="sparkCfg" for="node" attr.name="sparkConfig" attr.type="string"/>    <!-- sparkConfig will contain the spark application path and topic name(s)/output directory from where the spark ingest its processed output --> 
+
+  <!-- edge attributes -->
+  <key id="bw" for="edge" attr.name="bandwidth" attr.type="int"/>
+  <key id="lat" for="edge" attr.name="latency" attr.type="int"/>
+  <key id="st" for="edge" attr.name="sport" attr.type="int"/>
+  <key id="dt" for="edge" attr.name="dport" attr.type="int"/>
+  
+   
+  <graph id="simple-topo" edgedefault="undirected">
+
+    <node id="h1">
+      <data key="sparkCfg">use-cases/app-testing/fraud-detection/fraud_detection.py,use-cases/app-testing/fraud-detection/trainedmodel</data>
+	  </node>            
+    
+    <node id="s1"/>
+    <node id="s2"/>
+
+    <node id="h2">   
+	  </node>            
+
+    <edge source="h1" target="s1">
+		<data key="bw">1</data>
+		<data key="lat">20</data>
+		<data key="st">1</data>
+		<data key="dt">1</data>
+    </edge>
+    <edge source="s1" target="s2">
+		<data key="bw">5</data>
+		<data key="lat">10</data>
+		<data key="st">3</data>
+		<data key="dt">2</data>
+    </edge>
+    <edge source="s2" target="h2">
+		<data key="bw">1</data>
+		<data key="lat">20</data>
+		<data key="st">1</data>
+		<data key="dt">1</data>
+    </edge>
+  </graph>
+</graphml>

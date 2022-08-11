@@ -21,4 +21,12 @@
 ## Input details
      
 ## Running
+
+As the training data is almost 307MB, didn't upload it as part of this project repository.
+
+To train the model:
+ ```sudo python3 main.py use-cases/app-testing/fraud-detection/input_only_spark.graphml --only-spark 1```
+
+ To predict on testing data:
+  ```sudo python3 main.py use-cases/app-testing/fraud-detection/input.graphml --nzk 1 --nbroker 2```
    

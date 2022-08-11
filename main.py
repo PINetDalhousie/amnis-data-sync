@@ -157,6 +157,9 @@ if __name__ == '__main__':
 
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
+
+	parser.add_argument('--only-spark', dest='onlySpark', type=int, default=0, help='To run Spark application only provide 1')
+
     
 	args = parser.parse_args()
 
@@ -176,7 +179,7 @@ if __name__ == '__main__':
 			autoSetMacs = True,
 			autoStaticArp = True)
 
-	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo)
+	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo, args.onlySpark)
 
 	#Add dependency to connect kafka & Spark
 	emuSpark.addSparkDependency()

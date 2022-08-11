@@ -84,8 +84,8 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 	propertyFile.close()
 
 
-def placeKafkaBrokers(net, inputTopoFile):
-
+def placeKafkaBrokers(net, inputTopoFile, onlySpark):
+	print(onlySpark)
 	brokerPlace = []
 	zkPlace = []
 
@@ -108,11 +108,12 @@ def placeKafkaBrokers(net, inputTopoFile):
 		sys.exit(1)
 
 	#Read topic information
-	topicConfigPath = inputTopo.graph["topicConfig"]
-	print("topic config directory: " + topicConfigPath)
-	topicPlace = readTopicConfig(topicConfigPath)
-	print("Topic(s): ")
-	print(*topicPlace)
+	if onlySpark == 0: 
+		topicConfigPath = inputTopo.graph["topicConfig"]
+		print("topic config directory: " + topicConfigPath)
+		topicPlace = readTopicConfig(topicConfigPath)
+		print("Topic(s): ")
+		print(*topicPlace)
 	
 	#Read nodewise broker, zookeeper, producer, consumer information
 	for node, data in inputTopo.nodes(data=True):  

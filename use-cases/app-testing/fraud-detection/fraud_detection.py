@@ -1,3 +1,5 @@
+# to run this file sudo /home/monzurul/Desktop/amnis-data-sync/spark/pyspark/bin/spark-submit fraud_detection.py
+
 # This file trains a machine learning model on a portion of our fraud detection dataset. The trained model
 # is then saved, ready to be loaded and used to make predictions in the second file: fraud_predicting.py
 #
@@ -16,13 +18,13 @@ from pyspark.ml import Pipeline
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.classification import LinearSVC
 
-# Here we get our file path for csv file to load into dataframe. We get this as a command line argument
-parser = argparse.ArgumentParser(description = "Path to file containing training dataset")
-parser.add_argument("-p", "--path", type = str, metavar = "", required = True, help = "Path to file")
-args = parser.parse_args()
+import sys
 
-dfpath = args.path
+nodeName = sys.argv[1]
+sparkOutputTo = sys.argv[2]
 
+
+dfpath =  "use-cases/app-testing/fraud-detection/training.csv"
 
 #Basic spark session construction and logging setting
 spark = SparkSession.builder.master("local[4]").appName("Fraud Detections").getOrCreate()
@@ -76,7 +78,7 @@ df2 = not_fraud.union(fraud)
 # In this part, we divide the dataframe into train and test. We then train a linear SVM model
 (train, test) = df2.randomSplit([0.7, 0.3], seed = 123)
 
-
+# To combine all feature data and separate 'label' data in a dataset, we use VectorAssembler
 vecAssembler = VectorAssembler(inputCols = ['amount','oldbalanceOrg', 'newbalanceOrig'\
         , 'oldbalanceDest', 'newbalanceDest'], outputCol = 'features')
 
@@ -88,7 +90,7 @@ model = Pipeline(stages = [vecAssembler, svc]).fit(train)
 
 
 # We save the trained model and will use it to make predictions in the other file
-model.save("/opt/spark/pipeline")
+model.save(sparkOutputTo)
 
 
 
