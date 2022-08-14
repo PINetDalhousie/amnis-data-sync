@@ -4,10 +4,10 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
-from time import sleep
-from json import dumps
 from kafka import KafkaProducer
+
 import sys
+import json
 import logging
 
 try:
@@ -46,16 +46,41 @@ try:
             .load()\
             .selectExpr("CAST(value AS STRING)")
 
-    # Since the data we read is in json format, we extract the fields we want and use those to make new columns
+    # Since the data we read is in json format, we extract all the fields and use them to make new columns
 
-    vessel = vessel.select(json_tuple(col("value"),"mmsi", "lat", "lon")) \
-            .toDF("mmsi", "lat", "lon")
+    vessel = vessel.select(json_tuple(col("value"),"class", "device", "repeat", "mmsi", "type", "lat", "lon",\
+            "scaled", "status", "status_text", "turn", "speed", "accuracy", "course", "heading", "second", \
+            "manuever", "raim", "radio", "reserved", "regional", "cs", "display", "dsc", "band", "msg22",\
+            "imo", "ais_version", "callsign", "shipname", "shiptype", "shiptype_text", "to_bow", "to_stern", \
+            "to_port", "to_starboard", "epfd", "epfd_text", "eta", "draught", "destination", "dte", \
+            "aid_type", "aid_type_text", "name", "off_position", "virtual_aid"))\
+            \
+            .toDF("class", "device", "repeat", "mmsi", "type", "lat", "lon",\
+            "scaled", "status", "status_text", "turn", "speed", "accuracy", "course", "heading", "second", \
+            "manuever", "raim", "radio", "reserved", "regional", "cs", "display", "dsc", "band", "msg22",\
+            "imo", "ais_version", "callsign", "shipname", "shiptype", "shiptype_text", "to_bow", "to_stern", \
+            "to_port", "to_starboard", "epfd", "epfd_text", "eta", "draught", "destination", "dte", \
+            "aid_type", "aid_type_text", "name", "off_position", "virtual_aid")
 
-    
     # Here we determine the largest and smallest reported longitude of each ship
-    
-    query = vessel.groupBy("mmsi")\
-            .agg( max("lon"), min("lon") )
+
+    # vessel2 = vessel.select(json_tuple(col("value"),"mmsi", "lat", "lon")) \
+    #         .toDF("mmsi", "lat", "lon")    
+    # query = vessel2.groupBy("mmsi")\
+    #         .agg( max("lon"), min("lon") )
+
+
+    vessel = vessel.withColumn("timestamp", current_timestamp())
+
+    # Getting the columns with our required information. We use messages of type 5 as other messages types have null values in these columns
+
+    vessel = vessel.filter( col("type") == 5).select("timestamp", "destination", "shiptype","shiptype_text", "shipname")
+
+    # This is our query
+    # We get the types of ships at each destination each minute, along with the number and names of ships
+
+    query = vessel.withWatermark("timestamp", "1 minute").groupBy(window("timestamp", "1 minute"), "destination", "shiptype", "shiptype_text")\
+            .agg(count("shipname").alias("ships"), collect_set("shipname").alias("ship names"))
 
 
     # Here we get the dataframe columns, which we will use in creating our json string
@@ -133,13 +158,20 @@ try:
             print("Closed with error: %s" % str(error))
 
     # Sending the dataframe to the kafka topic row by row, in the desired json format
+    # Our choice of output mode is worth elaborating
+    # We have 3 choices for output mode: complete, update and append. Complete does not work with this query
+    # as we send data row by row, and there are no streaming aggregations on the row. 
+    # Update and append both work. However, we chose append as it aligns well with our logic, in that we want
+    # to send data row by row as we generate each new transformed row. Also, we wanted to avoid any possible issues
+    # by using update, such as a row repeating in part of our output, but not being sent due to matching a previous
+    # row
 
-    output =query\
-        .writeStream\
-        .outputMode("complete")\
-        .foreach(RowPrinter())\
-        .start()\
-        .awaitTermination()
+    output = query\
+            .writeStream\
+            .outputMode("append")\
+            .foreach(RowPrinter())\
+            .start()\
+            .awaitTermination()
     
     output.awaitTermination(30)
     output.stop()

@@ -70,6 +70,10 @@ def spawnConsumers(net, consDetailsList):
 		topicName = cons["consumeFromTopic"][0]
 		consID = "h"+consNode      
 		node = netNodes[consID]
+
+		print("consumer node: "+consNode)
+		print("topic: "+topicName)
+
 		node.popen("python3 consumer.py "+str(node.name)+" "+str(topicName)+" &", shell=True)
 
 
@@ -162,9 +166,9 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	print("Successfully Created " + str(len(topicPlace)) + " Topics in " + str(totalTime) + " seconds")
 	
 	#starting Kafka-MySQL connector
-	if mysqlPath != "":
-		spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath)
-		print("Kafka-MySQL connector instance created")
+	# if mysqlPath != "":
+	# 	spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath)
+	# 	print("Kafka-MySQL connector instance created")
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList)
 	time.sleep(10)

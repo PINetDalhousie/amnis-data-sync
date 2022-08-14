@@ -195,14 +195,13 @@ if __name__ == '__main__':
 	emuZk.cleanZkState(zkPlace)
         
 	if mysqlPath != "":
-		emuMySQL.configureKafkaMysqlConnection(brokerPlace)    
+		emuMySQL.configureKafkaMysqlConnection(brokerPlace)
+		# Add NAT connectivity
+		net.addNAT().configDefault()  
 
 	emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
 	emuZk.configureZkCluster(zkPlace)
 	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
-	
-	# Add NAT connectivity
-	net.addNAT().configDefault()
 
 	#Start network
 	net.start()

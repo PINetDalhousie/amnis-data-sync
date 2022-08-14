@@ -44,7 +44,7 @@ This is a python library supports various operation for Natural language process
      - producerType: producer type can be SFST/MFMT/RND; SFST denotes from Single File to Single Topic. MFMT,RND not supported right now.
      - producerConfig: for SFST, one pair of filePath, topicName
      - consumerConfig: contains the topic name(s) from where the consumer will consume
-     - sparkConfig: sparkConfig will contain the input source, spark application path and output sink. Input source is a kafka topic, output sink can be kafka topic/a file directory.
+     - sparkConfig: sparkConfig will contain the spark application path and output sink. Output sink can be kafka topic/a file directory.
      
 ## Running
    
