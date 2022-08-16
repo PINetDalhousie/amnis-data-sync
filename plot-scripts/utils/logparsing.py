@@ -114,8 +114,32 @@ class ConsumerLog():
 				msgList.append(msg)
 
 		return msgList
+		
+		
+	
+	def getGroupCoordinator(self, filePath, consID):
 
+		with open(filePath) as f:
 
+			for line in f:
+
+				if "INFO:Group coordinator for group" in line:
+
+					coordinatorIDSplit = line.split("nodeId='coordinator-")
+					coordinatorID = coordinatorIDSplit[1].split("\',")[0]
+
+		return coordinatorID
+		
+		
+	def getAllGroupCoordinators(self, consDir, numConsumers):
+
+		allCoordinators = []
+
+		for consID in range(numConsumers):
+			groupCoordinator = self.getGroupCoordinator(consDir+'cons-'+str(consID+1)+'.log', consID+1)
+			allCoordinators.append(groupCoordinator)
+
+		return allCoordinators
 
 
 
