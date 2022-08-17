@@ -47,4 +47,4 @@ In this application, we facilated the running word-count application using a two
  
 ## Running
    
- ```sudo python3 main.py use-cases/app-testing/word-count/input-chain.graphml --nzk 1 --nbroker 1```
+ ```sudo python3 main.py use-cases/app-testing/word-count/input.graphml --nzk 1 --nbroker 1```
