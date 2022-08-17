@@ -23,7 +23,7 @@
   
    
   <graph id="simple-topo" edgedefault="undirected">
-    <data key="topicCfg">use-cases/app-testing/word-count/twoSparkTopicConfig.txt</data>
+    <data key="topicCfg">use-cases/app-testing/word-count/topicConfiguration.txt</data>
 
     <node id="h1">
       <data key="zk">1</data>

@@ -1,2 +1,2 @@
-fraudInput
-fraudOutput
+fraudInput broker:1
+fraudOutput broker:1

@@ -8,16 +8,21 @@ import subprocess
 import time
 import networkx as nx
 
-
 def readTopicConfig(topicConfigPath):
-	topicNames = []
+	allTopics = []
+	topicDetails = {}
+	
 	f = open(topicConfigPath, "r")
 	for line in f:
-		topicNames.append(line.strip())
+		topicName = line.split(' broker:')[0].strip()
+		topicBroker = line.split(' broker:')[1].strip()
+		topicDetails = {"topicName": topicName, "topicBroker": topicBroker}
+		allTopics.append(topicDetails)
 	
 	f.close()
+	# print(*allTopics)
 
-	return topicNames
+	return allTopics
 
 def readProdConfig(prodType, prodConfig):
 	if prodType == 'SFST':
@@ -112,13 +117,13 @@ def placeKafkaBrokers(net, inputTopoFile, onlySpark):
 		topicConfigPath = inputTopo.graph["topicConfig"]
 		print("topic config directory: " + topicConfigPath)
 		topicPlace = readTopicConfig(topicConfigPath)
-		print("Topic(s): ")
-		print(*topicPlace)
+		# print("Topic(s): ")
+		# print(*topicPlace)
 	
 	#Read nodewise broker, zookeeper, producer, consumer information
 	for node, data in inputTopo.nodes(data=True):  
 		if node[0] == 'h':
-			print("node id: "+node[1])
+			# print("node id: "+node[1])
 			#print("zk : "+str(data["zookeeper"]))
 			if 'zookeeper' in data: 
 				zkPlace.append(node[1]) 

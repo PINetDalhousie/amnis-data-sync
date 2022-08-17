@@ -4,8 +4,8 @@ import sys
 import logging
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import explode
-from pyspark.sql.functions import split
+from pyspark.sql.functions import *
+
 
 try:
     nodeName = sys.argv[1]
@@ -21,7 +21,7 @@ try:
     logging.info("output: "+sparkOutputTo)
 
     
-    nodeID = nodeName[1:]
+    nodeID = "2" #nodeName[1:]
     host = "10.0.0."+nodeID
     kafkaNode = host + ":9092"
     # kafkaNode = "10.0.0.1:9092,10.0.0.2:9092"
@@ -38,34 +38,47 @@ try:
         .readStream\
         .format('kafka')\
         .option('kafka.bootstrap.servers', kafkaNode) \
+        .option("startingOffsets", "earliest")\
+        .option("failOnDataLoss", False)\
         .option('subscribe', sparkInputFrom)\
-        .load()
+        .load()\
+        .selectExpr("CAST(value AS STRING)")
 
     logging.info("dataframe: ")
     logging.info(lines.isStreaming)
     logging.info("schema: ")
     logging.info(lines.printSchema())
 
-    lines = lines.selectExpr("CAST(value AS STRING)")
     #Split the lines into words
-    # words = lines.select(
-    #     # explode turns each item in an array into a separate row
-    #     explode(
-    #         split(lines.value, ' ')
-    #     ).alias('word')
-    # )
+    # explode turns each item in an array into a separate row
+    words = lines.select(
+        explode(
+            split(lines.value, ' ')
+        ).alias('word')
+    )
 
     # # Generate running word count
-    # words = words.groupBy('word').count()
+    words = words.groupBy('word').count()
+    words = words.select( concat(lit('word: '), 'word', lit("  count: "), 'count' ).alias("value") )
 
     # output to csv file
-    output = lines.writeStream \
-        .format("csv") \
-        .option("path", sparkOutputTo+"/wordcount_output") \
-        .option("checkpointLocation", sparkOutputTo+"/wordcount_checkpoint") \
-        .start()
+    # output = words.writeStream \
+    #     .outputMode("complete")\
+    #     .format("csv") \
+    #     .option("path", sparkOutputTo+"/wordcount_output") \
+    #     .option("checkpointLocation", sparkOutputTo+"/wordcount_checkpoint") \
+    #     .start()
 
-    output.awaitTermination(50)
+    output = words.writeStream \
+    .outputMode("complete")\
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", kafkaNode) \
+    .option("topic", sparkOutputTo) \
+    .option("checkpointLocation", "logs/output/wordcount_checkpoint_final") \
+    .start()
+
+    output.awaitTermination()
+    # output.awaitTermination(80)
     # output.stop()
 
 except Exception as e:

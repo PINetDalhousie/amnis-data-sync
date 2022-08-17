@@ -20,7 +20,7 @@ try:
     logging.info("input: "+sparkInputFrom)
     logging.info("output: "+sparkOutputTo)
     
-    nodeID = nodeName[1:]
+    nodeID = "2" #nodeName[1:]
     host = "10.0.0."+nodeID
 
     spark = SparkSession\
@@ -38,6 +38,8 @@ try:
         .readStream\
         .format('kafka')\
         .option('kafka.bootstrap.servers', kafkaNode) \
+        .option("startingOffsets", "earliest")\
+        .option("failOnDataLoss", False)\
         .option('subscribe', sparkInputFrom)\
         .load().selectExpr("CAST(value AS STRING)")
 
@@ -58,8 +60,9 @@ try:
     #     .option("checkpointLocation", sparkOutputTo+"wordcount_checkpoint") \
     #     .start()
 
-    output.awaitTermination(30)
-    output.stop()
+    output.awaitTermination()
+    # output.awaitTermination(30)
+    # output.stop()
 
 except Exception as e:
 	logging.error(e)

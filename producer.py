@@ -70,7 +70,7 @@ try:
 	batchSize = int(sys.argv[8])
 	linger = int(sys.argv[9])
 	requestTimeout = int(sys.argv[10])
-	brokers = int(sys.argv[11])    
+	brokerId = sys.argv[11]
 	replication = int(sys.argv[12]) 
 	messageFilePath = sys.argv[13] 
 	prodTopic = sys.argv[14] 
@@ -90,20 +90,21 @@ try:
 	msgID = 0
     
 
-	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/prod-"+nodeID+".log",
+	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(nodeID)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/prod-"+nodeID+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
 							level=logging.INFO)                             
 # 						format='%(levelname)s:%(message)s',
 #  						level=logging.INFO)
 
        
-	logging.info("node: "+nodeID)
-	logging.info("topic: "+prodTopic)
+	logging.info("node to initiate producer: "+nodeID)
+	logging.info("topic name: "+prodTopic)
+	logging.info("topic broker: "+brokerId)
 	#logging.info("input file: "+prodFile)
 	#logging.info("produce data in topic: "+prodTopic)
     
 
-	bootstrapServers="10.0.0."+nodeID+":9092"
+	bootstrapServers="10.0.0."+brokerId+":9092"
 
 	# Convert acks=2 to 'all'
 	if(acks == 2):

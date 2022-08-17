@@ -15,18 +15,20 @@ try:
 
 	nodeName = sys.argv[1]
 	topicName = sys.argv[2]
+	brokerId = sys.argv[3]
 
 	nodeID = nodeName[1:]
     
 	logging.basicConfig(filename="logs/output/"+"cons"+str(nodeID)+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
 							level=logging.INFO)    
-	logging.info("node: "+nodeID)
+	logging.info("node to initiate consumer: "+nodeID)
 	logging.info("topicName "+topicName)
+	logging.info("topicBroker "+brokerId)
 
 	while True:
 
-		bootstrapServers="10.0.0."+str(nodeID)+":9092"
+		bootstrapServers="10.0.0."+brokerId+":9092"
 		
 		consumer = KafkaConsumer(topicName,
 			bootstrap_servers=bootstrapServers,

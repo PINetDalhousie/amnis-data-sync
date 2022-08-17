@@ -1,2 +1,2 @@
-maritimeInput
-maritimeOutput
+maritimeInput broker:1
+maritimeOutput broker:2

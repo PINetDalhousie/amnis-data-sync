@@ -14,7 +14,7 @@ import subprocess
 from subprocess import Popen, PIPE, STDOUT
 
 
-def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList):
+def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace):
 
 	acks = args.acks
 	compression = args.compression
@@ -52,13 +52,24 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDet
 		tClasses = i['tClasses']
 		prodTopic = i['produceInTopic']
 
-		node.popen("python3 producer.py "+nodeId+" "+tClasses+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)\
-		+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+messageFilePath\
-		+" "+prodTopic+" &", shell=True)
+		try:
+			topicName = [x for x in topicPlace if x['topicName'] == prodTopic][0]["topicName"]
+			brokerId = [x for x in topicPlace if x['topicName'] == prodTopic][0]["topicBroker"] 
+
+			print("Producing messages to topic "+topicName+" at broker "+brokerId)
+
+			node.popen("python3 producer.py "+nodeId+" "+tClasses+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)\
+			+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+brokerId+" "+str(replication)+" "+messageFilePath\
+			+" "+topicName+" &", shell=True)
+
+		except IndexError:
+			print("Error: Production topic name not matched with the already created topics")
+			sys.exit(1)
+			
 
 
 
-def spawnConsumers(net, consDetailsList):
+def spawnConsumers(net, consDetailsList, topicPlace):
 
 	netNodes = {}
 
@@ -74,7 +85,17 @@ def spawnConsumers(net, consDetailsList):
 		print("consumer node: "+consNode)
 		print("topic: "+topicName)
 
-		node.popen("python3 consumer.py "+str(node.name)+" "+str(topicName)+" &", shell=True)
+		try:
+			topicName = [x for x in topicPlace if x['topicName'] == topicName][0]["topicName"]
+			brokerId = [x for x in topicPlace if x['topicName'] == topicName][0]["topicBroker"] 
+
+			print("Consuming messages from topic "+topicName+" at broker "+brokerId)
+
+			node.popen("python3 consumer.py "+str(node.name)+" "+topicName+" "+brokerId+" &", shell=True)
+
+		except IndexError:
+			print("Error: Consume topic name not matched with the already created topics")
+			sys.exit(1)
 
 
 def spawnSparkClients(net, sparkDetailsList):
@@ -105,9 +126,10 @@ def spawnSparkClients(net, sparkDetailsList):
 		# out= node.cmd("sudo /home/monzurul/.local/lib/python3.8/site-packages/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
 		# 			+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
 
-		out= node.cmd("sudo spark/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
-					+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
-		print(out)
+		node.popen("sudo spark/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+					+" "+str(node.name)+" "+sparkOutputTo+" &", shell=True) 
+		# print(out)
+
 		
 def spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath):
 	netNodes = {}
@@ -144,13 +166,13 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	nHosts = len(net.hosts)
 	print("Number of hosts: " + str(nHosts))
     
-	#Create topics
+	#Creating topic(s) in respective broker
 	topicNodes = []
 	startTime = time.time()
 
-	for topicName in topicPlace:
-		#Creating all topics in broker 1
-		issuingID = 0    #randint(0, nHosts-1)
+	for topic in topicPlace:
+		topicName = topic["topicName"]
+		issuingID = (int) (topic["topicBroker"])-1
 		issuingNode = net.hosts[issuingID]
 
 		print("Creating topic "+topicName+" at broker "+str(issuingID+1))
@@ -166,15 +188,18 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	print("Successfully Created " + str(len(topicPlace)) + " Topics in " + str(totalTime) + " seconds")
 	
 	#starting Kafka-MySQL connector
-	# if mysqlPath != "":
-	# 	spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath)
-	# 	print("Kafka-MySQL connector instance created")
+	if mysqlPath != "":
+		spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath)
+		print("Kafka-MySQL connector instance created")
 
-	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList)
+	# calculate end-to-end latency (after all setup are done)
+	produceStartTime = time.time()
+
+	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace)
 	time.sleep(10)
 	print("Producers created")
 
-	spawnConsumers(net, consDetailsList)
+	spawnConsumers(net, consDetailsList, topicPlace)
 	time.sleep(10)
 	print("Consumers created")
 
@@ -184,7 +209,12 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	time.sleep(10)
 	print("Spark Clients created")
 
-	time.sleep(10)
+	time.sleep(50)
+
+	produceStopTime = time.time()
+	endToEndLatency = produceStopTime - produceStartTime
+	print("Time taken to process produced messages: " + str(endToEndLatency) + " seconds")
+
    
 
 	timer = 0
