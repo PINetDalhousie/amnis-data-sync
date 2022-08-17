@@ -7,12 +7,12 @@ In this application, we facilated the running word-count application using a two
 
 ### Application Chain
 
-![image](https://user-images.githubusercontent.com/6629591/179550954-76eccca3-baf4-43a1-8e60-bd15e3307399.png)
+![image](https://user-images.githubusercontent.com/6629591/185228018-2c9f9701-ff7e-42e0-9df2-d5042b49a8bb.png)
 
 
 ### Topology
 
-![image](https://user-images.githubusercontent.com/6629591/179551245-59d0a6e8-50eb-4f29-b7e9-3558634e478d.png)
+![image](https://user-images.githubusercontent.com/6629591/185228142-f6256cf9-4e13-4e1c-a1b6-2c137382ea83.png)
 
 
 ## Queries  
@@ -47,4 +47,4 @@ In this application, we facilated the running word-count application using a two
  
 ## Running
    
- ```sudo python3 main.py use-cases/app-testing/word-count/input.graphml --nzk 1 --nbroker 1```
+ ```sudo python3 main.py use-cases/app-testing/word-count/input-chain.graphml --nzk 1 --nbroker 1```
