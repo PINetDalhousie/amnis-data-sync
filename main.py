@@ -195,6 +195,7 @@ if __name__ == '__main__':
 	emuZk.cleanZkState(zkPlace)
         
 	if mysqlPath != "":
+		print("MySQL path: "+mysqlPath)
 		emuMySQL.configureKafkaMysqlConnection(brokerPlace)
 		# Add NAT connectivity
 		net.addNAT().configDefault()  

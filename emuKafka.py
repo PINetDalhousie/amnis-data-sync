@@ -25,9 +25,9 @@ def readTopicConfig(topicConfigPath):
 	return allTopics
 
 def readProdConfig(prodType, prodConfig):
-	if prodType == 'SFST':
-		prodFile = prodConfig.split(",")[0]
-		prodTopic = prodConfig.split(",")[1]
+	# if prodType == 'SFST':
+	prodFile = prodConfig.split(",")[0]     #prodFile will hold the file path/directory path based on producer type SFST or MFST respectively
+	prodTopic = prodConfig.split(",")[1]
 
 	return prodFile, prodTopic
 

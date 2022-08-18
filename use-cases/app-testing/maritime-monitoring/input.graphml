@@ -41,7 +41,7 @@
       <data key="bk">1</data>
       <data key="consCfg">maritimeOutput</data>
       <data key="sparkCfg">use-cases/app-testing/maritime-monitoring/maritime.py,maritimeOutput</data>
-      <data key="mysqlCfg">use-cases/app-testing/maritime-monitoring/maritime-mysql-bulk-sink.properties</data>
+      <!-- <data key="mysqlCfg">use-cases/app-testing/maritime-monitoring/maritime-mysql-bulk-sink.properties</data> -->
 	  </node>            
 
     <edge source="h1" target="s1">

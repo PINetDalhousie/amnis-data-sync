@@ -56,7 +56,26 @@ def generateMessage(mSizeParams):
 	message = [97] * payloadSize
 	return message
 
+def messageProduction(messageFilePath,msgID,nodeID,topicName,mRate,tClass):
+	if(messageFilePath != 'None'):
+			message = readMessageFromFile(messageFilePath)
+			logging.info("Message Generated From File "+messageFilePath)
 
+	else:
+		message = generateMessage(mSizeParams)
+		logging.info("Generated Message")
+	
+	bMsgID = msgID.to_bytes(4, 'big')
+	newNodeID = nodeID.zfill(2)
+	bNodeID = bytes(newNodeID, 'utf-8')
+	# bMsg = bNodeID + bMsgID + bytearray(message)
+	bMsg = bytearray(message)
+
+	producer.send(topicName, bMsg)
+	logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)
+# 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
+	msgID += 1
+	time.sleep(1.0/(mRate*tClass))
 
 try:
 	node = sys.argv[1]
@@ -72,8 +91,10 @@ try:
 	requestTimeout = int(sys.argv[10])
 	brokerId = sys.argv[11]
 	replication = int(sys.argv[12]) 
-	messageFilePath = sys.argv[13] 
+	# messageFilePath = sys.argv[13] 
+	directoryPath = sys.argv[13]  #it will hold the file path/directory path based on producer type SFST or MFST respectively
 	prodTopic = sys.argv[14] 
+	prodType = sys.argv[15] 
 
 	#print(nTopics)
 	#print(compression)
@@ -129,31 +150,43 @@ try:
 			linger_ms=linger,
 			request_timeout_ms=requestTimeout)
 
- 
+	if prodType == "MFST":
+		files = os.listdir(directoryPath)
+		#while True:
+		for oneFile in files:
+			messageFilePath = directoryPath + oneFile
+			messageProduction(messageFilePath,msgID,nodeID,prodTopic,mRate,tClass)
+	
+	elif prodType == "SFST":
+		while True:
+			messageProduction(directoryPath,msgID,nodeID,prodTopic,mRate,tClass)
 
-	while True:
-		if(messageFilePath != 'None'):
-			message = readMessageFromFile(messageFilePath)
-			logging.info("Message Generated From File")
+	#while True:
+# 	for oneFile in files:
+# 		messageFilePath = directoryPath + oneFile
 
-		else:
-			message = generateMessage(mSizeParams)
-			logging.info("Generated Message")
+# 		if(messageFilePath != 'None'):
+# 			message = readMessageFromFile(messageFilePath)
+# 			logging.info("Message Generated From File "+messageFilePath)
+
+# 		else:
+# 			message = generateMessage(mSizeParams)
+# 			logging.info("Generated Message")
 		
-		bMsgID = msgID.to_bytes(4, 'big')
-		newNodeID = nodeID.zfill(2)
-		bNodeID = bytes(newNodeID, 'utf-8')
-		# bMsg = bNodeID + bMsgID + bytearray(message)
-		bMsg = bytearray(message)
+# 		bMsgID = msgID.to_bytes(4, 'big')
+# 		newNodeID = nodeID.zfill(2)
+# 		bNodeID = bytes(newNodeID, 'utf-8')
+# 		# bMsg = bNodeID + bMsgID + bytearray(message)
+# 		bMsg = bytearray(message)
 
-		#for producing data in fixed topic from producer config
-		topicName = prodTopic
+# 		#for producing data in fixed topic from producer config
+# 		topicName = prodTopic
 
-		producer.send(topicName, bMsg)
-		logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)
-# 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
-		msgID += 1
-		time.sleep(1.0/(mRate*tClass))
+# 		producer.send(topicName, bMsg)
+# 		logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)
+# # 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
+# 		msgID += 1
+# 		time.sleep(1.0/(mRate*tClass))
 
 except Exception as e:
 	logging.error(e)

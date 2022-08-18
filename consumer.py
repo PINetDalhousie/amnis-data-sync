@@ -32,7 +32,7 @@ try:
 		
 		consumer = KafkaConsumer(topicName,
 			bootstrap_servers=bootstrapServers,
-			#auto_offset_reset='earliest',
+			auto_offset_reset='earliest',
 			enable_auto_commit=True,
 			group_id="group-"+str(nodeID)                                     
 			)

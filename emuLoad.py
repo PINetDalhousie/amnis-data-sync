@@ -48,6 +48,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDet
 	for i in prodDetailsList:
 		nodeId = 'h' + i['nodeId']
 		
+		producerType = i["producerType"]
 		messageFilePath = i['produceFromFile']
 		tClasses = i['tClasses']
 		prodTopic = i['produceInTopic']
@@ -60,7 +61,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDet
 
 			node.popen("python3 producer.py "+nodeId+" "+tClasses+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)\
 			+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+brokerId+" "+str(replication)+" "+messageFilePath\
-			+" "+topicName+" &", shell=True)
+			+" "+topicName+" "+producerType+" &", shell=True)
 
 		except IndexError:
 			print("Error: Production topic name not matched with the already created topics")

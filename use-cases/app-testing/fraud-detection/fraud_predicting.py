@@ -23,7 +23,7 @@ try:
         nodeName = sys.argv[1]
         sparkOutputTo = sys.argv[2]
 
-        nodeID = nodeName[1:]
+        nodeID = "1" #nodeName[1:]
         host = "10.0.0."+nodeID
         kafkaNode = host + ":9092"
 

@@ -23,7 +23,7 @@
   
    
   <graph id="simple-topo" edgedefault="undirected">
-    <data key="topicCfg">use-cases/app-testing/maritime-monitoring/topicConfiguration.txt</data>
+    <data key="topicCfg">use-cases/app-testing/fraud-detection/topicConfiguration.txt</data>
 
     <node id="h1">
       <data key="zk">1</data>
@@ -37,7 +37,7 @@
     <node id="s2"/>
 
     <node id="h2">
-      <data key="bk">1</data>
+      <!-- <data key="bk">1</data> -->
       <data key="consCfg">fraudOutput</data>
       <data key="sparkCfg">use-cases/app-testing/fraud-detection/fraud_predicting.py,fraudOutput</data>
 	  </node>            
