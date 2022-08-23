@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from email.headerregistry import MessageIDHeader
 from kafka import KafkaProducer
 
 from random import seed, randint, gauss
@@ -10,6 +11,8 @@ import logging
 import re
 import random
 import os
+
+msgID = 0
 
 def processXmlFileMessage(file):
 	lines = file.readlines()
@@ -56,7 +59,9 @@ def generateMessage(mSizeParams):
 	message = [97] * payloadSize
 	return message
 
-def messageProduction(messageFilePath,msgID,nodeID,topicName,mRate,tClass):
+def messageProductionSFST(producer, messageFilePath,nodeID,topicName):
+	global msgID
+
 	if(messageFilePath != 'None'):
 			message = readMessageFromFile(messageFilePath)
 			logging.info("Message Generated From File "+messageFilePath)
@@ -65,17 +70,35 @@ def messageProduction(messageFilePath,msgID,nodeID,topicName,mRate,tClass):
 		message = generateMessage(mSizeParams)
 		logging.info("Generated Message")
 	
-	bMsgID = msgID.to_bytes(4, 'big')
-	newNodeID = nodeID.zfill(2)
-	bNodeID = bytes(newNodeID, 'utf-8')
-	# bMsg = bNodeID + bMsgID + bytearray(message)
 	bMsg = bytearray(message)
 
 	producer.send(topicName, bMsg)
-	logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)
-# 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
+	logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)       
 	msgID += 1
-	time.sleep(1.0/(mRate*tClass))
+
+def messageProductionMFST(bootstrapServers, messageFilePath,topicName):
+	global msgID
+
+	if(messageFilePath != 'None'):
+			message = readMessageFromFile(messageFilePath)
+			logging.info("Message Generated From File "+messageFilePath)
+
+	else:
+		message = generateMessage(mSizeParams)
+		logging.info("Generated Message")
+	
+	separator = 'rrrr'
+	sentMessage = message + bytes(separator,'utf-8') + bytes(str(msgID), 'utf-8')
+
+	producer = KafkaProducer(bootstrap_servers = bootstrapServers)
+	producer.send(topicName, sentMessage)
+
+	fileID = "File: " +str(msgID)
+	logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
+                        topicName, str(fileID))
+
+	msgID += 1
+
 
 try:
 	node = sys.argv[1]
@@ -101,22 +124,15 @@ try:
 	#print(prodFile)
 	#print(prodTopic)
 
-	#prodFile, prodTopic = readProdConfig(prodConfigPath)
-
-
 	seed(1)
 
 	mSizeParams = mSizeString.split(',')
 	nodeID = node[1:]
-	msgID = 0
+	# msgID = 0
     
-
-	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(nodeID)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/prod/prod-"+nodeID+".log",
+	logging.basicConfig(filename="logs/output/"+"prod-"+str(nodeID)+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
 							level=logging.INFO)                             
-# 						format='%(levelname)s:%(message)s',
-#  						level=logging.INFO)
-
        
 	logging.info("node to initiate producer: "+nodeID)
 	logging.info("topic name: "+prodTopic)
@@ -136,73 +152,33 @@ try:
 		" linger_ms=" + str(linger) + " request_timeout_ms=" + str(requestTimeout))
 
 
-	if(compression == 'None'):
-		producer = KafkaProducer(bootstrap_servers=bootstrapServers,
-			acks=acks,
-			batch_size=batchSize, 
-			linger_ms=linger,
-			request_timeout_ms=requestTimeout)
-	else:
-		producer = KafkaProducer(bootstrap_servers=bootstrapServers,
-			acks=acks,
-			compression_type=compression,
-			batch_size=batchSize,
-			linger_ms=linger,
-			request_timeout_ms=requestTimeout)
+	# if(compression == 'None'):
+	# 	producer = KafkaProducer(bootstrap_servers=bootstrapServers,
+	# 		acks=acks,
+	# 		batch_size=batchSize, 
+	# 		linger_ms=linger,
+	# 		request_timeout_ms=requestTimeout)
+	# else:
+	# 	producer = KafkaProducer(bootstrap_servers=bootstrapServers,
+	# 		acks=acks,
+	# 		compression_type=compression,
+	# 		batch_size=batchSize,
+	# 		linger_ms=linger,
+	# 		request_timeout_ms=requestTimeout)
 
 	if prodType == "MFST":
 		files = os.listdir(directoryPath)
+		i = 0
 		#while True:
 		for oneFile in files:
 			messageFilePath = directoryPath + oneFile
-			messageProduction(messageFilePath,msgID,nodeID,prodTopic,mRate,tClass)
-	
+			messageProductionMFST(bootstrapServers,messageFilePath,prodTopic)
+
 	elif prodType == "SFST":
 		while True:
-			messageProduction(directoryPath,msgID,nodeID,prodTopic,mRate,tClass)
+			messageProductionSFST(directoryPath,msgID,nodeID,prodTopic)
 
-	#while True:
-# 	for oneFile in files:
-# 		messageFilePath = directoryPath + oneFile
-
-# 		if(messageFilePath != 'None'):
-# 			message = readMessageFromFile(messageFilePath)
-# 			logging.info("Message Generated From File "+messageFilePath)
-
-# 		else:
-# 			message = generateMessage(mSizeParams)
-# 			logging.info("Generated Message")
-		
-# 		bMsgID = msgID.to_bytes(4, 'big')
-# 		newNodeID = nodeID.zfill(2)
-# 		bNodeID = bytes(newNodeID, 'utf-8')
-# 		# bMsg = bNodeID + bMsgID + bytearray(message)
-# 		bMsg = bytearray(message)
-
-# 		#for producing data in fixed topic from producer config
-# 		topicName = prodTopic
-
-# 		producer.send(topicName, bMsg)
-# 		logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)
-# # 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
-# 		msgID += 1
-# 		time.sleep(1.0/(mRate*tClass))
 
 except Exception as e:
 	logging.error(e)
 	sys.exit(1)
-
-#def on_send_success(record_metadata):
-    #print(record_metadata.topic)
-    #print(record_metadata.partition)
-    #print(record_metadata.offset)
-
-#def on_send_error(excp):
-    #log.error('I am an errback', exc_info=excp)
-    # handle exception
-
-#producer.send('topic-0', b'raw_bytes1').add_callback(on_send_success).add_errback(on_send_error)
-
-#Sleep is important to give time for producer
-#to send the message before process ends
-#time.sleep(0.01)

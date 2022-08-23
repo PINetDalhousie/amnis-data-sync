@@ -32,17 +32,25 @@ try:
 		
 		consumer = KafkaConsumer(topicName,
 			bootstrap_servers=bootstrapServers,
-			auto_offset_reset='earliest',
-			enable_auto_commit=True,
-			group_id="group-"+str(nodeID)                                     
-			)
+			auto_offset_reset='earliest'
+		)
+			# enable_auto_commit=True,
+			# group_id="group-"+str(nodeID)                                     
+			# )
 
 		logging.info('Connect to broker looking for topic %s. ', topicName)
 
 		for msg in consumer:
 			msgContent = str(msg.value, 'utf-8')
-			logging.info("Message received:")
-			logging.info(msgContent)
+			
+			if 'file: ' in msgContent:
+				fileNumber = msgContent.split('file: ')[1]
+				logging.info("File %s Received   Message Received word: %s", fileNumber, msgContent)          
+
+			else:
+				logging.info("Message received:")
+				logging.info(msgContent)
+
 
 
 except Exception as e:

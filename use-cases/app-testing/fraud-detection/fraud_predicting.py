@@ -43,7 +43,7 @@ try:
         checkpath = "logs/output/fraud_detection/fraudCheckpoint"
         # kafkatopic = "fraudInTopic"
 
-        spark = SparkSession.builder.master("local[4]").appName("Fraud Detections").getOrCreate()
+        spark = SparkSession.builder.appName("Fraud Detections").getOrCreate()
 
         spark.sparkContext.setLogLevel("ERROR")
 

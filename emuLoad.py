@@ -193,9 +193,6 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 		spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath)
 		print("Kafka-MySQL connector instance created")
 
-	# calculate end-to-end latency (after all setup are done)
-	produceStartTime = time.time()
-
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace)
 	time.sleep(10)
 	print("Producers created")
@@ -210,12 +207,7 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	time.sleep(10)
 	print("Spark Clients created")
 
-	time.sleep(50)
-
-	produceStopTime = time.time()
-	endToEndLatency = produceStopTime - produceStartTime
-	print("Time taken to process produced messages: " + str(endToEndLatency) + " seconds")
-
+	time.sleep(150)
    
 
 	timer = 0

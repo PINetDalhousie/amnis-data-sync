@@ -49,18 +49,24 @@ try:
     logging.info("schema: ")
     logging.info(lines.printSchema())
 
-    #Split the lines into words
-    # explode turns each item in an array into a separate row
+    splitBy = split('value', 'rrrr')
+    lines = lines.select(splitBy.getItem(0).alias('value'),\
+        splitBy.getItem(1).alias('fileID'))
+
+    # #Split the lines into words
+    # # explode turns each item in an array into a separate row
     words = lines.select(
-        explode(
-            split(lines.value, ' ')
-        ).alias('word')
-    )
+         explode(
+             split(lines.value, ' ')
+         ).alias('word'), "fileID"
+     )
 
-    # # Generate running word count
-    words = words.groupBy('word').count()
-    words = words.select( concat(lit('word: '), 'word', lit("  count: "), 'count' ).alias("value") )
+    # # # Generate running word count
+    words = words.groupBy('word', 'fileID').count()
 
+    words = words.select( concat(lit('word: '), 'word', lit("  count: "), 'count' ,\
+          lit("  file: "), 'fileID').alias("value") )
+    
     # output to csv file
     # output = words.writeStream \
     #     .outputMode("complete")\

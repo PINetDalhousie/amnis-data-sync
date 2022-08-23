@@ -51,7 +51,7 @@
 
     <edge source="s1" target="h1">
       <data key="bw">1</data>
-      <data key="lat">20</data>
+      <data key="lat">1500</data>
       <data key="st">1</data>
       <data key="dt">1</data>
     </edge>
@@ -65,7 +65,7 @@
 
     <edge source="s1" target="h3">
       <data key="bw">1</data>
-      <data key="lat">10</data>
+      <data key="lat">20</data>
       <data key="st">3</data>
       <data key="dt">1</data>
     </edge>
