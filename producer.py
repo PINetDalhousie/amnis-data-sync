@@ -59,9 +59,8 @@ def generateMessage(mSizeParams):
 	message = [97] * payloadSize
 	return message
 
-def messageProductionSFST(producer, messageFilePath,nodeID,topicName):
+def messageProductionSFST(messageFilePath):
 	global msgID
-
 	if(messageFilePath != 'None'):
 			message = readMessageFromFile(messageFilePath)
 			logging.info("Message Generated From File "+messageFilePath)
@@ -70,15 +69,42 @@ def messageProductionSFST(producer, messageFilePath,nodeID,topicName):
 		message = generateMessage(mSizeParams)
 		logging.info("Generated Message")
 	
-	bMsg = bytearray(message)
+	# bMsg = bytearray(message)
 
-	producer.send(topicName, bMsg)
-	logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)       
-	msgID += 1
+	# producer.send(topicName, bMsg)
+	# logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, str(msgID), message)       
+	# msgID += 1
 
-def messageProductionMFST(bootstrapServers, messageFilePath,topicName):
-	global msgID
+	# sending a single file till the duration of the simulation
+	separator = 'rrrr'
+	sentMessage = message + bytes(separator,'utf-8') + bytes(str(msgID), 'utf-8')
 
+	return sentMessage
+
+# def messageProductionSFST(bootstrapServers, messageFilePath,topicName):
+# 	global msgID
+# 	if(messageFilePath != 'None'):
+# 			message = readMessageFromFile(messageFilePath)
+# 			logging.info("Message Generated From File "+messageFilePath)
+
+# 	else:
+# 		message = generateMessage(mSizeParams)
+# 		logging.info("Generated Message")
+	
+# 	separator = 'rrrr'
+# 	sentMessage = message + bytes(separator,'utf-8') + bytes(str(msgID), 'utf-8')
+
+# 	producer = KafkaProducer(bootstrap_servers = bootstrapServers)
+# 	producer.send(topicName, sentMessage)
+
+# 	fileID = "File: " +str(msgID)
+# 	logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
+#                         topicName, str(fileID))
+
+# 	msgID += 1
+
+
+def messageProductionMFST(messageFilePath,fileNumber):
 	if(messageFilePath != 'None'):
 			message = readMessageFromFile(messageFilePath)
 			logging.info("Message Generated From File "+messageFilePath)
@@ -88,16 +114,18 @@ def messageProductionMFST(bootstrapServers, messageFilePath,topicName):
 		logging.info("Generated Message")
 	
 	separator = 'rrrr'
-	sentMessage = message + bytes(separator,'utf-8') + bytes(str(msgID), 'utf-8')
+	sentMessage = message + bytes(separator,'utf-8') + bytes(str(fileNumber), 'utf-8')
 
-	producer = KafkaProducer(bootstrap_servers = bootstrapServers)
-	producer.send(topicName, sentMessage)
+	return sentMessage
 
-	fileID = "File: " +str(msgID)
-	logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
-                        topicName, str(fileID))
+	# producer = KafkaProducer(bootstrap_servers = bootstrapServers)
+	# producer.send(topicName, sentMessage)
 
-	msgID += 1
+	# fileID = "File: " +str(msgID)
+	# logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
+    #                     topicName, str(fileID))
+
+	# msgID += 1
 
 
 try:
@@ -151,32 +179,44 @@ try:
 		" acks=" + str(acks) + " compression_type=" + str(compression) + " batch_size=" + str(batchSize) + 
 		" linger_ms=" + str(linger) + " request_timeout_ms=" + str(requestTimeout))
 
-
-	# if(compression == 'None'):
-	# 	producer = KafkaProducer(bootstrap_servers=bootstrapServers,
-	# 		acks=acks,
-	# 		batch_size=batchSize, 
-	# 		linger_ms=linger,
-	# 		request_timeout_ms=requestTimeout)
-	# else:
-	# 	producer = KafkaProducer(bootstrap_servers=bootstrapServers,
-	# 		acks=acks,
-	# 		compression_type=compression,
-	# 		batch_size=batchSize,
-	# 		linger_ms=linger,
-	# 		request_timeout_ms=requestTimeout)
-
+	producer = KafkaProducer(bootstrap_servers=bootstrapServers)
+	i = 0
+	
 	if prodType == "MFST":
 		files = os.listdir(directoryPath)
-		i = 0
-		#while True:
-		for oneFile in files:
-			messageFilePath = directoryPath + oneFile
-			messageProductionMFST(bootstrapServers,messageFilePath,prodTopic)
+		
+		while True:
+			for oneFile in files:
+				messageFilePath = directoryPath + oneFile
+				sentMessage = messageProductionMFST(messageFilePath, i)
+				fileID = "File: " +str(i)
+
+				producer.send(prodTopic, sentMessage)
+				
+				logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
+									prodTopic, str(fileID))
+
+				i += 1
+
 
 	elif prodType == "SFST":
 		while True:
-			messageProductionSFST(directoryPath,msgID,nodeID,prodTopic)
+		# while msgID <= 100:
+			if msgID <= 100:
+				# approach 1
+				sentMessage = messageProductionSFST(directoryPath)
+				fileID = "File: " +str(msgID)
+
+				producer.send(prodTopic, sentMessage)
+				logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
+									prodTopic, str(fileID))
+
+				msgID += 1
+			else:
+				continue
+
+			#approach 2
+			# messageProductionSFST(bootstrapServers, directoryPath,prodTopic)
 
 
 except Exception as e:

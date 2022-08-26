@@ -65,7 +65,7 @@ try:
     words = words.groupBy('word', 'fileID').count()
 
     words = words.select( concat(lit('word: '), 'word', lit("  count: "), 'count' ,\
-          lit("  file: "), 'fileID').alias("value") )
+          lit("  File: "), 'fileID').alias("value") )
     
     # output to csv file
     # output = words.writeStream \
