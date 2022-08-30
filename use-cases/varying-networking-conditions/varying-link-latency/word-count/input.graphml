@@ -23,7 +23,7 @@
   
    
   <graph id="simple-topo" edgedefault="undirected">
-    <data key="topicCfg">use-cases/app-testing/word-count/topicConfiguration.txt</data>
+    <data key="topicCfg">use-cases/varying-networking-conditions/varying-link-latency/word-count/topicConfiguration.txt</data>
 
     <node id="s1"/>
 
@@ -31,49 +31,49 @@
       <!-- <data key="prodType">MFST</data> -->
       <!-- <data key="prodCfg">use-cases/app-testing/word-count/dataDir/,inTopic</data> -->
       <data key="prodType">SFST</data>
-      <data key="prodCfg">use-cases/app-testing/word-count/dataDir/randomText2.txt,inTopic</data>         
+      <data key="prodCfg">use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt,inTopic</data>         
 	  </node>            
     
     <node id="h2">
       <data key="zk">1</data>
       <data key="bk">1</data>
-      <data key="consCfg">inTopic</data>  
+      <!-- <data key="consCfg">inTopic</data>   -->
 	  </node>   
 
     <node id="h3">   
-      <data key="sparkCfg">use-cases/app-testing/word-count/sparkApp1.py,outTopic</data>
-      <data key="consCfg">outTopic</data>        
+      <data key="sparkCfg">use-cases/varying-networking-conditions/varying-link-latency/word-count/sparkApp1.py,outTopic</data>
+      <!-- <data key="consCfg">outTopic</data>         -->
 	  </node>
 
     <node id="h4">
-      <data key="consCfg">outTopic2</data>  
-      <data key="sparkCfg">use-cases/app-testing/word-count/sparkApp2.py,outTopic2</data>            
+      <data key="consCfg">outTopic</data>  
+      <!-- <data key="sparkCfg">use-cases/varying-networking-conditions/varying-link-latency/word-count/sparkApp2.py,outTopic2</data>             -->
 	  </node>         
 
     <edge source="s1" target="h1">
       <data key="bw">1</data>
-      <data key="lat">20</data>
+      <data key="lat">1</data>
       <data key="st">1</data>
       <data key="dt">1</data>
     </edge>
 
     <edge source="s1" target="h2">
       <data key="bw">1</data>
-      <data key="lat">20</data>
+      <data key="lat">1</data>
       <data key="st">2</data>
       <data key="dt">1</data>
     </edge>
 
     <edge source="s1" target="h3">
       <data key="bw">1</data>
-      <data key="lat">10</data>
+      <data key="lat">1</data>
       <data key="st">3</data>
       <data key="dt">1</data>
     </edge>
 
     <edge source="s1" target="h4">
       <data key="bw">1</data>
-      <data key="lat">20</data>
+      <data key="lat">100</data>
       <data key="st">4</data>
       <data key="dt">1</data>
     </edge>

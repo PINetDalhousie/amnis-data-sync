@@ -76,7 +76,7 @@ def messageProductionSFST(messageFilePath):
 	# msgID += 1
 
 	# sending a single file till the duration of the simulation
-	separator = 'rrrr'
+	separator = 'rrrr '
 	sentMessage = message + bytes(separator,'utf-8') + bytes(str(msgID), 'utf-8')
 
 	return sentMessage
@@ -113,7 +113,7 @@ def messageProductionMFST(messageFilePath,fileNumber):
 		message = generateMessage(mSizeParams)
 		logging.info("Generated Message")
 	
-	separator = 'rrrr'
+	separator = 'rrrr '
 	sentMessage = message + bytes(separator,'utf-8') + bytes(str(fileNumber), 'utf-8')
 
 	return sentMessage
@@ -127,6 +127,14 @@ def messageProductionMFST(messageFilePath,fileNumber):
 
 	# msgID += 1
 
+def on_send_success(record_metadata):
+	fileID = "File: " +str(record_metadata.offset) 
+	logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
+				   record_metadata.topic, fileID)
+
+
+def on_send_error(excp):
+	logging.info('I am an errback',exc_info=excp)
 
 try:
 	node = sys.argv[1]
@@ -191,25 +199,35 @@ try:
 				sentMessage = messageProductionMFST(messageFilePath, i)
 				fileID = "File: " +str(i)
 
-				producer.send(prodTopic, sentMessage)
-				
+				#log before producing to topic
 				logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
 									prodTopic, str(fileID))
+				
+				producer.send(prodTopic, sentMessage)
+				
+				#log after file is produced to topic
+				# logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
+				# 					prodTopic, str(fileID))
 
 				i += 1
 
 
 	elif prodType == "SFST":
 		while True:
-		# while msgID <= 100:
 			if msgID <= 100:
 				# approach 1
 				sentMessage = messageProductionSFST(directoryPath)
 				fileID = "File: " +str(msgID)
 
-				producer.send(prodTopic, sentMessage)
+				# log after producing to topic
 				logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
-									prodTopic, str(fileID))
+				   prodTopic, fileID)
+
+				producer.send(prodTopic, sentMessage)
+
+				# #log after producing to topic
+				# producer.send(prodTopic, sentMessage).add_callback(on_send_success)\
+				# 	.add_errback(on_send_error)#
 
 				msgID += 1
 			else:
