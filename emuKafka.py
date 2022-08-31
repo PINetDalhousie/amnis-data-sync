@@ -140,8 +140,8 @@ def placeKafkaBrokers(net, inputTopoFile, onlySpark):
 				consDetails = {"nodeId": node[1], "consumeFromTopic": consTopics}
 				consDetailsList.append(consDetails)
             
-	# print("zookeepers:\n")
-	# print(*zkPlace)
+	print("zookeepers:")
+	print(*zkPlace)
 	# print("brokers: \n")
 	# print(*brokerPlace)
 
