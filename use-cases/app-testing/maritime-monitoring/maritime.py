@@ -11,19 +11,22 @@ import json
 import logging
 
 try:
-    nodeName = sys.argv[1]
-    sparkOutputTo = sys.argv[2]
+    # nodeName = sys.argv[1]
+    # sparkOutputTo = sys.argv[2]
 
-    nodeID = nodeName[1:]
-    host = "10.0.0."+nodeID
-    kafkaNode = host + ":9092"
+    # nodeID = nodeName[1:]
 
     sparkInputFrom = "maritimeInput"
+    sparkOutputTo = "maritimeOutput"
+
+    nodeID = "1"
+    host = "10.0.0."+nodeID
+    kafkaNode = host + ":9092"
 
     logging.basicConfig(filename="logs/output/maritimeSpark.log",\
         format='%(asctime)s %(levelname)s:%(message)s',\
         level=logging.INFO)
-    logging.info("node: "+nodeName)
+    logging.info("node: "+nodeID)
     logging.info("input: "+sparkInputFrom)
     logging.info("output: "+sparkOutputTo)
 
@@ -62,41 +65,28 @@ try:
             "to_port", "to_starboard", "epfd", "epfd_text", "eta", "draught", "destination", "dte", \
             "aid_type", "aid_type_text", "name", "off_position", "virtual_aid")
 
-    # Here we determine the largest and smallest reported longitude of each ship
-
-    # vessel2 = vessel.select(json_tuple(col("value"),"mmsi", "lat", "lon")) \
-    #         .toDF("mmsi", "lat", "lon")    
-    # query = vessel2.groupBy("mmsi")\
-    #         .agg( max("lon"), min("lon") )
-
-
     vessel = vessel.withColumn("timestamp", current_timestamp())
 
     # Getting the columns with our required information. We use messages of type 5 as other messages types have null values in these columns
-
     vessel = vessel.filter( col("type") == 5).select("timestamp", "destination", "shiptype","shiptype_text", "shipname")
 
     # This is our query
     # We get the types of ships at each destination each minute, along with the number and names of ships
-
-    query = vessel.withWatermark("timestamp", "1 minute").groupBy(window("timestamp", "1 minute"), "destination", "shiptype", "shiptype_text")\
-            .agg(count("shipname").alias("ships"), collect_set("shipname").alias("ship names"))
-
+    query = vessel.groupBy(window("timestamp", "1 minute"), "destination", "shiptype")\
+            .agg(approx_count_distinct("mmsi").alias("number of ships"),\
+            collect_set("mmsi").alias("shipIDs"))
 
     # Here we get the dataframe columns, which we will use in creating our json string
-
     columns = []
 
     for column in query.columns:
         columns.append(column)
 
     # Convert the result of our query to json format
-
     query = query.select( to_json( struct("*")).alias("value") )
 
     
     # Here we create our required json schema
-
     def construct_json_string(columns):
 
         jsonString = '{"schema":{"type":"struct","optional":false,"version":1,"fields":['
@@ -117,17 +107,15 @@ try:
         return jsonString
 
     # Getting our json schema string
-
     jsonString = construct_json_string(columns)
     
     i = 0
-
+    kafkaNode2 = "10.0.0.2:9092"
     # Here we send each of our dataframe row to the output kafka topic. Each row is first formatted as follows
     #
     # Schema followed by the row data
     #
     # Each formatted row is then sent to the kafka topic
-
     class RowPrinter:
 
         # This part is just left as the default
@@ -143,7 +131,7 @@ try:
             global jsonString
 
             if i == 0:
-                producer = KafkaProducer(bootstrap_servers=[kafkaNode])#,\
+                producer = KafkaProducer(bootstrap_servers=[kafkaNode2])#,\
                         # value_serializer=lambda x:\
                         # dumps(x).encode('utf-8'))
                 i+= 10
@@ -168,7 +156,7 @@ try:
 
     output = query\
             .writeStream\
-            .outputMode("append")\
+            .outputMode("complete")\
             .foreach(RowPrinter())\
             .start()\
             .awaitTermination()

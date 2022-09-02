@@ -8,23 +8,23 @@ from pyspark.sql.functions import *
 
 
 try:
-    nodeName = sys.argv[1]
-    sparkOutputTo = sys.argv[2]
+    # nodeName = sys.argv[1]
+    # sparkOutputTo = sys.argv[2]
 
-    sparkInputFrom = "outTopic"
+    sparkInputFrom = "outTopic1"
+    sparkOutputTo = "outTopic2"
     
     logging.basicConfig(filename="logs/output/spark2.log",\
 		format='%(asctime)s %(levelname)s:%(message)s',\
 		level=logging.INFO)
-    logging.info("node: "+nodeName)
-    logging.info("input: "+sparkInputFrom)
-    logging.info("output: "+sparkOutputTo)
-
     
     nodeID = "2" #nodeName[1:]
     host = "10.0.0."+nodeID
     kafkaNode = host + ":9092"
     # kafkaNode = "10.0.0.1:9092,10.0.0.2:9092"
+    logging.info("node: "+nodeID)
+    logging.info("input: "+sparkInputFrom)
+    logging.info("output: "+sparkOutputTo)
 
     spark = SparkSession\
         .builder\
@@ -49,35 +49,38 @@ try:
     logging.info("schema: ")
     logging.info(lines.printSchema())
 
-    splitBy = split('value', 'rrrr')
-    lines = lines.select(splitBy.getItem(0).alias('value'),\
-        splitBy.getItem(1).alias('fileID'))
+    # getting the frequency
+    splitByFrequency = split('value', ' Frequency: ')
+    lines = lines.select(splitByFrequency.getItem(0).alias('value'), splitByFrequency.getItem(1).alias('frequency'))
 
-    # #Split the lines into words
-    # # explode turns each item in an array into a separate row
-    words = lines.select(
-         explode(
-             split(lines.value, ' ')
-         ).alias('word'), "fileID"
-     )
+    # getting the words
+    splitByWord = split('value', ' Word: ')
+    lines = lines.select(splitByWord.getItem(0).alias('value'),\
+        splitByWord.getItem(1).alias('word'),\
+            'frequency')
 
-    # # # Generate running word count
-    words = words.groupBy('word', 'fileID').count()
+    # getting the file
+    splitByFile = split('value', ' File: ')
+    lines = lines.select(splitByFile.getItem(0).alias('value'),\
+         splitByFile.getItem(1).alias('file'),\
+            'word', 'frequency')
 
-    words = words.select( concat(lit('word: '), 'word', lit("  count: "), 'count' ,\
-          lit("  File: "), 'fileID').alias("value") )
-    
-    # output to csv file
-    # output = words.writeStream \
-    #     .outputMode("complete")\
-    #     .format("csv") \
-    #     .option("path", sparkOutputTo+"/wordcount_output") \
-    #     .option("checkpointLocation", sparkOutputTo+"/wordcount_checkpoint") \
-    #     .start()
+    # getting the topic
+    splitByTopic = split('value', 'Topic: ')
+    lines = lines.select(splitByTopic.getItem(1).alias('topic'),\
+                        'file', 'word', 'frequency')
 
-    output = words.writeStream \
-    .outputMode("complete")\
+    averageWords = lines.groupBy('topic')\
+        .agg( (sum('frequency')/approx_count_distinct('file')).alias('avgNumberOfFiles'))
+    print(averageWords.printSchema())
+
+    result = averageWords.select( concat( lit('Topic: '), 'topic',\
+        lit(' Avg number of files: '), 'avgNumberOfFiles').alias('value') )
+    print(result.printSchema())
+
+    output = result.writeStream \
     .format("kafka") \
+    .outputMode("complete")\
     .option("kafka.bootstrap.servers", kafkaNode) \
     .option("topic", sparkOutputTo) \
     .option("checkpointLocation", "logs/output/wordcount_checkpoint_final") \

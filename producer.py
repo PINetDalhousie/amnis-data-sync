@@ -104,17 +104,20 @@ def messageProductionSFST(messageFilePath):
 # 	msgID += 1
 
 
-def messageProductionMFST(messageFilePath,fileNumber):
+def messageProductionMFST(messageFilePath,fileNumber, topicName):
 	if(messageFilePath != 'None'):
 			message = readMessageFromFile(messageFilePath)
 			logging.info("Message Generated From File "+messageFilePath)
 
-	else:
-		message = generateMessage(mSizeParams)
-		logging.info("Generated Message")
-	
-	separator = 'rrrr '
-	sentMessage = message + bytes(separator,'utf-8') + bytes(str(fileNumber), 'utf-8')
+	# separator = 'rrrr '
+	# sentMessage = message + bytes(separator,'utf-8') + bytes(str(fileNumber), 'utf-8')
+
+	topicAdd = " Topic: "
+	FileNumberAdd = " File: "
+	sentMessage = message + bytes(topicAdd,'utf-8')\
+         + bytes(str(topicName), 'utf-8')\
+            +bytes(FileNumberAdd,'utf-8')\
+            + bytes(str(fileNumber), 'utf-8')
 
 	return sentMessage
 
@@ -188,33 +191,33 @@ try:
 		" linger_ms=" + str(linger) + " request_timeout_ms=" + str(requestTimeout))
 
 	producer = KafkaProducer(bootstrap_servers=bootstrapServers)
-	i = 0
+	i = 1
 	
 	if prodType == "MFST":
 		files = os.listdir(directoryPath)
 		
 		while True:
-			for oneFile in files:
-				messageFilePath = directoryPath + oneFile
-				sentMessage = messageProductionMFST(messageFilePath, i)
-				fileID = "File: " +str(i)
+			if i<= len(files):
+				for oneFile in files:
+					messageFilePath = directoryPath + oneFile
+					sentMessage = messageProductionMFST(messageFilePath, i, prodTopic)
+					fileID = "File: " +str(i)
 
-				#log before producing to topic
-				logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
-									prodTopic, str(fileID))
-				
-				producer.send(prodTopic, sentMessage)
-				
-				#log after file is produced to topic
-				# logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
-				# 					prodTopic, str(fileID))
+					#log before producing to topic
+					logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
+										prodTopic, str(fileID))
+					
+					producer.send(prodTopic, sentMessage)
+					
+					i += 1
 
-				i += 1
+			else:
+				continue
 
 
 	elif prodType == "SFST":
 		while True:
-			if msgID <= 100:
+			if msgID <= 1:
 				# approach 1
 				sentMessage = messageProductionSFST(directoryPath)
 				fileID = "File: " +str(msgID)

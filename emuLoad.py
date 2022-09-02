@@ -127,8 +127,11 @@ def spawnSparkClients(net, sparkDetailsList):
 		# out= node.cmd("sudo /home/monzurul/.local/lib/python3.8/site-packages/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
 		# 			+" "+str(node.name)+" "+sparkOutputTo, shell=True) 
 
+		# node.popen("sudo spark/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
+		# 			+" "+str(node.name)+" "+sparkOutputTo+" &", shell=True)
+
 		node.popen("sudo spark/pyspark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 "+sparkApp\
-					+" "+str(node.name)+" "+sparkOutputTo+" &", shell=True) 
+					+" &", shell=True) 
 		# print(out)
 
 		
@@ -204,8 +207,6 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace)
 	# time.sleep(10)
 	print("Producers created")
-
-	
 
 	# spark start its processing once the production is done
 	# time.sleep(30)

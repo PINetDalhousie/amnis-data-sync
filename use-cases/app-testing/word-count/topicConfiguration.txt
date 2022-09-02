@@ -1,3 +1,4 @@
-inTopic broker:2
-outTopic broker:2
+inTopic1 broker:2
+inTopic2 broker:2
+outTopic1 broker:2
 outTopic2 broker:2
