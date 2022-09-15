@@ -46,8 +46,11 @@ try:
             .option('kafka.bootstrap.servers', kafkaNode)\
             .option('subscribe', sparkInputFrom)\
             .option("startingOffsets", "earliest")\
+            .option("failOnDataLoss", False)\
             .load()\
             .selectExpr("CAST(value AS STRING)")
+    logging.info("Streaming: "+str(vessel.isStreaming))
+    logging.info("Schema: "+str(vessel.printSchema))
 
     # Since the data we read is in json format, we extract all the fields and use them to make new columns
 
@@ -68,13 +71,17 @@ try:
     vessel = vessel.withColumn("timestamp", current_timestamp())
 
     # Getting the columns with our required information. We use messages of type 5 as other messages types have null values in these columns
-    vessel = vessel.filter( col("type") == 5).select("timestamp", "destination", "shiptype","shiptype_text", "shipname")
+    vessel = vessel.filter( col("type") == 5).select("timestamp", "destination", "shiptype","shiptype_text", "mmsi")
 
     # This is our query
     # We get the types of ships at each destination each minute, along with the number and names of ships
     query = vessel.groupBy(window("timestamp", "1 minute"), "destination", "shiptype")\
-            .agg(approx_count_distinct("mmsi").alias("number of ships"),\
+            .agg(approx_count_distinct("mmsi").alias("numberOfShips"),\
             collect_set("mmsi").alias("shipIDs"))
+
+    logging.info("Query Streaming: "+str(query.isStreaming))
+    logging.info("Query Schema: "+str(query.printSchema))
+
 
     # Here we get the dataframe columns, which we will use in creating our json string
     columns = []
@@ -86,7 +93,7 @@ try:
     query = query.select( to_json( struct("*")).alias("value") )
 
     
-    # Here we create our required json schema
+    #Here we create our required json schema
     def construct_json_string(columns):
 
         jsonString = '{"schema":{"type":"struct","optional":false,"version":1,"fields":['
@@ -153,7 +160,6 @@ try:
     # to send data row by row as we generate each new transformed row. Also, we wanted to avoid any possible issues
     # by using update, such as a row repeating in part of our output, but not being sent due to matching a previous
     # row
-
     output = query\
             .writeStream\
             .outputMode("complete")\
@@ -161,8 +167,7 @@ try:
             .start()\
             .awaitTermination()
     
-    output.awaitTermination(30)
-    output.stop()
+    # # output.stop()
 
 except Exception as e:
 	logging.error(e)

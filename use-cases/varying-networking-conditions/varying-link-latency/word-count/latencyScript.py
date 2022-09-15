@@ -1,4 +1,4 @@
-# to run this script: sudo /home/monzurul/Desktop/amnis-data-sync/spark/pyspark/bin/spark-submit latencyscript.py
+# to run this script: sudo /home/monzurul/Desktop/amnis-data-sync/spark/pyspark/bin/spark-submit latencyScript.py <logDir>
 
 # This file calculates the latency of processing each file by a spark application, using information
 # from producer and consumer logs
@@ -14,7 +14,10 @@ import numpy as np
 
 import builtins as p
 
+import time
 import sys
+import shutil
+import os
 
 # Some basic spark set up
 spark = SparkSession.builder.appName("Latency Script").getOrCreate()
@@ -163,9 +166,29 @@ plt.title('Latency Per File')
 plt.xticks(range(0,105,10))
 plt.scatter(tuple1, tuple2)
 
-
-
+plotLink = 'varying-H2-S-link-only-bw1Gbps'
+plotLinkLatency = '10ms'
 #plt.show()
-plt.savefig(logDir+'/latency.png')
+plt.savefig(logDir+'/'+ plotLinkLatency +'-latency.png')
+
+time.sleep(5)
+
+#copying logs and latency plot from logs to latencyPlots directory
+
+# path to source directory
+src_dir = logDir
+ 
+# path to destination directory
+dest_dir = '/home/monzurul/Desktop/amnis-data-sync/use-cases/varying-networking-conditions/varying-link-latency/word-count/latencyPlots/'+\
+                plotLink+'/'+plotLinkLatency+'/'
+os.makedirs(dest_dir)
+ 
+#shutil.copytree(src_dir, dest_dir)
+
+shutil.copy(logDir+'/prod-1.log', dest_dir)
+shutil.copy(logDir+'/cons4.log', dest_dir)
+shutil.copy(logDir+'/'+ plotLinkLatency +'-latency.png', dest_dir)
+
+
 
 

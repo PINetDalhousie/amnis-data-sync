@@ -59,8 +59,7 @@ def generateMessage(mSizeParams):
 	message = [97] * payloadSize
 	return message
 
-def messageProductionSFST(messageFilePath):
-	global msgID
+def messageProductionSFST(messageFilePath, fileID):
 	if(messageFilePath != 'None'):
 			message = readMessageFromFile(messageFilePath)
 			logging.info("Message Generated From File "+messageFilePath)
@@ -77,7 +76,9 @@ def messageProductionSFST(messageFilePath):
 
 	# sending a single file till the duration of the simulation
 	separator = 'rrrr '
-	sentMessage = message + bytes(separator,'utf-8') + bytes(str(msgID), 'utf-8')
+	sentMessage = message + bytes(separator,'utf-8') + bytes(str(fileID), 'utf-8')
+
+	# sentMessage = message           
 
 	return sentMessage
 
@@ -217,10 +218,10 @@ try:
 
 	elif prodType == "SFST":
 		while True:
-			if msgID <= 1:
+			if i <= 100:
 				# approach 1
-				sentMessage = messageProductionSFST(directoryPath)
-				fileID = "File: " +str(msgID)
+				sentMessage = messageProductionSFST(directoryPath, i)
+				fileID = "File: " +str(i)
 
 				# log after producing to topic
 				logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
@@ -232,9 +233,9 @@ try:
 				# producer.send(prodTopic, sentMessage).add_callback(on_send_success)\
 				# 	.add_errback(on_send_error)#
 
-				msgID += 1
-			else:
-				continue
+				i += 1
+			# else:
+			# 	continue
 
 			#approach 2
 			# messageProductionSFST(bootstrapServers, directoryPath,prodTopic)

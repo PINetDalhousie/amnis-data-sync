@@ -75,7 +75,7 @@ try:
     print(averageWords.printSchema())
 
     result = averageWords.select( concat( lit('Topic: '), 'topic',\
-        lit(' Avg number of files: '), 'avgNumberOfFiles').alias('value') )
+        lit(' Avg number of words for this topic: '), 'avgNumberOfFiles').alias('value') )
     print(result.printSchema())
 
     output = result.writeStream \

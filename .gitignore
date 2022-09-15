@@ -9,3 +9,4 @@ kafka/zookeeper?/
 use-cases/app-testing/fraud-detection/training.csv
 use-cases/app-testing/maritime-monitoring/Kafka-MySQL-user-manual.odt
 use-cases/app-testing/word-count/input-chain.graphml
+demoLogs/
