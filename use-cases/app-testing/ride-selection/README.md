@@ -15,16 +15,16 @@ In this application, we present a use-case where the taxi driver can yield highe
 
 ## Queries  
   
-  sdfFaresWithWatermark = sdfFares.selectExpr("rideId AS rideId_fares", "startTime", "totalFare", "tip").withWatermark("startTime", "30 minutes")
+    sdfFaresWithWatermark = sdfFares.selectExpr("rideId AS rideId_fares", "startTime", "totalFare", "tip").withWatermark("startTime", "30 minutes")
   
-  sdfFaresWithWatermark.join(sdfRidesWithWatermark, \
+    sdfFaresWithWatermark.join(sdfRidesWithWatermark, \
       expr(""" 
        rideId_fares = rideId AND 
         endTime > startTime AND
         endTime <= startTime + interval 2 hours
         """))
   
-  sdf.groupBy(window("endTime", "30 minutes", "10 minutes"),"stopNbhd").agg(avg("tip"))
+    sdf.groupBy(window("endTime", "30 minutes", "10 minutes"),"stopNbhd").agg(avg("tip"))
   
 ## Operations
   
