@@ -31,17 +31,17 @@ We let this command run for 3 minutes. After that, we opened data.json and delet
 
 
 ## Queries  
-    vessel = vessel.filter( col("type") == 5).select("timestamp", "destination", "shiptype","shiptype_text", "shipname")
+    vessel = vessel.filter( col("type") == 5).select("timestamp", "destination", "shiptype","shiptype_text", "mmsi")
 
-    query = vessel.withWatermark("timestamp", "1 minute").groupBy(window("timestamp", "1 minute"), "destination", "shiptype", "shiptype_text")\
-            .agg(count("shipname").alias("ships"), collect_set("shipname").alias("ship names"))
+    query = vessel.groupBy(window("timestamp", "1 minute"), "destination", "shiptype")\
+            .agg(approx_count_distinct("mmsi").alias("numberOfShips"),\
+            collect_set("mmsi").alias("shipIDs"))
 
   
 ## Operations
     Selection
     Projection
     Windowed aggregation
-    Watermarking
     Foreach implementation
 
   
@@ -67,4 +67,7 @@ We let this command run for 3 minutes. After that, we opened data.json and delet
 
 ## Running
 ```sudo python3 main.py use-cases/app-testing/maritime-monitoring/input.graphml --nzk 1 --nbroker 2```
-   
+
+## Output
+![image](https://user-images.githubusercontent.com/6629591/190420311-8053f116-874f-425a-add5-a1b46204f0ed.png)
+
