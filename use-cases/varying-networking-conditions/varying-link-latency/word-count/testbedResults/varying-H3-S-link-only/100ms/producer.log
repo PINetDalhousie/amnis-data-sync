@@ -1,0 +1,210 @@
+2022-09-20 15:00:57,822 INFO:<BrokerConnection node_id=bootstrap-0 host=10.50.0.5:9092 <connecting> [IPv4 ('10.50.0.5', 9092)]>: connecting to 10.50.0.5:9092 [('10.50.0.5', 9092) IPv4]
+2022-09-20 15:00:57,822 INFO:Probing node bootstrap-0 broker version
+2022-09-20 15:00:57,826 INFO:<BrokerConnection node_id=bootstrap-0 host=10.50.0.5:9092 <connecting> [IPv4 ('10.50.0.5', 9092)]>: Connection complete.
+2022-09-20 15:00:57,950 INFO:Broker version identified as 2.5.0
+2022-09-20 15:00:57,950 INFO:Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2022-09-20 15:00:57,953 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,953 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 1
+2022-09-20 15:00:57,976 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,977 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 2
+2022-09-20 15:00:57,978 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,978 INFO:<BrokerConnection node_id=1 host=10.50.0.5:9092 <connecting> [IPv4 ('10.50.0.5', 9092)]>: connecting to 10.50.0.5:9092 [('10.50.0.5', 9092) IPv4]
+2022-09-20 15:00:57,979 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 3
+2022-09-20 15:00:57,980 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,980 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 4
+2022-09-20 15:00:57,981 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,981 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 5
+2022-09-20 15:00:57,981 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,981 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 6
+2022-09-20 15:00:57,982 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,982 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 7
+2022-09-20 15:00:57,982 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,983 INFO:<BrokerConnection node_id=1 host=10.50.0.5:9092 <connecting> [IPv4 ('10.50.0.5', 9092)]>: Connection complete.
+2022-09-20 15:00:57,983 INFO:<BrokerConnection node_id=bootstrap-0 host=10.50.0.5:9092 <connected> [IPv4 ('10.50.0.5', 9092)]>: Closing connection. 
+2022-09-20 15:00:57,985 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 8
+2022-09-20 15:00:57,986 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,988 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 9
+2022-09-20 15:00:57,990 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,990 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 10
+2022-09-20 15:00:57,992 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,992 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 11
+2022-09-20 15:00:57,994 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,995 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 12
+2022-09-20 15:00:57,996 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,996 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 13
+2022-09-20 15:00:57,996 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,997 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 14
+2022-09-20 15:00:57,997 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,997 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 15
+2022-09-20 15:00:57,998 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,998 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 16
+2022-09-20 15:00:57,998 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,999 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 17
+2022-09-20 15:00:57,999 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:57,999 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 18
+2022-09-20 15:00:58,000 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,000 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 19
+2022-09-20 15:00:58,000 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,000 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 20
+2022-09-20 15:00:58,001 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,001 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 21
+2022-09-20 15:00:58,001 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,001 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 22
+2022-09-20 15:00:58,001 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,001 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 23
+2022-09-20 15:00:58,002 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,002 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 24
+2022-09-20 15:00:58,002 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,002 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 25
+2022-09-20 15:00:58,002 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,002 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 26
+2022-09-20 15:00:58,002 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,002 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 27
+2022-09-20 15:00:58,002 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,002 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 28
+2022-09-20 15:00:58,002 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,002 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 29
+2022-09-20 15:00:58,002 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,002 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 30
+2022-09-20 15:00:58,003 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,003 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 31
+2022-09-20 15:00:58,003 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,003 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 32
+2022-09-20 15:00:58,003 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,003 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 33
+2022-09-20 15:00:58,003 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,003 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 34
+2022-09-20 15:00:58,003 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,003 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 35
+2022-09-20 15:00:58,003 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,003 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 36
+2022-09-20 15:00:58,003 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,003 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 37
+2022-09-20 15:00:58,003 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,003 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 38
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 39
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 40
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 41
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 42
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 43
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 44
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 45
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 46
+2022-09-20 15:00:58,004 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,004 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 47
+2022-09-20 15:00:58,005 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,005 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 48
+2022-09-20 15:00:58,005 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,005 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 49
+2022-09-20 15:00:58,005 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,005 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 50
+2022-09-20 15:00:58,005 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,005 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 51
+2022-09-20 15:00:58,005 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,005 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 52
+2022-09-20 15:00:58,005 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,005 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 53
+2022-09-20 15:00:58,005 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,005 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 54
+2022-09-20 15:00:58,005 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,005 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 55
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,006 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 56
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,006 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 57
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,006 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 58
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,006 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 59
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,006 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 60
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,006 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 61
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,006 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 62
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,006 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 63
+2022-09-20 15:00:58,006 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 64
+2022-09-20 15:00:58,007 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 65
+2022-09-20 15:00:58,007 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 66
+2022-09-20 15:00:58,007 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 67
+2022-09-20 15:00:58,007 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 68
+2022-09-20 15:00:58,007 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 69
+2022-09-20 15:00:58,007 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 70
+2022-09-20 15:00:58,007 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 71
+2022-09-20 15:00:58,007 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,007 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 72
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,008 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 73
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,008 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 74
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,008 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 75
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,008 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 76
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,008 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 77
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,008 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 78
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,008 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 79
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,008 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 80
+2022-09-20 15:00:58,008 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 81
+2022-09-20 15:00:58,009 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 82
+2022-09-20 15:00:58,009 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 83
+2022-09-20 15:00:58,009 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 84
+2022-09-20 15:00:58,009 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 85
+2022-09-20 15:00:58,009 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 86
+2022-09-20 15:00:58,009 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 87
+2022-09-20 15:00:58,009 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 88
+2022-09-20 15:00:58,009 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,009 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 89
+2022-09-20 15:00:58,010 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,010 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 90
+2022-09-20 15:00:58,011 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,011 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 91
+2022-09-20 15:00:58,011 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,011 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 92
+2022-09-20 15:00:58,011 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,011 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 93
+2022-09-20 15:00:58,011 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,011 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 94
+2022-09-20 15:00:58,011 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,011 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 95
+2022-09-20 15:00:58,011 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,011 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 96
+2022-09-20 15:00:58,011 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,011 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 97
+2022-09-20 15:00:58,012 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,012 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 98
+2022-09-20 15:00:58,012 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,012 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 99
+2022-09-20 15:00:58,012 INFO:Message Generated From File /users/grad/ifath/amnis-data-sync/dataDir/input.txt
+2022-09-20 15:00:58,012 INFO:      File has been sent ->  Topic: inputTopic; File ID: File: 100
+2022-09-20 15:00:59,340 INFO:Closing the Kafka producer with 0 secs timeout.
+2022-09-20 15:00:59,340 INFO:Proceeding to force close the producer since pending requests could not be completed within timeout 0.
