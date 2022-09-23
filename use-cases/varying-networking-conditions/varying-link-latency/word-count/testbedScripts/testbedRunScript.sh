@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #run brokerScipt in gpu5
-ssh -t ifath@qiang-gpu5.research.cs.dal.ca 'cd /users/grad/ifath/amnis-data-sync && bash -s < brokerScript.sh enp101s0f0 100 inputTopic outputTopic &'
+ssh -f ifath@qiang-gpu5.research.cs.dal.ca 'cd /users/grad/ifath/amnis-data-sync && bash -s < brokerScript.sh enp101s0f0 100 inputTopic outputTopic &'
 
 # sleep 5
 
