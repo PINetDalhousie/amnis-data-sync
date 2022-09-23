@@ -30,7 +30,9 @@ try:
 
     spark.sparkContext.setLogLevel('ERROR')
 
-    kafkaNode = host + ":9092"
+    # kafkaNode = host + ":9092"
+    kafkaNode = "10.0.0.2:9092"
+    logging.info("Connected at Broker: "+kafkaNode)
     # kafkaNode = "10.0.0.1:9092,10.0.0.2:9092"
 
     # Create DataFrame representing the stream of input lines from connection to host:port
@@ -50,7 +52,8 @@ try:
     .option("topic", sparkOutputTo) \
     .option("checkpointLocation", "logs/output/wordcount_checkpoint_intermediate") \
     .start()
-
+    output.awaitTermination()
+    
     # Generate running word count
     # wordCounts = words.groupBy('word').count()
 
@@ -60,7 +63,7 @@ try:
     #     .option("checkpointLocation", sparkOutputTo+"wordcount_checkpoint") \
     #     .start()
 
-    output.awaitTermination()
+    
     # output.awaitTermination(30)
     # output.stop()
 

@@ -166,8 +166,8 @@ plt.title('Latency Per File')
 plt.xticks(range(0,105,10))
 plt.scatter(tuple1, tuple2)
 
-plotLink = 'varying-H2-S-link-only-bw1Gbps'
-plotLinkLatency = '10ms'
+plotLink = 'varying-H2-S-link-only-noSleep'
+plotLinkLatency = '100ms'
 #plt.show()
 plt.savefig(logDir+'/'+ plotLinkLatency +'-latency.png')
 
@@ -179,7 +179,7 @@ time.sleep(5)
 src_dir = logDir
  
 # path to destination directory
-dest_dir = '/home/monzurul/Desktop/amnis-data-sync/use-cases/varying-networking-conditions/varying-link-latency/word-count/latencyPlots/'+\
+dest_dir = '/home/monzurul/Desktop/amnis-data-sync/use-cases/varying-networking-conditions/varying-link-latency/word-count/simulationResults/'+\
                 plotLink+'/'+plotLinkLatency+'/'
 os.makedirs(dest_dir)
  
@@ -192,3 +192,4 @@ shutil.copy(logDir+'/'+ plotLinkLatency +'-latency.png', dest_dir)
 
 
 
+latencyPlots
