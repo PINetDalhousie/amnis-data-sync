@@ -37,12 +37,12 @@
     <node id="h2">
       <data key="zk">1</data>
       <data key="bk">1</data>
-      <data key="consCfg">inTopic</data>  
+      <!-- <data key="consCfg">inTopic</data>   -->
 	  </node>   
 
     <node id="h3">   
       <data key="sparkCfg">use-cases/varying-networking-conditions/varying-link-latency/word-count/sparkApp1.py,outTopic</data>
-      <data key="consCfg">outTopic</data>        
+      <!-- <data key="consCfg">outTopic</data>         -->
 	  </node>
 
     <node id="h4">
@@ -51,29 +51,29 @@
 	  </node>         
 
     <edge source="s1" target="h1">
-      <data key="bw">1</data>
+      <data key="bw">1000</data>
       <data key="lat">1</data>
       <data key="st">1</data>
       <data key="dt">1</data>
     </edge>
 
     <edge source="s1" target="h2">
-      <data key="bw">1</data>
-      <data key="lat">100</data>
+      <data key="bw">1000</data>
+      <data key="lat">1</data>
       <data key="st">2</data>
       <data key="dt">1</data>
     </edge>
 
     <edge source="s1" target="h3">
-      <data key="bw">1</data>
+      <data key="bw">1000</data>
       <data key="lat">1</data>
       <data key="st">3</data>
       <data key="dt">1</data>
     </edge>
 
     <edge source="s1" target="h4">
-      <data key="bw">1</data>
-      <data key="lat">1</data>
+      <data key="bw">1000</data>
+      <data key="lat">100</data>
       <data key="st">4</data>
       <data key="dt">1</data>
     </edge>

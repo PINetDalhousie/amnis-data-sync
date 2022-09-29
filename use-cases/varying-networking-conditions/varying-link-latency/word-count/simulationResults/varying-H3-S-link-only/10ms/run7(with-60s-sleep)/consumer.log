@@ -1,0 +1,215 @@
+2022-09-28 12:00:46,976 INFO:node to initiate consumer: 4
+2022-09-28 12:00:46,976 INFO:topicName outTopic
+2022-09-28 12:00:46,976 INFO:topicBroker 2
+2022-09-28 12:00:46,978 INFO:<BrokerConnection node_id=bootstrap-0 host=10.0.0.2:9092 <connecting> [IPv4 ('10.0.0.2', 9092)]>: connecting to 10.0.0.2:9092 [('10.0.0.2', 9092) IPv4]
+2022-09-28 12:00:46,978 INFO:Probing node bootstrap-0 broker version
+2022-09-28 12:00:46,982 INFO:<BrokerConnection node_id=bootstrap-0 host=10.0.0.2:9092 <connecting> [IPv4 ('10.0.0.2', 9092)]>: Connection complete.
+2022-09-28 12:00:47,092 INFO:Broker version identified as 2.5.0
+2022-09-28 12:00:47,092 INFO:Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2022-09-28 12:00:47,093 WARNING:group_id is None: disabling auto-commit.
+2022-09-28 12:00:47,094 INFO:Updating subscribed topics to: ('outTopic',)
+2022-09-28 12:00:47,094 INFO:Connect to broker looking for topic outTopic. 
+2022-09-28 12:00:47,104 INFO:Updated partition assignment: [TopicPartition(topic='outTopic', partition=0)]
+2022-09-28 12:00:47,105 INFO:<BrokerConnection node_id=2 host=10.0.0.2:9092 <connecting> [IPv4 ('10.0.0.2', 9092)]>: connecting to 10.0.0.2:9092 [('10.0.0.2', 9092) IPv4]
+2022-09-28 12:00:47,205 INFO:<BrokerConnection node_id=2 host=10.0.0.2:9092 <connecting> [IPv4 ('10.0.0.2', 9092)]>: Connection complete.
+2022-09-28 12:00:47,205 INFO:<BrokerConnection node_id=bootstrap-0 host=10.0.0.2:9092 <connected> [IPv4 ('10.0.0.2', 9092)]>: Closing connection. 
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 1
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 2
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 3
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 4
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 5
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 6
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 7
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 8
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 9
+2022-09-28 12:00:48,392 INFO:Message received:
+2022-09-28 12:00:48,392 INFO:today is sep 21th.rrrr 10
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 11
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 12
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 13
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 14
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 15
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 16
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 17
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 18
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 19
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 20
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 21
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 22
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,393 INFO:today is sep 21th.rrrr 23
+2022-09-28 12:00:48,393 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 24
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 25
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 26
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 27
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 28
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 29
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 30
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 31
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 32
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 33
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,394 INFO:today is sep 21th.rrrr 34
+2022-09-28 12:00:48,394 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 35
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 36
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 37
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 38
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 39
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 40
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 41
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 42
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 43
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,395 INFO:today is sep 21th.rrrr 44
+2022-09-28 12:00:48,395 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 45
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 46
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 47
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 48
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 49
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 50
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 51
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 52
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 53
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 54
+2022-09-28 12:00:48,396 INFO:Message received:
+2022-09-28 12:00:48,396 INFO:today is sep 21th.rrrr 55
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 56
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 57
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 58
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 59
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 60
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 61
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 62
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 63
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 64
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 65
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,397 INFO:today is sep 21th.rrrr 66
+2022-09-28 12:00:48,397 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 67
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 68
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 69
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 70
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 71
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 72
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 73
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 74
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 75
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 76
+2022-09-28 12:00:48,398 INFO:Message received:
+2022-09-28 12:00:48,398 INFO:today is sep 21th.rrrr 77
+2022-09-28 12:00:48,399 INFO:Message received:
+2022-09-28 12:00:48,399 INFO:today is sep 21th.rrrr 78
+2022-09-28 12:00:48,399 INFO:Message received:
+2022-09-28 12:00:48,399 INFO:today is sep 21th.rrrr 79
+2022-09-28 12:00:48,399 INFO:Message received:
+2022-09-28 12:00:48,399 INFO:today is sep 21th.rrrr 80
+2022-09-28 12:00:48,399 INFO:Message received:
+2022-09-28 12:00:48,399 INFO:today is sep 21th.rrrr 81
+2022-09-28 12:00:48,399 INFO:Message received:
+2022-09-28 12:00:48,399 INFO:today is sep 21th.rrrr 82
+2022-09-28 12:00:48,399 INFO:Message received:
+2022-09-28 12:00:48,399 INFO:today is sep 21th.rrrr 83
+2022-09-28 12:00:48,399 INFO:Message received:
+2022-09-28 12:00:48,399 INFO:today is sep 21th.rrrr 84
+2022-09-28 12:00:48,399 INFO:Message received:
+2022-09-28 12:00:48,399 INFO:today is sep 21th.rrrr 85
+2022-09-28 12:00:48,561 INFO:Message received:
+2022-09-28 12:00:48,561 INFO:today is sep 21th.rrrr 86
+2022-09-28 12:00:48,567 INFO:Message received:
+2022-09-28 12:00:48,567 INFO:today is sep 21th.rrrr 87
+2022-09-28 12:00:48,567 INFO:Message received:
+2022-09-28 12:00:48,567 INFO:today is sep 21th.rrrr 88
+2022-09-28 12:00:48,567 INFO:Message received:
+2022-09-28 12:00:48,567 INFO:today is sep 21th.rrrr 89
+2022-09-28 12:00:48,567 INFO:Message received:
+2022-09-28 12:00:48,567 INFO:today is sep 21th.rrrr 90
+2022-09-28 12:00:48,567 INFO:Message received:
+2022-09-28 12:00:48,567 INFO:today is sep 21th.rrrr 91
+2022-09-28 12:00:48,567 INFO:Message received:
+2022-09-28 12:00:48,567 INFO:today is sep 21th.rrrr 92
+2022-09-28 12:00:48,586 INFO:Message received:
+2022-09-28 12:00:48,586 INFO:today is sep 21th.rrrr 93
+2022-09-28 12:00:48,587 INFO:Message received:
+2022-09-28 12:00:48,587 INFO:today is sep 21th.rrrr 94
+2022-09-28 12:00:48,587 INFO:Message received:
+2022-09-28 12:00:48,587 INFO:today is sep 21th.rrrr 95
+2022-09-28 12:00:48,587 INFO:Message received:
+2022-09-28 12:00:48,587 INFO:today is sep 21th.rrrr 96
+2022-09-28 12:00:48,587 INFO:Message received:
+2022-09-28 12:00:48,587 INFO:today is sep 21th.rrrr 97
+2022-09-28 12:00:48,587 INFO:Message received:
+2022-09-28 12:00:48,587 INFO:today is sep 21th.rrrr 98
+2022-09-28 12:00:48,587 INFO:Message received:
+2022-09-28 12:00:48,587 INFO:today is sep 21th.rrrr 99
+2022-09-28 12:00:48,587 INFO:Message received:
+2022-09-28 12:00:48,587 INFO:today is sep 21th.rrrr 100

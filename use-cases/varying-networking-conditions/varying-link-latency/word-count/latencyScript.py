@@ -171,25 +171,20 @@ plotLinkLatency = '100ms'
 #plt.show()
 plt.savefig(logDir+'/'+ plotLinkLatency +'-latency.png')
 
-time.sleep(5)
+# time.sleep(5)
 
-#copying logs and latency plot from logs to latencyPlots directory
+# #copying logs and latency plot from logs to latencyPlots directory
 
-# path to source directory
-src_dir = logDir
+# # path to source directory
+# src_dir = logDir
  
-# path to destination directory
-dest_dir = '/home/monzurul/Desktop/amnis-data-sync/use-cases/varying-networking-conditions/varying-link-latency/word-count/simulationResults/'+\
-                plotLink+'/'+plotLinkLatency+'/'
-os.makedirs(dest_dir)
+# # path to destination directory
+# dest_dir = '/home/monzurul/Desktop/amnis-data-sync/use-cases/varying-networking-conditions/varying-link-latency/word-count/simulationResults/'+\
+#                 plotLink+'/'+plotLinkLatency+'/'
+# os.makedirs(dest_dir)
  
-#shutil.copytree(src_dir, dest_dir)
+# #shutil.copytree(src_dir, dest_dir)
 
-shutil.copy(logDir+'/prod-1.log', dest_dir)
-shutil.copy(logDir+'/cons4.log', dest_dir)
-shutil.copy(logDir+'/'+ plotLinkLatency +'-latency.png', dest_dir)
-
-
-
-
-latencyPlots
+# shutil.copy(logDir+'/prod-1.log', dest_dir)
+# shutil.copy(logDir+'/cons4.log', dest_dir)
+# shutil.copy(logDir+'/'+ plotLinkLatency +'-latency.png', dest_dir)

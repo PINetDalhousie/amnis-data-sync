@@ -1,4 +1,4 @@
-# to run this script: sudo /home/monzurul/Desktop/amnis-data-sync/spark/pyspark/bin/spark-submit latencyScript.py <logDir> <varying-H1-S-link-only> <50ms>
+# to run this script: sudo /home/monzurul/Desktop/amnis-data-sync/spark/pyspark/bin/spark-submit latencyScript.py <logDir> <50ms>
 
 # This file calculates the latency of processing each file by a spark application, using information
 # from producer and consumer logs
@@ -27,8 +27,8 @@ spark.sparkContext.setLogLevel("ERROR")
 
 # Reading the producer and consumer log files into a dataframe each
 logDir = sys.argv[1]
-plotLink = sys.argv[2]  #'varying-H2-S-link-only-bw1Gbps'
-plotLinkLatency = sys.argv[3]  #'10ms'
+# plotLink = sys.argv[2]  #'varying-H2-S-link-only-bw1Gbps'
+plotLinkLatency = sys.argv[2]  #'10ms'
 
 producerLog = logDir + '/producer.log'
 consumerLog = logDir + '/consumer.log'
@@ -152,8 +152,11 @@ print(*tuple1)
 
 print("latency after sorting by filenumber: ")
 print(*tuple2)
-# print(type(tuple2))
-# print(len(tuple2))
+print(type(tuple2))
+
+minLatency = p.min(tuple2)
+maxLatency = p.max(tuple2)
+print(maxLatency)
 
 # showing average as a horizontal line
 latencySum = p.sum(tuple2)
@@ -167,6 +170,7 @@ plt.title('Latency Per File')
 
 # plot X axis values at a interval
 plt.xticks(range(0,105,10))
+plt.yticks(range(minLatency, maxLatency+10, 10))
 plt.scatter(tuple1, tuple2)
 
 #plt.show()
