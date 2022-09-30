@@ -1,0 +1,212 @@
+2022-09-29 13:11:50,071 INFO:node to initiate producer: 1
+2022-09-29 13:11:50,071 INFO:topic name: inTopic
+2022-09-29 13:11:50,071 INFO:topic broker: 2
+2022-09-29 13:11:50,072 INFO:**Configuring KafkaProducer** bootstrap_servers=10.0.0.2:9092 acks=1 compression_type=None batch_size=16384 linger_ms=0 request_timeout_ms=30000
+2022-09-29 13:11:50,073 INFO:<BrokerConnection node_id=bootstrap-0 host=10.0.0.2:9092 <connecting> [IPv4 ('10.0.0.2', 9092)]>: connecting to 10.0.0.2:9092 [('10.0.0.2', 9092) IPv4]
+2022-09-29 13:11:50,074 INFO:Probing node bootstrap-0 broker version
+2022-09-29 13:11:50,078 INFO:<BrokerConnection node_id=bootstrap-0 host=10.0.0.2:9092 <connecting> [IPv4 ('10.0.0.2', 9092)]>: Connection complete.
+2022-09-29 13:11:50,191 INFO:Broker version identified as 2.5.0
+2022-09-29 13:11:50,191 INFO:Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2022-09-29 13:11:50,194 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,194 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 1
+2022-09-29 13:11:50,202 INFO:<BrokerConnection node_id=2 host=10.0.0.2:9092 <connecting> [IPv4 ('10.0.0.2', 9092)]>: connecting to 10.0.0.2:9092 [('10.0.0.2', 9092) IPv4]
+2022-09-29 13:11:50,202 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,203 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 2
+2022-09-29 13:11:50,203 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,203 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 3
+2022-09-29 13:11:50,203 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,204 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 4
+2022-09-29 13:11:50,204 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,204 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 5
+2022-09-29 13:11:50,204 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,204 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 6
+2022-09-29 13:11:50,205 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,205 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 7
+2022-09-29 13:11:50,205 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,205 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 8
+2022-09-29 13:11:50,205 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,205 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 9
+2022-09-29 13:11:50,206 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,206 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 10
+2022-09-29 13:11:50,206 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,206 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 11
+2022-09-29 13:11:50,206 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,206 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 12
+2022-09-29 13:11:50,206 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,206 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 13
+2022-09-29 13:11:50,207 INFO:<BrokerConnection node_id=2 host=10.0.0.2:9092 <connecting> [IPv4 ('10.0.0.2', 9092)]>: Connection complete.
+2022-09-29 13:11:50,207 INFO:<BrokerConnection node_id=bootstrap-0 host=10.0.0.2:9092 <connected> [IPv4 ('10.0.0.2', 9092)]>: Closing connection. 
+2022-09-29 13:11:50,207 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,207 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 14
+2022-09-29 13:11:50,209 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,209 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 15
+2022-09-29 13:11:50,210 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,210 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 16
+2022-09-29 13:11:50,211 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,211 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 17
+2022-09-29 13:11:50,212 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,212 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 18
+2022-09-29 13:11:50,213 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,213 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 19
+2022-09-29 13:11:50,213 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,213 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 20
+2022-09-29 13:11:50,213 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,213 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 21
+2022-09-29 13:11:50,214 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,214 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 22
+2022-09-29 13:11:50,214 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,214 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 23
+2022-09-29 13:11:50,214 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,214 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 24
+2022-09-29 13:11:50,214 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,215 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 25
+2022-09-29 13:11:50,215 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,215 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 26
+2022-09-29 13:11:50,215 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,215 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 27
+2022-09-29 13:11:50,215 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,216 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 28
+2022-09-29 13:11:50,216 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,216 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 29
+2022-09-29 13:11:50,216 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,216 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 30
+2022-09-29 13:11:50,216 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,216 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 31
+2022-09-29 13:11:50,217 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,217 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 32
+2022-09-29 13:11:50,217 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,217 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 33
+2022-09-29 13:11:50,217 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,217 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 34
+2022-09-29 13:11:50,217 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,218 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 35
+2022-09-29 13:11:50,218 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,218 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 36
+2022-09-29 13:11:50,218 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,218 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 37
+2022-09-29 13:11:50,218 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,218 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 38
+2022-09-29 13:11:50,219 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,219 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 39
+2022-09-29 13:11:50,219 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,219 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 40
+2022-09-29 13:11:50,219 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,219 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 41
+2022-09-29 13:11:50,219 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,219 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 42
+2022-09-29 13:11:50,220 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,220 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 43
+2022-09-29 13:11:50,220 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,220 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 44
+2022-09-29 13:11:50,220 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,220 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 45
+2022-09-29 13:11:50,220 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,220 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 46
+2022-09-29 13:11:50,221 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,221 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 47
+2022-09-29 13:11:50,221 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,221 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 48
+2022-09-29 13:11:50,221 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,222 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 49
+2022-09-29 13:11:50,222 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,222 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 50
+2022-09-29 13:11:50,222 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,222 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 51
+2022-09-29 13:11:50,222 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,223 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 52
+2022-09-29 13:11:50,223 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,223 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 53
+2022-09-29 13:11:50,223 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,223 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 54
+2022-09-29 13:11:50,223 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,223 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 55
+2022-09-29 13:11:50,225 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,225 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 56
+2022-09-29 13:11:50,226 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,226 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 57
+2022-09-29 13:11:50,228 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,228 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 58
+2022-09-29 13:11:50,228 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,229 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 59
+2022-09-29 13:11:50,229 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,230 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 60
+2022-09-29 13:11:50,230 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,230 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 61
+2022-09-29 13:11:50,232 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,232 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 62
+2022-09-29 13:11:50,233 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,234 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 63
+2022-09-29 13:11:50,235 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,235 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 64
+2022-09-29 13:11:50,236 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,236 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 65
+2022-09-29 13:11:50,238 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,238 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 66
+2022-09-29 13:11:50,239 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,239 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 67
+2022-09-29 13:11:50,239 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,240 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 68
+2022-09-29 13:11:50,241 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,241 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 69
+2022-09-29 13:11:50,242 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,242 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 70
+2022-09-29 13:11:50,243 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,243 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 71
+2022-09-29 13:11:50,244 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,244 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 72
+2022-09-29 13:11:50,246 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,246 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 73
+2022-09-29 13:11:50,247 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,247 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 74
+2022-09-29 13:11:50,248 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,248 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 75
+2022-09-29 13:11:50,250 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,250 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 76
+2022-09-29 13:11:50,251 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,251 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 77
+2022-09-29 13:11:50,252 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,253 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 78
+2022-09-29 13:11:50,254 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,255 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 79
+2022-09-29 13:11:50,256 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,256 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 80
+2022-09-29 13:11:50,258 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,258 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 81
+2022-09-29 13:11:50,259 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,259 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 82
+2022-09-29 13:11:50,260 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,260 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 83
+2022-09-29 13:11:50,262 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,262 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 84
+2022-09-29 13:11:50,263 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,263 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 85
+2022-09-29 13:11:50,264 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,265 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 86
+2022-09-29 13:11:50,266 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,266 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 87
+2022-09-29 13:11:50,266 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,266 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 88
+2022-09-29 13:11:50,267 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,268 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 89
+2022-09-29 13:11:50,268 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,269 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 90
+2022-09-29 13:11:50,270 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,270 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 91
+2022-09-29 13:11:50,271 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,272 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 92
+2022-09-29 13:11:50,273 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,273 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 93
+2022-09-29 13:11:50,274 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,274 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 94
+2022-09-29 13:11:50,275 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,275 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 95
+2022-09-29 13:11:50,276 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,276 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 96
+2022-09-29 13:11:50,277 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,277 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 97
+2022-09-29 13:11:50,278 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,278 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 98
+2022-09-29 13:11:50,279 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,279 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 99
+2022-09-29 13:11:50,279 INFO:Message Generated From File use-cases/varying-networking-conditions/varying-link-latency/word-count/dataDir/randomText2.txt
+2022-09-29 13:11:50,279 INFO:      File has been sent ->  Topic: inTopic; File ID: File: 100
