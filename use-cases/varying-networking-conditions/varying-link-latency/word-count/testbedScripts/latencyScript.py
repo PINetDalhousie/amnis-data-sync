@@ -30,8 +30,8 @@ logDir = sys.argv[1]
 # plotLink = sys.argv[2]  #'varying-H2-S-link-only-bw1Gbps'
 plotLinkLatency = sys.argv[2]  #'10ms'
 
-producerLog = logDir + '/producer.log'
-consumerLog = logDir + '/consumer.log'
+producerLog = logDir + '/prod-1.log'
+consumerLog = logDir + '/cons4.log'
 
 
 producerDF = spark.read.option('inferSchema', True).option('header', True).text(producerLog)
