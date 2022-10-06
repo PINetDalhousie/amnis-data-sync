@@ -3,6 +3,8 @@
 from kafka import KafkaProducer
 
 from random import seed, randint, gauss
+from queue import Queue
+from threading import Thread
 
 import time
 import sys
@@ -10,6 +12,19 @@ import logging
 import re
 import random
 import os
+
+def processProdMsg(q):
+	while True:
+		msgStatus = q.get()
+		kPointerKey = list(msgStatus.keys())
+		kPointerValue = list(msgStatus.values())
+
+		try:
+			logMsgStatus = kPointerValue[0].get(timeout=5000)
+			logging.info('Produced message ID: %s; Value: %s', str(kPointerKey[0]), logMsgStatus)
+		except Exception as e:
+			logging.info('Message not produced. ID: %s; Error: %s', str(kPointerKey[0]), e)
+
 
 def readXmlFileMessage(file):
 	lines = file.readlines()
@@ -127,6 +142,11 @@ try:
 	else:
 		logging.info("Messages generated")
 
+	#Use a queue and a separate thread to log messages that were not produced properly
+	q = Queue(maxsize=0)
+	prodMsgThread = Thread(target=processProdMsg, args=(q,))
+	prodMsgThread.start()
+
 	while True:
 		if(messageFilePath != 'None'):
 			message = processXmlMessage(readMessage)			
@@ -140,8 +160,13 @@ try:
 		topicID = randint(0, nTopics-1)
 		topicName = 'topic-'+str(topicID)
 
-		producer.send(topicName, bMsg)
+		prodStatus = producer.send(topicName, bMsg)
 		logging.info('Topic: %s; Message ID: %s; Message: %s', topicName, newMsgID, message)
+
+		msgInfo = {}
+		msgInfo[newMsgID] = prodStatus
+		q.put(msgInfo)
+
 # 		logging.info('Topic: %s; Message ID: %s;', topicName, str(msgID).zfill(3))        
 		msgID += 1
 		time.sleep(1.0/(mRate*tClass))
