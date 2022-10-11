@@ -1,3 +1,4 @@
+# command to run this script: sudo python3 <logDir> <noOfConsumers>
 #!/usr/bin/python3
 
 import sys

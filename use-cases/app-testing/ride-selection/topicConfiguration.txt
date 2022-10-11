@@ -1,2 +1,2 @@
-taxirides
-taxifares
+taxirides broker 1 partition 1
+taxifares broker 2 partition 1

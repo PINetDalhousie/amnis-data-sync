@@ -15,4 +15,4 @@
 
 ## Running
    
- ```sudo python3 main.py use-cases/reproducibility/input.graphml --nzk 1 --nbroker 1 --only-kafka 1```
+ ```sudo python3 main.py use-cases/reproducibility/input.graphml --nzk 1 --nbroker 1 --only-kafka 1 --time 50```

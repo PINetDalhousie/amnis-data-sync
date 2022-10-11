@@ -216,7 +216,7 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 		print("Spark Clients created")
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace)
-	time.sleep(20)
+	time.sleep(10)
 	print("Producers created")
 	
 	spawnConsumers(net, consDetailsList, topicPlace)

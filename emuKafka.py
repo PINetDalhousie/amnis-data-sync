@@ -37,7 +37,7 @@ def readTopicConfig(topicConfigPath):
 	return allTopics
 
 def readProdConfig(prodConfig):
-	if len(prodConfig.split(",")):
+	if len(prodConfig.split(",")) != 3:
 		print("ERROR: Producer config parameter should contain production file path, topic name to produce, number of producer files")
 		sys.exit(1)
 	
@@ -105,8 +105,8 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 	propertyFile.close()
 
 
-def placeKafkaBrokers(net, inputTopoFile, onlySpark, consumerNo):
-	print(onlySpark)
+def placeKafkaBrokers(net, inputTopoFile, onlySpark):
+	
 	brokerPlace = []
 	zkPlace = []
 
@@ -153,13 +153,9 @@ def placeKafkaBrokers(net, inputTopoFile, onlySpark, consumerNo):
 				prodDetailsList.append(prodDetails)
 
 			if 'consumerConfig' in data: 
-				consStart = 1
-				while consStart <= consumerNo:
-					consTopics = readConsConfig(data["consumerConfig"])
-					consDetails = {"nodeId": node[1], "consumeFromTopic": consTopics}
-					consDetailsList.append(consDetails)
-					consStart += 1
-
+				consTopics = readConsConfig(data["consumerConfig"])
+				consDetails = {"nodeId": node[1], "consumeFromTopic": consTopics}
+				consDetailsList.append(consDetails)
 				
 				# # Hard-code to work with two consumers on same host node
 				# consDetails = {"nodeId": node[1], "consumeFromTopic": consTopics}

@@ -180,7 +180,7 @@ if __name__ == '__main__':
 			autoSetMacs = True,
 			autoStaticArp = True)
 
-	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo, args.onlySpark, args.consumerNo)
+	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo, args.onlySpark)
 
 	# if args.onlyKafka == 0:
 	#Add dependency to connect kafka & Spark

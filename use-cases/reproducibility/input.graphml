@@ -31,7 +31,7 @@
       <data key="zk">1</data>
       <data key="bk">1</data>
       <data key="prodType">ELTT</data>
-      <data key="prodCfg">use-cases/reproducibility/dataDir/mnist_test.csv,inputTopic,3</data>
+      <data key="prodCfg">use-cases/reproducibility/dataDir/mnist_test.csv,inputTopic,1</data>
       <data key="consCfg">inputTopic,4</data>
 	  </node>            
 

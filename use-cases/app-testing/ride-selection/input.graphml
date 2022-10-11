@@ -31,8 +31,8 @@
       <data key="zk">1</data>
       <data key="bk">1</data>
       <data key="prodType">SFST</data>
-      <data key="prodCfg">/home/ubuntu/Desktop/amnis-data-sync/use-cases/app-testing/ride-selection/nycTaxiRidesData.csv,taxirides</data>
-      <data key="consCfg">taxirides</data>
+      <data key="prodCfg">/home/ubuntu/Desktop/amnis-data-sync/use-cases/app-testing/ride-selection/nycTaxiRidesData.csv,taxirides,1</data>
+      <data key="consCfg">taxirides,1</data>
 	  </node>            
     
     <node id="s1"/>
@@ -41,8 +41,8 @@
     <node id="h2">
       <data key="bk">1</data>
       <data key="prodType">SFST</data>
-      <data key="prodCfg">/home/ubuntu/Desktop/amnis-data-sync/use-cases/app-testing/ride-selection/nycTaxiFaresData.csv,taxifares</data>
-      <data key="consCfg">taxifares</data>
+      <data key="prodCfg">/home/ubuntu/Desktop/amnis-data-sync/use-cases/app-testing/ride-selection/nycTaxiFaresData.csv,taxifares,1</data>
+      <data key="consCfg">taxifares,1</data>
       <data key="sparkCfg">/home/ubuntu/Desktop/amnis-data-sync/use-cases/app-testing/ride-selection/rideSelection.py,/home/ubuntu/Desktop/amnis-data-sync/logs</data>
 	  </node>            
 
