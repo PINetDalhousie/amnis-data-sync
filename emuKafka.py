@@ -14,22 +14,38 @@ def readTopicConfig(topicConfigPath):
 	
 	f = open(topicConfigPath, "r")
 	for line in f:
-		topicName = line.split(' broker:')[0].strip()
-		topicBroker = line.split(' broker:')[1].strip()
-		topicDetails = {"topicName": topicName, "topicBroker": topicBroker}
+		data = line.split()
+		topicName = data[0]
+		topicBroker = data[2]
+		if len(data) == 5:
+			topicPartition = data[4]
+		else:
+			topicPartition = 1
+
+		topicDetails = {"topicName": topicName, "topicBroker": topicBroker,\
+			"topicPartition": topicPartition}
 		allTopics.append(topicDetails)
+		
+		# topicName = line.split(' broker:')[0].strip()
+		# topicBroker = line.split(' broker:')[1].strip()
+		# topicDetails = {"topicName": topicName, "topicBroker": topicBroker}
+		# allTopics.append(topicDetails)
 	
 	f.close()
 	# print(*allTopics)
 
 	return allTopics
 
-def readProdConfig(prodType, prodConfig):
-	# if prodType == 'SFST':
+def readProdConfig(prodConfig):
+	if len(prodConfig.split(",")):
+		print("ERROR: Producer config parameter should contain production file path, topic name to produce, number of producer files")
+		sys.exit(1)
+	
 	prodFile = prodConfig.split(",")[0]     #prodFile will hold the file path/directory path based on producer type SFST or MFST respectively
 	prodTopic = prodConfig.split(",")[1]
+	prodNumberOfFiles = prodConfig.split(",")[2]
 
-	return prodFile, prodTopic
+	return prodFile, prodTopic, prodNumberOfFiles
 
 def readConsConfig(consConfig):
 	#topic list contains the topics from where the consumer will consume
@@ -89,7 +105,7 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 	propertyFile.close()
 
 
-def placeKafkaBrokers(net, inputTopoFile, onlySpark):
+def placeKafkaBrokers(net, inputTopoFile, onlySpark, consumerNo):
 	print(onlySpark)
 	brokerPlace = []
 	zkPlace = []
@@ -130,15 +146,24 @@ def placeKafkaBrokers(net, inputTopoFile, onlySpark):
 			if 'broker' in data: 
 				brokerPlace.append(node[1])
 			if 'producerType' in data: 
-				prodFile, prodTopic = readProdConfig(data["producerType"], data["producerConfig"])
+				prodFile, prodTopic, prodNumberOfFiles = readProdConfig(data["producerConfig"])
 				prodDetails = {"nodeId": node[1], "producerType": data["producerType"],\
-					"produceFromFile":prodFile, "produceInTopic": prodTopic}
+					"produceFromFile":prodFile, "produceInTopic": prodTopic,\
+						"prodNumberOfFiles": prodNumberOfFiles}
 				prodDetailsList.append(prodDetails)
 
 			if 'consumerConfig' in data: 
-				consTopics = readConsConfig(data["consumerConfig"])
-				consDetails = {"nodeId": node[1], "consumeFromTopic": consTopics}
-				consDetailsList.append(consDetails)
+				consStart = 1
+				while consStart <= consumerNo:
+					consTopics = readConsConfig(data["consumerConfig"])
+					consDetails = {"nodeId": node[1], "consumeFromTopic": consTopics}
+					consDetailsList.append(consDetails)
+					consStart += 1
+
+				
+				# # Hard-code to work with two consumers on same host node
+				# consDetails = {"nodeId": node[1], "consumeFromTopic": consTopics}
+				# consDetailsList.append(consDetails)
             
 	print("zookeepers:")
 	print(*zkPlace)
@@ -148,8 +173,8 @@ def placeKafkaBrokers(net, inputTopoFile, onlySpark):
 	# print("producer details")
 	# print(*prodDetailsList)
 
-	# print("consumer details")
-	# print(*consDetailsList)
+	print("consumer details")
+	print(*consDetailsList)
 
 	return brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList
 

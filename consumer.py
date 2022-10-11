@@ -16,10 +16,11 @@ try:
 	nodeName = sys.argv[1]
 	topicName = sys.argv[2]
 	brokerId = sys.argv[3]
+	consInstance = sys.argv[4]
 
 	nodeID = nodeName[1:]
     
-	logging.basicConfig(filename="logs/output/"+"cons"+str(nodeID)+".log",
+	logging.basicConfig(filename="logs/output/"+"cons"+str(consInstance)+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
 							level=logging.INFO)    
 	logging.info("node to initiate consumer: "+nodeID)
@@ -32,25 +33,27 @@ try:
 		
 		consumer = KafkaConsumer(topicName,\
 			bootstrap_servers=bootstrapServers,\
-			auto_offset_reset='earliest')
-			# enable_auto_commit=True,
-			# group_id="group-"+str(nodeID)                                     
+			auto_offset_reset='earliest',
+			group_id="group-"+topicName)
+			# enable_auto_commit=True,                                     
 			# )
 
 		logging.info('Connect to broker looking for topic %s. ', topicName)
-
+		i = 1
 		for msg in consumer:
 			msgContent = str(msg.value, 'utf-8')
-			# logging.info("There is data")
-			# logging.info(msgContent)
 			
 			if 'File: ' in msgContent:
 				fileNumber = msgContent.split('File: ')[1]
+				logging.info("Message ID: %s",str(i))
 				logging.info("File %s Received   Message Received word: %s", fileNumber, msgContent)          
+				i += 1
 
 			else:
+				logging.info("Message ID: %s",str(i))
 				logging.info("Message received:")
 				logging.info(msgContent)
+				i += 1
 
 
 

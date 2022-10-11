@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from ast import arg
 from re import I
 from mininet.net import Mininet
 from mininet.cli import CLI
@@ -158,9 +159,9 @@ if __name__ == '__main__':
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
-	parser.add_argument('--only-spark', dest='onlySpark', type=int, default=0, help='To run Spark application only provide 1')
-
-    
+	parser.add_argument('--only-kafka', dest='onlyKafka', type=int, default=0, help='To run Kafka only')
+	parser.add_argument('--only-spark', dest='onlySpark', type=int, default=0, help='To run Spark application only')
+	  
 	args = parser.parse_args()
 
 	# print(args)
@@ -179,8 +180,9 @@ if __name__ == '__main__':
 			autoSetMacs = True,
 			autoStaticArp = True)
 
-	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo, args.onlySpark)
+	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo, args.onlySpark, args.consumerNo)
 
+	# if args.onlyKafka == 0:
 	#Add dependency to connect kafka & Spark
 	emuSpark.addSparkDependency()
 

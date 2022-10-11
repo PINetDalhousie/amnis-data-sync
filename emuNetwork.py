@@ -76,7 +76,7 @@ def configureNetwork(inputTopoFile):
 
 					pathLength = len(shortestPaths[source][target])
 					shortestPath = shortestPaths[source][target]
-
+					
 					#Iterate over switches
 					for i in range(1, pathLength-1):
 						outLink = directedTopo.get_edge_data(shortestPath[i], 

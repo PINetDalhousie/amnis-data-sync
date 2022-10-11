@@ -67,3 +67,9 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6, Kafka 2.13-2.8
   8) Set a duration for the simulation. OBS.: this is the time the workload will run, not the total simulation time
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60```
+
+  9) Run only Kafka/Spark application (default setup is running Kafka and Spark applications along side)
+
+  ```sudo python3 main.py use-cases/reproducibility/input.graphml --nzk 1 --nbroker 1 --only-kafka 1```
+  ```sudo python3 main.py use-cases/reproducibility/input.graphml --nzk 1 --nbroker 1 --only-spark 1```
+

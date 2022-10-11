@@ -122,14 +122,9 @@ def messageProductionMFST(messageFilePath,fileNumber, topicName):
 
 	return sentMessage
 
-	# producer = KafkaProducer(bootstrap_servers = bootstrapServers)
-	# producer.send(topicName, sentMessage)
-
-	# fileID = "File: " +str(msgID)
-	# logging.info('      File has been sent ->  Topic: %s; File ID: %s', \
-    #                     topicName, str(fileID))
-
-	# msgID += 1
+def messageProductionELTT(messageFilePath, fileID):
+	file = open(messageFilePath, 'r')
+	return 
 
 def on_send_success(record_metadata):
 	fileID = "File: " +str(record_metadata.offset) 
@@ -158,11 +153,7 @@ try:
 	directoryPath = sys.argv[13]  #it will hold the file path/directory path based on producer type SFST or MFST respectively
 	prodTopic = sys.argv[14] 
 	prodType = sys.argv[15] 
-
-	#print(nTopics)
-	#print(compression)
-	#print(prodFile)
-	#print(prodTopic)
+	prodNumberOfFiles = int(sys.argv[16])
 
 	seed(1)
 
@@ -177,9 +168,6 @@ try:
 	logging.info("node to initiate producer: "+nodeID)
 	logging.info("topic name: "+prodTopic)
 	logging.info("topic broker: "+brokerId)
-	#logging.info("input file: "+prodFile)
-	#logging.info("produce data in topic: "+prodTopic)
-    
 
 	bootstrapServers="10.0.0."+brokerId+":9092"
 
@@ -218,8 +206,7 @@ try:
 
 	elif prodType == "SFST":
 		while True:
-			if i <= 100:
-				# approach 1
+			if i <= prodNumberOfFiles:
 				sentMessage = messageProductionSFST(directoryPath, i)
 				fileID = "File: " +str(i)
 
@@ -228,18 +215,23 @@ try:
 				   prodTopic, fileID)
 
 				producer.send(prodTopic, sentMessage)
+				i += 1
+	
+	elif prodType == "ELTT":
+		msgNo = 1
+		while True:
+			if i <= prodNumberOfFiles:
+				with open(directoryPath,'r') as file:
+					for count, line in enumerate(file):
+						sentMessage = line.encode()
+						# log after producing to topic
+						logging.info('      Message has been sent ->  Topic: %s; Message ID: %s', \
+						prodTopic, str(msgNo))
 
-				# #log after producing to topic
-				# producer.send(prodTopic, sentMessage).add_callback(on_send_success)\
-				# 	.add_errback(on_send_error)#
+						producer.send(prodTopic, sentMessage)
+						msgNo += 1
 
 				i += 1
-			# else:
-			# 	continue
-
-			#approach 2
-			# messageProductionSFST(bootstrapServers, directoryPath,prodTopic)
-
 
 except Exception as e:
 	logging.error(e)

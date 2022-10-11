@@ -52,6 +52,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDet
 		messageFilePath = i['produceFromFile']
 		tClasses = i['tClasses']
 		prodTopic = i['produceInTopic']
+		prodNumberOfFiles = i['prodNumberOfFiles']
 
 		try:
 			topicName = [x for x in topicPlace if x['topicName'] == prodTopic][0]["topicName"]
@@ -61,7 +62,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDet
 
 			node.popen("python3 producer.py "+nodeId+" "+tClasses+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)\
 			+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+brokerId+" "+str(replication)+" "+messageFilePath\
-			+" "+topicName+" "+producerType+" &", shell=True)
+			+" "+topicName+" "+producerType+" "+prodNumberOfFiles+" &", shell=True)
 
 		except IndexError:
 			print("Error: Production topic name not matched with the already created topics")
@@ -78,13 +79,19 @@ def spawnConsumers(net, consDetailsList, topicPlace):
 		netNodes[node.name] = node
         
 	for cons in consDetailsList:
+		consInstance = 1
+		
 		consNode = cons["nodeId"]
 		topicName = cons["consumeFromTopic"][0]
 		consID = "h"+consNode      
 		node = netNodes[consID]
 
+		# number of consumers
+		numberOfConsumers = int(cons["consumeFromTopic"][-1])
+
 		print("consumer node: "+consNode)
 		print("topic: "+topicName)
+		print("Number of consumers for this topic: "+str(numberOfConsumers))
 
 		try:
 			topicName = [x for x in topicPlace if x['topicName'] == topicName][0]["topicName"]
@@ -92,7 +99,9 @@ def spawnConsumers(net, consDetailsList, topicPlace):
 
 			print("Consuming messages from topic "+topicName+" at broker "+brokerId)
 
-			node.popen("python3 consumer.py "+str(node.name)+" "+topicName+" "+brokerId+" &", shell=True)
+			while consInstance <= int(numberOfConsumers):
+				node.popen("python3 consumer.py "+str(node.name)+" "+topicName+" "+brokerId+" "+str(consInstance)+" &", shell=True)
+				consInstance += 1
 
 		except IndexError:
 			print("Error: Consume topic name not matched with the already created topics")
@@ -177,16 +186,21 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 	for topic in topicPlace:
 		topicName = topic["topicName"]
 		issuingID = (int) (topic["topicBroker"])-1
+		topicPartition = topic["topicPartition"]
 		issuingNode = net.hosts[issuingID]
 
-		print("Creating topic "+topicName+" at broker "+str(issuingID+1))
+		print("Creating topic "+topicName+" at broker "+str(issuingID+1)+" partition "+str(topicPartition))
 
 		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092\
-			 --replication-factor "+str(replication)+" --partitions 1 --topic "+topicName, shell=True)         
+			 --replication-factor "+str(replication)+" --partitions " + topicPartition + \
+				" --topic "+topicName, shell=True)         
 		
 		print(out)
 		topicNodes.append(issuingNode)
-	
+
+		topicDetails = issuingNode.cmd("kafka/bin/kafka-topics.sh --describe --bootstrap-server 10.0.0."+str(issuingID+1)+":9092", shell=True)
+		print(topicDetails)
+
 	stopTime = time.time()
 	totalTime = stopTime - startTime
 	print("Successfully Created " + str(len(topicPlace)) + " Topics in " + str(totalTime) + " seconds")
@@ -196,17 +210,22 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 		spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath)
 		print("Kafka-MySQL connector instance created")
 
-	spawnSparkClients(net, sparkDetailsList)
-	time.sleep(30)
-	print("Spark Clients created")
+	if args.onlyKafka == 0:
+		spawnSparkClients(net, sparkDetailsList)
+		time.sleep(30)
+		print("Spark Clients created")
 
+	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace)
+	time.sleep(20)
+	print("Producers created")
+	
 	spawnConsumers(net, consDetailsList, topicPlace)
 	# time.sleep(10)
 	print("Consumers created")
 
-	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace)
-	# time.sleep(10)
-	print("Producers created")
+	# spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace)
+	# # time.sleep(10)
+	# print("Producers created")
 
 	# spark start its processing once the production is done
 	# time.sleep(30)
