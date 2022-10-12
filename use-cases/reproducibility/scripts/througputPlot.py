@@ -4,16 +4,9 @@ import matplotlib.pyplot as plt
 
 fig = plt.figure()
 
-# partition fixed to 10
-# single group values
-numberOfConsumers = [1,2,4,8,10]
-avgThroughput = [1319.957761351637, 740.1043680635613*2 ,377.65841890275095*4, 187.08560459438922*8, 168.02201182833863*10]
-# msgConsumed = ~10,000
+numberOfConsumers = [1,2,4,8,10,16]
+avgThroughput = [6438.606657652437, 12070.992524440138 ,22377.276640005733, 32338.656802826372, 31212.736600529177, 31750.23439558111 ]
 
-# individual group values
-# numberOfConsumers = [2,4,6,8]
-# avgThroughput = [1376.6520867384816, 1729.293597482546, 1781.699702685235, 1538.1015638218346]
-# msgConsumed = [20000, 39988, 59790, 79984]
 plt.bar(numberOfConsumers,avgThroughput,color='blue',edgecolor='black')
 # plt.xticks(numberOfConsumers,avgThroughput)
 plt.xlabel('Number of consumers', fontsize=16)

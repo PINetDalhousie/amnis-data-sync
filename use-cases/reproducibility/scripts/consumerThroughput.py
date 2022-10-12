@@ -40,10 +40,11 @@ while i<= numberOfConsumers:
             totalMsgConsumed += msgConsumed
 
             print('Average message/sec for consumer '+ str(i) +' : '+ str(msgPerSec))
+            print('Message consumed by consumer '+ str(i) +' : '+ str(msgConsumed))
             avgPerConsumer.append(msgPerSec)
     i += 1
 
-print(*avgPerConsumer)
+# print(*avgPerConsumer)
 # avgThroughput = sum(avgPerConsumer)/numberOfConsumers
 print("Average message/sec for total "+str(numberOfConsumers)+" consumers: " + str(sum(avgPerConsumer)))
 print('Total msg consumed: '+str(totalMsgConsumed))

@@ -219,19 +219,19 @@ try:
 	
 	elif prodType == "ELTT":
 		msgNo = 1
-		while True:
-			if i <= prodNumberOfFiles:
-				with open(directoryPath,'r') as file:
-					for count, line in enumerate(file):
-						sentMessage = line.encode()
-						# log after producing to topic
-						logging.info('      Message has been sent ->  Topic: %s; Message ID: %s', \
-						prodTopic, str(msgNo))
+		# while True:
+		while i <= prodNumberOfFiles:  #if i <= prodNumberOfFiles:
+			with open(directoryPath,'r') as file:
+				for count, line in enumerate(file):
+					sentMessage = line.encode()
+					# log after producing to topic
+					logging.info('      Message has been sent ->  Topic: %s; Message ID: %s', \
+					prodTopic, str(msgNo))
 
-						producer.send(prodTopic, sentMessage)
-						msgNo += 1
+					producer.send(prodTopic, sentMessage)
+					msgNo += 1
 
-				i += 1
+			i += 1
 
 except Exception as e:
 	logging.error(e)
