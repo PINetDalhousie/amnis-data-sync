@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+
+  <!-- graph attributes -->
+  <key id="topicCfg" for="graph" attr.name="topicConfig" attr.type="string"/>
+  <key id="dcCfg" for="graph" attr.name="disconnectionConfig" attr.type="string"/> 
+
+  <!-- node attributes -->
+  <key id="zk" for="node" attr.name="zookeeper" attr.type="int"/>
+  <key id="bk" for="node" attr.name="broker" attr.type="int"/>
+  <key id="prodType" for="node" attr.name="producerType" attr.type="string"/>   <!-- producer type can be SFST/MFST/ELTT -->
+  <key id="prodCfg" for="node" attr.name="producerConfig" attr.type="string"/>  <!-- for SFST/ELTT: one pair of filePath, topicName, number of files to produce; for MFMT: multiple pair of filePaths, topicNames; -->
+  <key id="consCfg" for="node" attr.name="consumerConfig" attr.type="string"/>  <!-- consConfig will contain the topic name(s) from where the consumer will consumer and number of consumer instances in this node--> 
+  <key id="sparkCfg" for="node" attr.name="sparkConfig" attr.type="string"/>    <!-- sparkConfig will contain the spark application path and topic name(s)/output directory from where the spark ingest its processed output --> 
+  
+
+  <!-- edge attributes -->
+  <key id="bw" for="edge" attr.name="bandwidth" attr.type="int"/>  <!-- unit in Mbps -->
+  <key id="lat" for="edge" attr.name="latency" attr.type="int"/>   <!-- unit in ms -->
+  <key id="st" for="edge" attr.name="sport" attr.type="int"/>
+  <key id="dt" for="edge" attr.name="dport" attr.type="int"/>
+  
+   
+  <graph id="simple-topo" edgedefault="undirected">
+    <data key="topicCfg">use-cases/disconnection/topicConfiguration.txt</data>
+    <!-- <data key="dcCfg">use-cases/disconnection/disconnectionConfiguration.txt</data> -->
+
+    <node id="s1"/>
+
+    <node id="h1">
+      <data key="zk">1</data>
+      <data key="bk">1</data>
+      <data key="prodType">ELTT</data>
+      <data key="prodCfg">use-cases/disconnection/dataDir/mnist_test.csv,inputTopic,1</data>
+	  </node>   
+
+    <node id="h2">
+      <data key="consCfg">inputTopic,1</data>
+	  </node> 
+
+    <node id="h3">
+      <data key="consCfg">inputTopic,1</data>
+	  </node>         
+
+    <edge source="s1" target="h1">
+      <data key="bw">1000</data>
+      <data key="lat">1</data>
+      <data key="st">1</data>
+      <data key="dt">1</data>
+    </edge>
+
+    <edge source="s1" target="h2">
+      <data key="bw">1000</data>
+      <data key="lat">1</data>
+      <data key="st">2</data>
+      <data key="dt">1</data>
+    </edge>
+
+    <edge source="s1" target="h3">
+      <data key="bw">1000</data>
+      <data key="lat">1</data>
+      <data key="st">3</data>
+      <data key="dt">1</data>
+    </edge>
+
+  </graph>
+</graphml>

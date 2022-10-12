@@ -3,7 +3,7 @@
 from mininet.net import Mininet
 from mininet.cli import CLI
 
-from random import seed, randint
+from random import seed, randint, choice
 
 import time
 import os
@@ -12,6 +12,7 @@ import itertools
 
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
+from datetime import datetime
 
 
 def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace):
@@ -160,7 +161,9 @@ def spawnKafkaMySQLConnector(net, prodDetailsList, mysqlPath):
 	node.popen("sudo kafka/bin/connect-standalone.sh kafka/config/connect-standalone-new.properties "+ mysqlPath +" > logs/connectorOutput.txt &", shell=True)
 	
 
-def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, mysqlPath, brokerPlace, topicWaitTime=100):
+def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, \
+	mysqlPath, brokerPlace, isDisconnect, dcDuration, dcLinks, topicWaitTime=100):
+
 	nTopics = args.nTopics
 	replication = args.replication
 	mSizeString = args.mSizeString
@@ -216,7 +219,7 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 		print("Spark Clients created")
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args, prodDetailsList, topicPlace)
-	time.sleep(120)
+	# time.sleep(120)
 	print("Producers created")
 	
 	spawnConsumers(net, consDetailsList, topicPlace)
@@ -238,9 +241,55 @@ def runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetail
 
 	timer = 0
 
+	# hard-coded disconnection for testing
+	# isDisconnect = 1
+	# args.disconnectDuration = 10
+	# args.disconnectLink = ['s1-h2','s1-h3']
+
+	# Set up disconnect
+	if isDisconnect:
+		isDisconnected = False
+		disconnectTimer = dcDuration
+
+	print(f"Starting workload at {str(datetime.now())}")
+	
 	while timer < duration:
 		time.sleep(10)
-		print("Processing workload: "+str(int((timer/duration)*100))+"%")
+		percentComplete = int((timer/duration)*100)
+		print("Processing workload: "+str(percentComplete)+"%")
+
+		if isDisconnect and percentComplete >= 10:
+			if not isDisconnected:	
+				for link in dcLinks:
+					linkSplit = link.split('-')
+					n1 = net.getNodeByName(linkSplit[0])
+					n2 = net.getNodeByName(linkSplit[1])
+					disconnectLink(net, n1, n2)
+				isDisconnected = True
+
+			elif isDisconnected and disconnectTimer <= 0: 	
+				for link in dcLinks:
+					linkSplit = link.split('-')
+					n1 = net.getNodeByName(linkSplit[0])
+					n2 = net.getNodeByName(linkSplit[1])				
+					reconnectLink(net, n1, n2)
+				isDisconnected = False
+				isDisconnect = False
+				
+			if isDisconnected:
+				disconnectTimer -= 10
+
 		timer += 10
 
-	print("Workload finished")
+	print(f"Workload finished at {str(datetime.now())}")	
+
+
+def disconnectLink(net, n1, n2):
+	print(f"***********Setting link down from {n1.name} <-> {n2.name} at {str(datetime.now())}")
+	net.configLinkStatus(n2.name, n1.name, "down")
+	net.pingAll()
+
+def reconnectLink(net, n1, n2):
+	print(f"***********Setting link up from {n1.name} <-> {n2.name} at {str(datetime.now())}")
+	net.configLinkStatus(n2.name, n1.name, "up")
+	net.pingAll()

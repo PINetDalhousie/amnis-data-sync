@@ -36,6 +36,22 @@ def readTopicConfig(topicConfigPath):
 
 	return allTopics
 
+def readDisconnectionConfig(dcConfigPath):
+	dcLinks  = []
+	f = open(dcConfigPath, "r")
+	for line in f:
+		if 'duration: ' in line:
+			dcDuration = int(line.split('duration: ')[1].strip())
+		elif 'links: ' in line:
+			allLinks = line.split('links: ')[1].strip()
+			dcLinks = allLinks.split(',')
+
+	print("read DC config:")
+	print(dcDuration)
+	print(*dcLinks)
+	return dcDuration, dcLinks
+
+
 def readProdConfig(prodConfig):
 	if len(prodConfig.split(",")) != 3:
 		print("ERROR: Producer config parameter should contain production file path, topic name to produce, number of producer files")
@@ -136,6 +152,17 @@ def placeKafkaBrokers(net, inputTopoFile, onlySpark):
 		# print("Topic(s): ")
 		# print(*topicPlace)
 	
+	# reading disconnection config
+	dcPath = inputTopo.graph["disconnectionConfig"]
+	if dcPath != '':
+		isDisconnect = 1
+		print("Disconnection config directory: " + dcPath)
+		dcDuration, dcLinks = readDisconnectionConfig(dcPath)
+	else:
+		isDisconnect = 0
+		dcDuration = 0
+		dcLinks = []
+
 	#Read nodewise broker, zookeeper, producer, consumer information
 	for node, data in inputTopo.nodes(data=True):  
 		if node[0] == 'h':
@@ -172,7 +199,8 @@ def placeKafkaBrokers(net, inputTopoFile, onlySpark):
 	print("consumer details")
 	print(*consDetailsList)
 
-	return brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList
+	return brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList, \
+		isDisconnect, dcDuration, dcLinks
 
 
 

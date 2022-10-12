@@ -180,7 +180,8 @@ if __name__ == '__main__':
 			autoSetMacs = True,
 			autoStaticArp = True)
 
-	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList = emuKafka.placeKafkaBrokers(net, args.topo, args.onlySpark)
+	brokerPlace, zkPlace, topicPlace, prodDetailsList, consDetailsList, isDisconnect, \
+		dcDuration, dcLinks = emuKafka.placeKafkaBrokers(net, args.topo, args.onlySpark)
 
 	# if args.onlyKafka == 0:
 	#Add dependency to connect kafka & Spark
@@ -224,7 +225,8 @@ if __name__ == '__main__':
 	emuZk.runZk(net, zkPlace)
 	emuKafka.runKafka(net, brokerPlace)
     
-	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList, mysqlPath, brokerPlace)
+	emuLoad.runLoad(net, args, topicPlace, prodDetailsList, consDetailsList, sparkDetailsList,\
+		 mysqlPath, brokerPlace, isDisconnect, dcDuration, dcLinks)
 
 	# CLI(net)
 	print("Simulation complete")
