@@ -5,6 +5,8 @@ from mininet.cli import CLI
 from mininet.node import RemoteController
 from mininet.link import TCLink
 
+from datetime import datetime
+
 import os
 import sys
 import subprocess
@@ -175,10 +177,15 @@ if __name__ == '__main__':
 	parser.add_argument('--dc-zk-leader', dest='disconnectZkLeader', action='store_true', help='Disconnect the zookeeper leader')
 	parser.add_argument('--dc-topic-leaders', dest='disconnectTopicLeaders', type=int, default=0, help='Disconnect a number of topic leader nodes')
 	parser.add_argument('--dc-hosts', dest='disconnectHosts', type=str, help='Disconnect a list of hosts (h1,h2..hn)')
+	parser.add_argument('--kraft', dest='kraft', action='store_true', help='Run using kraft instead of zookeeper')	
 	parser.add_argument('--dc-kraft-leader', dest='disconnectKraftLeader', action='store_true', help='Disconnect the kraft leader')	
 	parser.add_argument('--kraft-broker-sleep', dest='kraftBrokerSleep', type=int, default=300, help='Sleep to allow brokers to connect (in seconds)')
 	parser.add_argument('--latency-after-setup', dest='latencyAfterSetup', action='store_true', help='Lower the network latency before setting up Kafka, then set it back once Kafka is set up.')	
 	parser.add_argument('--consumer-setup-sleep', dest='consumerSetupSleep', type=int, default=120, help='Duration to sleep between setting up consumers and producers (in seconds).')
+
+	parser.add_argument('--capture-all', dest='captureAll', action='store_true', help='Capture the traffic of all the hosts')
+	parser.add_argument('--offsets-replication', dest='offsetsTopicReplication', type=int, default=1, help='The replication factor for the offsets topic')
+
 
 	args = parser.parse_args()
 
@@ -234,12 +241,20 @@ if __name__ == '__main__':
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
 	emuLogs.cleanLogs()
-	emuKafka.cleanKafkaState(brokerPlace)
-	#emuZk.cleanZkState(zkPlace)
+	emuKafka.cleanKafkaState(brokerPlace, args.kraft)
+	if not args.kraft:
+		emuZk.cleanZkState(zkPlace)
 
 	logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
-	#emuZk.configureZkCluster(zkPlace)
-	emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
+	if not args.kraft:
+		emuZk.configureZkCluster(zkPlace)
+
+	if args.kraft:
+		logging.info("Using KRaft\n")
+		emuKafka.configureKafkaClusterKraft(brokerPlace, zkPlace, args)
+	else:		
+		logging.info("Using Zookeeper\n")
+		emuKafka.configureKafkaClusterZk(brokerPlace, zkPlace, args)
 	
 	# Log the test args
 	logging.info("Test args:\n %s", args)
@@ -250,7 +265,7 @@ if __name__ == '__main__':
 	for switch in net.switches:
 		net.get(switch.name).start([])
 
-	logging.info('Network started')
+	logging.info('Network started at ' + str(datetime.now()))
 	#emuNetwork.configureNetwork(args.topo)
 	#time.sleep(5)
 
@@ -266,38 +281,27 @@ if __name__ == '__main__':
 	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
 	pID += 1
 
-	#emuZk.runZk(net, zkPlace)
-	emuKafka.runKafka(net, brokerPlace, logDir)
+	if not args.kraft:
+		emuZk.runZk(net, zkPlace)
+	emuKafka.runKafka(net, brokerPlace, logDir, kraft=args.kraft)
 					
 	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)
 
 	print("Simulation complete")
+	logging.info('Simulation complete at ' + str(datetime.now()))
+
 
 	# to kill all the running subprocesses
 	killSubprocs(brokerPlace, zkPlace)
 
-	# Log events
-	emuLogs.logEvents(logDir, args.nBroker)
 
 	net.stop()
-	logging.info('Network stopped')
+	logging.info('Network stopped at ' + str(datetime.now()))
 
 	#Need to clean both kafka and zookeeper state before a new simulation
-	emuKafka.cleanKafkaState(brokerPlace)
-	#emuZk.cleanZkState(zkPlace)
-
-	#TODO: Temp hardcode to run plotting
-	#os.system(f"sudo python3 modifiedLatencyPlotScript.py --number-of-switches {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/")
-	#os.system(f"sudo python3 bandwidthPlotScript.py --number-of-switches {args.nBroker} --port-type access-port --message-size fixed,1000 --message-rate 30.0 --ntopics {args.nBroker} --replication {args.nBroker} --log-dir logs/kafka/nodes:{args.nBroker}_mSize:fixed,1000_mRate:30.0_topics:{args.nBroker}_replication:{args.nBroker}/ --switch-ports S1-P1,S2-P1,S3-P1,S4-P1,S5-P1,S6-P1")	
-
-
-
-
-
-
-
-
-
+	emuKafka.cleanKafkaState(brokerPlace, args.kraft)
+	if not args.kraft:
+		emuZk.cleanZkState(zkPlace)
 
 
 

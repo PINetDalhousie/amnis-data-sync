@@ -86,6 +86,19 @@ def printLinksBetween(net , n1, n2):
 			print(link.intf1)
 			print(link.intf2)
 	
+def logTopicLeaders(net, logDir, args):
+	issuingNode = net.hosts[0]
+	print("Finding topic leaders at localhost:2181")	
+	zkLeaderNode = readCurrentZkLeader(logDir)
+	logging.info("ZK Leader node is " + zkLeaderNode)	
+	for i in range(args.nTopics):
+		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
+		split1 = out.split('Leader: ')
+		split2 = split1[1].split('\t')
+		topicLeaderNode = 'h' + split2[0]			
+		print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
+		logging.info("topic-"+ str(i) +" leader is node " + topicLeaderNode)
+		
 
 def readCurrentZkLeader(logDir):
 	zkLeader = None
@@ -181,9 +194,20 @@ def processDisconnect(net, logDir, args):
 	return netHosts, hostsToDisconnect
 
 
+def traceWireshark(hostsToCapture, f):
+	for h in hostsToCapture:		
+		#temp = h.nameToIntf		
+		hostName = h.name
+		filename = "/tmp/"+ hostName + "-eth1" + "-" + f + ".pcap"
+		output = h.cmd("sudo tcpdump -i " + hostName +"-eth1 -w "+ filename +" &", shell=True)	
+		print(output)
+
+
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, logDir, args, topicWaitTime=100):
 
-	print("Start workload")
+	print("Start workload")	
+	if args.captureAll:
+		traceWireshark(net.hosts, "start")
 
 	if args.kraftBrokerSleep > 0:
 		print(f"Sleeping for {args.kraftBrokerSleep}s to allow brokers to connect")
@@ -229,6 +253,10 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	time.sleep(1)
 
 
+	# Log the topic leaders
+	if not args.kraft:
+		logTopicLeaders(net, logDir, args)	
+	
 	timer = 0
 	isDisconnect = args.disconnectRandom != 0 or args.disconnectKraftLeader or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
 	relocate = args.relocate
@@ -254,7 +282,8 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 		
 
-	print(f"Starting workload at {str(datetime.now())}")		
+	print(f"Starting workload at {str(datetime.now())}")
+	logging.info('Starting workload at ' + str(datetime.now()))
 
 	while timer < duration:
 		time.sleep(10)
@@ -262,10 +291,12 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		print("Processing workload: "+str(percentComplete)+"%")
 		if isDisconnect and percentComplete >= 10:
 			if not isDisconnected:			
-				disconnectHosts(net, netHosts, hostsToDisconnect)
-				isDisconnected = True							
+				disconnectHosts(net, netHosts, hostsToDisconnect)				
+				isDisconnected = True
 			elif isDisconnected and disconnectTimer <= 0: 			
 				reconnectHosts(net, netHosts, hostsToDisconnect)
+				if args.captureAll:
+					traceWireshark(hostsToDisconnect, "reconnect")
 				isDisconnected = False
 				isDisconnect = False
 			if isDisconnected:
@@ -274,9 +305,12 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 			delLink(net, h, s)
 			addLink(net, h, s2)
 			relocate = False
-		timer += 10	
-		
-	print(f"Workload finished at {str(datetime.now())}")		
+		timer += 10
+
+	if not args.kraft:
+		logTopicLeaders(net, logDir, args)
+	print(f"Workload finished at {str(datetime.now())}")	
+	logging.info('Workload finished at ' + str(datetime.now()))
 
 
 

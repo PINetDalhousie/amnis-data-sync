@@ -22,6 +22,7 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   - Kafka-python 2.0.2
   - Matplotlib 3.3.4
   - Seaborn 0.11.2
+  - Pandas 1.5.0
 
   Most dependencies can be installed using `apt install`:
   
@@ -30,7 +31,7 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   
   $ python3 -m pip install --upgrade pip
   
-  $ sudo pip3 install mininet networkx kafka-python matplotlib python-snappy lz4 seaborn
+  $ sudo pip3 install mininet networkx kafka-python matplotlib python-snappy lz4 seaborn pandas
   ```
   3. You are ready to go! Should be able to get help using:
 
@@ -100,8 +101,9 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
 
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --latency-after-setup```
   
+  15) Capture the network traffic of all nodes.
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --capture-all```
   
-  
-  
-  
+  16) Set the offsets topic replication factor.
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --offsets-replication 3```
   

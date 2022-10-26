@@ -13,7 +13,7 @@ import multiprocessing
 import emuLogs
 
 
-def configureKafkaCluster(brokerPlace, zkPlace, args):
+def configureKafkaClusterKraft(brokerPlace, zkPlace, args):
 	print("Configure kafka cluster")
 	propertyFile = open("kafka-3.1.0/config/kraft/server.properties", "r")
 	serverProperties = propertyFile.read()
@@ -62,11 +62,44 @@ def configureKafkaCluster(brokerPlace, zkPlace, args):
 		bFile.write(bProperties)
 		bFile.close()
 
-	bFile = open("kafka/config/server" + str(bID) + ".properties", "w")
+	bFile = open("kafka-3.1.0/config/server" + str(bID) + ".properties", "w")
 	bFile.write(bProperties)
 	bFile.close()
 
 	propertyFile.close()
+
+def configureKafkaClusterZk(brokerPlace, zkPlace, args):	
+    print("Configure kafka cluster")
+
+    propertyFile = open("kafka/config/server.properties", "r")
+    serverProperties = propertyFile.read()
+
+    for bID in brokerPlace:
+        os.system("sudo mkdir kafka/kafka" + str(bID) + "/")
+
+        bProperties = serverProperties
+        bProperties = bProperties.replace("broker.id=0", "broker.id="+str(bID))
+        bProperties = bProperties.replace(
+            "#advertised.listeners=PLAINTEXT://your.host.name:9092",
+            "advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
+        bProperties = bProperties.replace("log.dirs=/tmp/kafka-logs",
+                                          "log.dirs=./kafka/kafka" + str(bID))
+
+        bProperties = bProperties.replace(
+            "#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))
+        bProperties = bProperties.replace(
+            "#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
+
+        bProperties = bProperties.replace(
+            "offsets.topic.replication.factor=1", "offsets.topic.replication.factor="+str(args.offsetsTopicReplication))
+
+        # Specify zookeeper addresses to connect
+        zkAddresses = ""
+        zkPort = 2181
+
+        for i in range(len(zkPlace)-1):
+            zkAddresses += "localhost:"+str(zkPort)+","
+            zkPort += 1
 
 
 def placeKafkaBrokers(net, nBroker, nZk):
@@ -107,7 +140,14 @@ def monitorCmd(popens, logDir):
 			kraftLog.write("<%s>: %s" % (host.name, line))
 
 
-def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
+def runKafka(net, brokerPlace, logDir, brokerWaitTime=200, kraft=False):
+
+	print(kraft)
+	kafkaDir = "kafka"
+	if kraft == True:
+		kafkaDir = "kafka-3.1.0"
+
+	print(f"kafkaDir is {kafkaDir}")
 
 	netNodes = {}
 	# Run the following in terminal to get new uuid:
@@ -124,7 +164,7 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 	for bNode in brokerPlace:
 		print("Setting Kafka storage for node "+str(bNode))
 		os.system(
-			f"kafka-3.1.0/bin/kafka-storage.sh format -t {uuid} -c kafka-3.1.0/config/kraft/server{str(bNode)}.properties")
+			f"{kafkaDir}/bin/kafka-storage.sh format -t {uuid} -c {kafkaDir}/config/kraft/server{str(bNode)}.properties")
 		time.sleep(1)
 
 	popens = {}
@@ -134,7 +174,7 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 		h = netNodes[bID]
 		print("Creating Kafka broker at node "+str(bNode))
 		popens[h] = h.popen(
-			"kafka-3.1.0/bin/kafka-server-start.sh kafka-3.1.0/config/kraft/server"+str(bNode)+".properties &", shell=True)
+			kafkaDir+"/bin/kafka-server-start.sh "+kafkaDir+"/config/kraft/server"+str(bNode)+".properties &", shell=True)
 		time.sleep(1)
 
 	# Start the process logging monitor for mininet hosts
@@ -163,8 +203,11 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 	print("Successfully Created Kafka Brokers in " + str(totalTime) + " seconds")
 
 
-def cleanKafkaState(brokerPlace):
+def cleanKafkaState(brokerPlace, kraft=False):
+	kafkaDir = "kafka"
+	if kraft == True:
+		kafkaDir = "kafka-3.1.0"
 	for bID in brokerPlace:
-		os.system("sudo rm -rf kafka-3.1.0/kafka" + str(bID) + "/")
-		os.system("sudo rm -f kafka-3.1.0/config/kraft/server" +
+		os.system("sudo rm -rf "+kafkaDir+"/kafka" + str(bID) + "/")
+		os.system("sudo rm -f "+kafkaDir+"/config/kraft/server" +
 				  str(bID) + ".properties")
