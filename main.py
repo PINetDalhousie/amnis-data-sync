@@ -177,7 +177,6 @@ if __name__ == '__main__':
 	parser.add_argument('--dc-zk-leader', dest='disconnectZkLeader', action='store_true', help='Disconnect the zookeeper leader')
 	parser.add_argument('--dc-topic-leaders', dest='disconnectTopicLeaders', type=int, default=0, help='Disconnect a number of topic leader nodes')
 	parser.add_argument('--dc-hosts', dest='disconnectHosts', type=str, help='Disconnect a list of hosts (h1,h2..hn)')
-	parser.add_argument('--kraft', dest='kraft', action='store_true', help='Run using kraft instead of zookeeper')	
 	parser.add_argument('--dc-kraft-leader', dest='disconnectKraftLeader', action='store_true', help='Disconnect the kraft leader')	
 	parser.add_argument('--kraft-broker-sleep', dest='kraftBrokerSleep', type=int, default=300, help='Sleep to allow brokers to connect (in seconds)')
 	parser.add_argument('--latency-after-setup', dest='latencyAfterSetup', action='store_true', help='Lower the network latency before setting up Kafka, then set it back once Kafka is set up.')	
@@ -186,6 +185,7 @@ if __name__ == '__main__':
 	parser.add_argument('--capture-all', dest='captureAll', action='store_true', help='Capture the traffic of all the hosts')
 	parser.add_argument('--offsets-replication', dest='offsetsTopicReplication', type=int, default=1, help='The replication factor for the offsets topic')
 
+	parser.add_argument('--kraft', dest='kraft', action='store_true', help='Run using KRaft consensus protocol instead of Zookeeper')	
 
 	args = parser.parse_args()
 
