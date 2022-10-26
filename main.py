@@ -282,7 +282,7 @@ if __name__ == '__main__':
 	pID += 1
 
 	if not args.kraft:
-		emuZk.runZk(net, zkPlace)
+		emuZk.runZk(net, zkPlace, logDir=logDir)
 	emuKafka.runKafka(net, brokerPlace, logDir, kraft=args.kraft)
 					
 	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)

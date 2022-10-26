@@ -14,7 +14,7 @@ import emuLogs
 
 
 def configureKafkaClusterKraft(brokerPlace, zkPlace, args):
-	print("Configure kafka cluster")
+	print("Configure kafka cluster with kraft")
 	propertyFile = open("kafka-3.1.0/config/kraft/server.properties", "r")
 	serverProperties = propertyFile.read()
 
@@ -69,7 +69,7 @@ def configureKafkaClusterKraft(brokerPlace, zkPlace, args):
 	propertyFile.close()
 
 def configureKafkaClusterZk(brokerPlace, zkPlace, args):	
-    print("Configure kafka cluster")
+    print("Configure kafka cluster with zookeeper")
 
     propertyFile = open("kafka/config/server.properties", "r")
     serverProperties = propertyFile.read()
@@ -93,13 +93,30 @@ def configureKafkaClusterZk(brokerPlace, zkPlace, args):
         bProperties = bProperties.replace(
             "offsets.topic.replication.factor=1", "offsets.topic.replication.factor="+str(args.offsetsTopicReplication))
 
-        # Specify zookeeper addresses to connect
+       	# Specify zookeeper addresses to connect
         zkAddresses = ""
         zkPort = 2181
 
         for i in range(len(zkPlace)-1):
             zkAddresses += "localhost:"+str(zkPort)+","
             zkPort += 1
+
+        zkAddresses += "localhost:"+str(zkPort)
+
+        bProperties = bProperties.replace(
+            "zookeeper.connect=localhost:2181",
+            "zookeeper.connect="+zkAddresses)
+
+        # bProperties = bProperties.replace(
+        #	"zookeeper.connection.timeout.ms=18000",
+        #	"zookeeper.connection.timeout.ms=30000")
+
+        bFile = open("kafka/config/server" + str(bID) + ".properties", "w")
+        bFile.write(bProperties)
+        bFile.close()
+
+    propertyFile.close()
+
 
 
 def placeKafkaBrokers(net, nBroker, nZk):
@@ -140,12 +157,12 @@ def monitorCmd(popens, logDir):
 			kraftLog.write("<%s>: %s" % (host.name, line))
 
 
-def runKafka(net, brokerPlace, logDir, brokerWaitTime=200, kraft=False):
-
-	print(kraft)
+def runKafka(net, brokerPlace, logDir, brokerWaitTime=200, kraft=False):	
 	kafkaDir = "kafka"
+	configDir = "config"
 	if kraft == True:
 		kafkaDir = "kafka-3.1.0"
+		configDir = "config/kraft"
 
 	print(f"kafkaDir is {kafkaDir}")
 
@@ -161,11 +178,12 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200, kraft=False):
 		netNodes[node.name] = node
 
 	startTime = time.time()
-	for bNode in brokerPlace:
-		print("Setting Kafka storage for node "+str(bNode))
-		os.system(
-			f"{kafkaDir}/bin/kafka-storage.sh format -t {uuid} -c {kafkaDir}/config/kraft/server{str(bNode)}.properties")
-		time.sleep(1)
+	if kraft == True:
+		for bNode in brokerPlace:
+			print("Setting Kafka storage for node "+str(bNode))
+			os.system(
+				f"{kafkaDir}/bin/kafka-storage.sh format -t {uuid} -c {kafkaDir}/{configDir}/server{str(bNode)}.properties")
+			time.sleep(1)
 
 	popens = {}
 	for bNode in brokerPlace:
@@ -174,7 +192,7 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200, kraft=False):
 		h = netNodes[bID]
 		print("Creating Kafka broker at node "+str(bNode))
 		popens[h] = h.popen(
-			kafkaDir+"/bin/kafka-server-start.sh "+kafkaDir+"/config/kraft/server"+str(bNode)+".properties &", shell=True)
+			kafkaDir+"/bin/kafka-server-start.sh "+kafkaDir+"/"+configDir+"/server"+str(bNode)+".properties &", shell=True)
 		time.sleep(1)
 
 	# Start the process logging monitor for mininet hosts
@@ -205,9 +223,11 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200, kraft=False):
 
 def cleanKafkaState(brokerPlace, kraft=False):
 	kafkaDir = "kafka"
+	configDir = "config"
 	if kraft == True:
 		kafkaDir = "kafka-3.1.0"
+		configDir = "config/kraft"
 	for bID in brokerPlace:
 		os.system("sudo rm -rf "+kafkaDir+"/kafka" + str(bID) + "/")
-		os.system("sudo rm -f "+kafkaDir+"/config/kraft/server" +
+		os.system("sudo rm -f "+kafkaDir+"/"+configDir+"/server" +
 				  str(bID) + ".properties")
