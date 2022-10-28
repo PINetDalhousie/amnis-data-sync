@@ -89,27 +89,47 @@ def printLinksBetween(net , n1, n2):
 def logTopicLeaders(net, logDir, args):
 	issuingNode = net.hosts[0]
 	print("Finding topic leaders at localhost:2181")
-	zkLeaderNode = readCurrentZkLeader(logDir)
-	logging.info("ZK Leader node is " + zkLeaderNode)	
 	for i in range(args.nTopics):
-		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
+		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+str(i), shell=True)	
+		print(out)
 		split1 = out.split('Leader: ')
 		split2 = split1[1].split('\t')
 		topicLeaderNode = 'h' + split2[0]			
 		print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
 		logging.info("topic-"+ str(i) +" leader is node " + topicLeaderNode)
-		
 
-def readCurrentZkLeader(logDir):
-	zkLeader = None
-	with open(logDir+"/" + ZOOKEEPER_LOG_FILE) as f:
-		for line in f:
-			if "LEADING - LEADER ELECTION TOOK " in line:
-				first = line.split(">")[0]
-				zkLeader = first[1:]
-				print(f'Zookeeper leader is {zkLeader}')
+
+def getTopicLeader(issuingNode, i):
+	n = None
+	try:
+		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+i, shell=True)	
+		if 'ERROR' in out or 'Error' in out:
+			print(out)
+		else:
+			split1 = out.split('Leader: ')
+			split2 = split1[1].split('\t')
+			n = 'h' + split2[0]			
+			print(f"Leader for topic-{i} is node {n}")
+	except Exception as e:
+		print(e)
+	finally:
+		return n
+
+
+def readCurrentKraftLeader(logDir):
+	kraftLeader = None
+	with open(logDir+"/kraft/" + 'server-h1.log') as f:
+		for line in f:			
+			if "Completed transition to Leader" in line:
+				first = line.split("localId=")[1]				
+				kraftLeader = "h" + first.split(",")[0]	
 				break
-	return zkLeader
+			elif "Completed transition to FollowerState" in line:
+				first = line.split("leaderId=")[1]
+				kraftLeader = "h" + first.split(",")[0]				
+				break
+	print(f'Kraft leader is {kraftLeader}')
+	return kraftLeader
 
 
 def processDisconnect(net, logDir, args):	
@@ -134,17 +154,18 @@ def processDisconnect(net, logDir, args):
 	elif args.disconnectTopicLeaders != 0:				
 		issuingNode = net.hosts[0]
 		print("Finding topic leaders at localhost:2181")
-		zkLeaderNode = readCurrentZkLeader(logDir)
+		kraftLeaderNode = readCurrentKraftLeader(logDir)
 		# Find topic leaders
 		for i in range(args.nTopics):
-			out = issuingNode.cmd("kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
-			split1 = out.split('Leader: ')
-			split2 = split1[1].split('\t')
-			topicLeaderNode = 'h' + split2[0]			
+			# out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
+			# split1 = out.split('Leader: ')
+			# split2 = split1[1].split('\t')
+			# topicLeaderNode = 'h' + split2[0]	
+			topicLeaderNode = getTopicLeader(issuingNode, str(i))					
 			print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
-			if topicLeaderNode == zkLeaderNode:		
-				# Don't disconnect ZK	
-				print(f"Not adding {topicLeaderNode} to disconnect list as it is Zookeeper leader ")	
+			if topicLeaderNode == kraftLeaderNode:
+				# Don't disconnect leader
+				print(f"Not adding {topicLeaderNode} to disconnect list as it is Kraft leader ")	
 				continue
 			else:
 				h = net.getNodeByName(topicLeaderNode)
@@ -153,9 +174,9 @@ def processDisconnect(net, logDir, args):
 			if args.disconnectTopicLeaders == len(hostsToDisconnect):
 				break		
 
-	if args.disconnectZkLeader:
-		zkLeaderNode = readCurrentZkLeader(logDir)
-		h = net.getNodeByName(zkLeaderNode)
+	if args.disconnectKraftLeader:
+		kraftLeaderNode = readCurrentKraftLeader(logDir)
+		h = net.getNodeByName(kraftLeaderNode)
 		if not hostsToDisconnect.__contains__(h):
 			hostsToDisconnect.append(h)
 
@@ -191,35 +212,13 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
 
-		out = issuingNode.cmd("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
-# 		issuingNode.popen("kafka/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions "+str(nHosts)+" --topic topic-"+str(i)+" &", shell=True)        
+		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
 		print(out)
 		topicNodes.append(issuingNode)
 	
 	stopTime = time.time()
 	totalTime = stopTime - startTime
 	print("Successfully Created " + str(nTopics) + " Topics in " + str(totalTime) + " seconds")
-	
-	#topicWait = True
-	#startTime = time.time()
-	#totalTime = 0
-	#for host in topicNodes:
-	#    while topicWait:
-	#        print("Checking Topic Creation for Host " + str(host.IP()) + "...")
-	#        out = host.cmd("kafka/bin/kafka-topics.sh --list --bootstrap-server " + str(host.IP()) + ":9092", shell=True)
-	#        stopTime = time.time()
-	#        totalTime = stopTime - startTime
-	#        if "topic-" in out:
-	#            topicWait = False
-	#            print(out)
-	#        elif(totalTime > topicWaitTime):
-	#            print("ERROR: Timed out waiting for topics to be created")
-	#            sys.exit(1)
-	#        else:
-	#            time.sleep(10)
-	#    topicWait = True
-	#    
-	#print("Successfully Created Topics in " + str(totalTime) + " seconds")
 	
 
 
@@ -239,13 +238,6 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	print(f"Producers created at {str(datetime.now())}")
 	time.sleep(1)
 
-# 	spawnConsumers(net, nTopics, consumerRate, args)
-# 	time.sleep(1)
-# 	print("Consumers created")
-    
-# 	for i in range(nHosts):    
-# 		consumer_groups = net.hosts[i].cmd("kafka/bin/kafka-consumer-groups.sh --bootstrap-server 10.0.0."+str(i+1)+":9092 --list", shell=True)
-# 		print("output for "+str(i+1)+" node:"+consumer_groups)
 
 	# Log the topic leaders
 	logTopicLeaders(net, logDir, args)	

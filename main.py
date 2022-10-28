@@ -17,8 +17,10 @@ import logging
 
 import emuNetwork
 import emuKafka
+import emuKafkaKraft
 import emuZk
 import emuLoad
+import emuLoadKraft
 import emuLogs
 
 pID=0
@@ -171,14 +173,14 @@ if __name__ == '__main__':
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
 
 	parser.add_argument('--single-consumer', dest='singleConsumer', action='store_true', help='Use a single, always connected consumer (per node) for the entire simulation')
-	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')	
+	parser.add_argument('--relocate', dest='relocate', action='store_true', help='Relocate a random node during the simulation')
 	parser.add_argument('--dc-duration', dest='disconnectDuration', type=int, default=60, help='Duration of the disconnection (in seconds)')
 	parser.add_argument('--dc-random', dest='disconnectRandom', type=int, default=0, help='Disconnect a number of random hosts')
 	parser.add_argument('--dc-zk-leader', dest='disconnectZkLeader', action='store_true', help='Disconnect the zookeeper leader')
 	parser.add_argument('--dc-topic-leaders', dest='disconnectTopicLeaders', type=int, default=0, help='Disconnect a number of topic leader nodes')
 	parser.add_argument('--dc-hosts', dest='disconnectHosts', type=str, help='Disconnect a list of hosts (h1,h2..hn)')
 	parser.add_argument('--dc-kraft-leader', dest='disconnectKraftLeader', action='store_true', help='Disconnect the kraft leader')	
-	parser.add_argument('--kraft-broker-sleep', dest='kraftBrokerSleep', type=int, default=300, help='Sleep to allow brokers to connect (in seconds)')
+	parser.add_argument('--kraft-broker-sleep', dest='kraftBrokerSleep', type=int, default=0, help='Sleep to allow brokers to connect (in seconds)')
 	parser.add_argument('--latency-after-setup', dest='latencyAfterSetup', action='store_true', help='Lower the network latency before setting up Kafka, then set it back once Kafka is set up.')	
 	parser.add_argument('--consumer-setup-sleep', dest='consumerSetupSleep', type=int, default=120, help='Duration to sleep between setting up consumers and producers (in seconds).')
 
@@ -216,6 +218,7 @@ if __name__ == '__main__':
 
 	print(args)	
 	validateInput(args)
+	kraft = args.kraft
 	
 	#Clean up mininet state
 	cleanProcess = subprocess.Popen("sudo mn -c", shell=True)
@@ -236,25 +239,30 @@ if __name__ == '__main__':
 	net.topo = emulatedTopo
 	net.build()
 
-	brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
+	if kraft:
+		brokerPlace, zkPlace = emuKafkaKraft.placeKafkaBrokers(net, args.nBroker, args.nZk)
+	else:	
+		brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
 
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
-	emuLogs.cleanLogs()
-	emuKafka.cleanKafkaState(brokerPlace, args.kraft)
-	if not args.kraft:
+	if kraft:
+		emuLogs.cleanLogs()
+		emuKafkaKraft.cleanKafkaState(brokerPlace)
+		emuZk.cleanZkState(zkPlace)
+	else:
+		emuLogs.cleanLogs()
+		emuKafka.cleanKafkaState(brokerPlace)
 		emuZk.cleanZkState(zkPlace)
 
-	logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
-	if not args.kraft:
+	if kraft:
+		logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
 		emuZk.configureZkCluster(zkPlace)
-
-	if args.kraft:
-		logging.info("Using KRaft\n")
-		emuKafka.configureKafkaClusterKraft(brokerPlace, zkPlace, args)
-	else:		
-		logging.info("Using Zookeeper\n")
-		emuKafka.configureKafkaClusterZk(brokerPlace, zkPlace, args)
+		emuKafkaKraft.configureKafkaCluster(brokerPlace, args)
+	else:
+		logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
+		emuZk.configureZkCluster(zkPlace)
+		emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
 	# Log the test args
 	logging.info("Test args:\n %s", args)
@@ -271,21 +279,26 @@ if __name__ == '__main__':
 
 	# Set network delay to a low value to allow Kafka to set up properly
 	if args.latencyAfterSetup:
-		emuLoad.setNetworkDelay(net, '1ms')
+		if kraft:
+			emuLoadKraft.setNetworkDelay(net, '1ms')
+		else:	
+			emuLoad.setNetworkDelay(net, '1ms')
 
 	print("Testing network connectivity")
 	net.pingAll()
 	print("Finished network connectivity test")
-			
+		
 	#Start monitoring tasks
 	popens[pID] = subprocess.Popen("sudo python3 bandwidth-monitor.py "+str(args.nBroker)+" " +args.mSizeString+" "+str(args.mRate) +" " +str(args.nTopics) +" "+ str(args.replication) + " "+ str(args.nZk) +" &", shell=True)
 	pID += 1
 
-	if not args.kraft:
-		emuZk.runZk(net, zkPlace, logDir=logDir)
-	emuKafka.runKafka(net, brokerPlace, logDir, kraft=args.kraft)
-					
-	emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)
+	if kraft:		
+		emuKafkaKraft.runKafka(net, brokerPlace, logDir)
+		emuLoadKraft.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)
+	else:
+		emuZk.runZk(net, zkPlace, logDir)
+		emuKafka.runKafka(net, brokerPlace, logDir)					
+		emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)
 
 	print("Simulation complete")
 	logging.info('Simulation complete at ' + str(datetime.now()))
@@ -299,8 +312,10 @@ if __name__ == '__main__':
 	logging.info('Network stopped at ' + str(datetime.now()))
 
 	#Need to clean both kafka and zookeeper state before a new simulation
-	emuKafka.cleanKafkaState(brokerPlace, args.kraft)
-	if not args.kraft:
+	if kraft:	
+		emuKafkaKraft.cleanKafkaState(brokerPlace)		
+	else:
+		emuKafka.cleanKafkaState(brokerPlace)
 		emuZk.cleanZkState(zkPlace)
 
 
