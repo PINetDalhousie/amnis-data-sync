@@ -166,5 +166,5 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 
 def cleanKafkaState(brokerPlace):
 	for bID in brokerPlace:
-		os.system("sudo rm -rf kafka/kafka" + str(bID) + "/")
+		os.system("sudo rm -rf kafka-3.1.0/kafka" + str(bID) + "/")
 		os.system("sudo rm -f kafka-3.1.0/config/kraft/server" + str(bID) + ".properties")

@@ -246,21 +246,17 @@ if __name__ == '__main__':
 
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
-	if kraft:
-		emuLogs.cleanLogs()
-		emuKafkaKraft.cleanKafkaState(brokerPlace)
-		emuZk.cleanZkState(zkPlace)
-	else:
-		emuLogs.cleanLogs()
+	emuLogs.cleanLogs()
+	if kraft:		
+		emuKafkaKraft.cleanKafkaState(brokerPlace)		
+	else:		
 		emuKafka.cleanKafkaState(brokerPlace)
 		emuZk.cleanZkState(zkPlace)
 
-	if kraft:
-		logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
-		emuZk.configureZkCluster(zkPlace)
+	logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
+	if kraft:		
 		emuKafkaKraft.configureKafkaCluster(brokerPlace, args)
-	else:
-		logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
+	else:		
 		emuZk.configureZkCluster(zkPlace)
 		emuKafka.configureKafkaCluster(brokerPlace, zkPlace, args)
 	
