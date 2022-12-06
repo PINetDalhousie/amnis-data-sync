@@ -27,8 +27,45 @@ class ProducerLog():
 					prodData.append(msgData)
 
 		return prodData
+		
+	
+	def getBrokerConfirmations(self, filePath, prodID):
+	
+		brokerConfirmations = []
+		
+		with open(filePath) as f:
+			for line in f:
+			
+				if "INFO:Message not produced." in line:
+					msgIDSplit = line.split("ID: ")
+					msgID = msgIDSplit[1].split(";")[0]
+					
+					confirmation = [msgID, "0"]
+					brokerConfirmations.append(confirmation)
 
+				elif "INFO:Produced message ID:" in line:
+					msgIDSplit = line.split("Produced message ID: ")
+					msgID = msgIDSplit[1].split(";")[0]
+					
+					confirmation = [msgID, "1"]
+					brokerConfirmations.append(confirmation)
+					
+		return brokerConfirmations	
+		
+		
+	def getAllBrokerConfirmations(self, prodDir, numProducers):
+	
+		allBrokerConfirmations = []
+		
+		for prodID in range(numProducers):
+			brokerConfirmations = self.getBrokerConfirmations(prodDir+'prod-'+str(prodID+1)+'.log', prodID+1)
+			allBrokerConfirmations.append(brokerConfirmations)
 
+		return allBrokerConfirmations
+	
+
+	"""Return a matrix where each line contains all entries 
+	(i.e., produced messages) for a given producer"""
 	def getAllProdData(self, prodDir, numProducers):
 		
 		allProducerData = []
@@ -40,7 +77,7 @@ class ProducerLog():
 		return allProducerData
 
 
-	
+	"""Return data from a particular message"""
 	def getMsgData(self, prodData, msgID):
 
 		reqMsg = []
