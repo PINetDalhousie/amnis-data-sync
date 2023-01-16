@@ -329,10 +329,12 @@ def plotLatencyScatterSorted(switches):
 def plotLatencyPDF():
     global latencyYAxis
 
-    sns.distplot(latencyYAxis, hist=True, kde=True, 
-             bins=28, color = 'darkblue', 
-             hist_kws={'edgecolor':'black'},
-             kde_kws={'linewidth': 4})
+    #sns.distplot(latencyYAxis, hist=True, kde=True, 
+    #         bins=28, color = 'darkblue', 
+    #         hist_kws={'edgecolor':'black'},
+    #         kde_kws={'linewidth': 4})
+             
+    sns.kdeplot(latencyYAxis)
 
     # Add labels
     plt.title('PDF of Latency')
@@ -354,7 +356,8 @@ def plotLatencyCDF():
                   "alpha": 0.7,
                   'label':'Kernel Density Estimation Plot',
                   'cumulative': True}
-    sns.distplot(latencyYAxis, hist_kws=hist_kwargs, kde_kws=kde_kwargs)
+    #sns.distplot(latencyYAxis, hist_kws=hist_kwargs, kde_kws=kde_kwargs)
+    sns.ecdfplot(latencyYAxis)
     
     # Add labels
     plt.title('CDF of Latency')
