@@ -28,7 +28,8 @@ def configureLogDir(brokers, mSizeString, mRate, nTopics, replication):
 
 def cleanLogs():
 	#os.system("sudo rm -rf logs/kafka/")
-	os.system("sudo rm -rf kafka/logs/")   	
+	os.system("sudo rm -rf kafka/logs/")
+	os.system("sudo rm -rf kafka-3.1.0/logs/") 
 
 def logMininetProcesses(popens, logFilePath):
     bandwidthLog = open(logFilePath, "a")
