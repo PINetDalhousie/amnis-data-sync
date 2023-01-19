@@ -92,6 +92,7 @@ try:
 	brokers = int(sys.argv[11])    
 	replication = int(sys.argv[12]) 
 	messageFilePath = sys.argv[13] 
+	ssl = bool(sys.argv[14])
 
 	seed(1)
 
@@ -121,12 +122,23 @@ try:
 		" linger_ms=" + str(linger) + " request_timeout_ms=" + str(requestTimeout))
 
 
-	if(compression == 'None'):
+	if ssl:
 		producer = KafkaProducer(bootstrap_servers=bootstrapServers,
 			acks=acks,
 			batch_size=batchSize,
 			linger_ms=linger,
-			request_timeout_ms=requestTimeout)
+			request_timeout_ms=requestTimeout,
+			compression_type=compression,
+			security_protocol='SSL',
+			ssl_check_hostname=False,
+			# ssl_cafile=os.getcwd()+'/certs-offical/CARoot.pem',
+			# ssl_certfile=os.getcwd()+'/certs-offical/cacert.pem',
+			# ssl_keyfile=os.getcwd()+'/certs-offical/cakey.pem',
+			ssl_cafile=os.getcwd()+'/certs/CARoot.pem',
+			ssl_certfile=os.getcwd()+'/certs/ca-cert',
+			ssl_keyfile=os.getcwd()+'/certs/ca-key',
+			ssl_password="password"
+			)
 	else:
 		producer = KafkaProducer(bootstrap_servers=bootstrapServers,
 			acks=acks,

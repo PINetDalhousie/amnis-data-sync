@@ -39,18 +39,25 @@ def configureKafkaCluster(brokerPlace, args):
 		bProperties = bProperties.replace("controller.quorum.voters=1@localhost",
 										  "controller.quorum.voters=" + controllerAddresses)
 		bProperties = bProperties.replace(
-			"listeners=PLAINTEXT://:9092,CONTROLLER://:9093",
-			"listeners=PLAINTEXT://:9092,CONTROLLER://10.0.0." + str(bID) + ":" + str(controllerPort))
+			"listeners=PLAINTEXT://:9092,CONTROLLER://:9093",			
+			"listeners=PLAINTEXT://:9092,SSL://:9093,CONTROLLER://10.0.0." + str(bID) + ":" + str(controllerPort))
 		controllerPort += 1
+
+		# bProperties = bProperties.replace(
+		# 	"inter.broker.listener.name=PLAINTEXT",
+		# 	"inter.broker.listener.name=PLAINTEXT" +
+		# 	"\ninter.broker.protocol=SSL"
+		# )
+
 		bProperties = bProperties.replace(
 			"advertised.listeners=PLAINTEXT://localhost:9092",
-			"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092")
+			"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092,SSL://10.0.0." + str(bID) + ":9093")			
 		bProperties = bProperties.replace("log.dirs=/tmp/kraft-combined-logs",
 										  "log.dirs=./kafka-3.1.0/logs/kafka" + str(bID))
 
-		bProperties = bProperties.replace(
-			"listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL",
-			"#listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL")
+		# bProperties = bProperties.replace(
+		# 	"listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL",
+		# 	"listener.security.protocol.map=CONTROLLER:SSL,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL")
 
 		bProperties = bProperties.replace(
 			"#replica.fetch.wait.max.ms=500", "replica.fetch.wait.max.ms="+str(args.replicaMaxWait))

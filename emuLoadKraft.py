@@ -25,6 +25,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 	brokers = args.nBroker
 	replication = args.replication 
 	messageFilePath = args.messageFilePath   
+	ssl = args.ssl
 
 	tClasses = tClassString.split(',')
 	#print("Traffic classes: " + str(tClasses))
@@ -52,7 +53,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 
 	for nodeList in nodeClassification.values():
 		for node in nodeList:
-			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)+" &", shell=True)
+			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)+" "+str(ssl)+" &", shell=True)
 		i += 1
 
 
@@ -69,12 +70,13 @@ def spawnConsumers(net, nTopics, cRate, args):
 	script ='consumer.py '
 	if args.singleConsumer:
 		script = 'consumerSingle.py ' 
+	ssl = args.ssl
 
 	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
 	#print("Data consumed")
 
 	for node in net.hosts:
-		node.popen("python3 " + script +str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
+		node.popen("python3 " + script +str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(ssl)+" &", shell=True)
 
 
 
@@ -206,6 +208,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	#Create topics
 	topicNodes = []
 	startTime = time.time()
+	time.sleep(10)
 	for i in range(nTopics):
 		issuingID = randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]

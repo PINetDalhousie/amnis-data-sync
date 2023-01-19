@@ -188,6 +188,8 @@ if __name__ == '__main__':
 	parser.add_argument('--offsets-replication', dest='offsetsTopicReplication', type=int, default=1, help='The replication factor for the offsets topic')
 
 	parser.add_argument('--kraft', dest='kraft', action='store_true', help='Run using KRaft consensus protocol instead of Zookeeper')	
+	parser.add_argument('--ssl', dest='ssl', action='store_true', help='')	
+
 
 	args = parser.parse_args()
 
@@ -309,7 +311,7 @@ if __name__ == '__main__':
 
 	#Need to clean both kafka and zookeeper state before a new simulation
 	if kraft:	
-		emuKafkaKraft.cleanKafkaState(brokerPlace)		
+		emuKafkaKraft.cleanKafkaState(brokerPlace)				
 	else:
 		emuKafka.cleanKafkaState(brokerPlace)
 		emuZk.cleanZkState(zkPlace)
