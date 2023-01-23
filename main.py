@@ -188,7 +188,7 @@ if __name__ == '__main__':
 	parser.add_argument('--offsets-replication', dest='offsetsTopicReplication', type=int, default=1, help='The replication factor for the offsets topic')
 
 	parser.add_argument('--kraft', dest='kraft', action='store_true', help='Run using KRaft consensus protocol instead of Zookeeper')	
-	parser.add_argument('--ssl', dest='ssl', action='store_true', help='')	
+	parser.add_argument('--ssl', dest='ssl', action='store_true', help='Enable encryption and authentication using SSL')
 
 
 	args = parser.parse_args()

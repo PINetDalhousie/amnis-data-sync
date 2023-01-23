@@ -111,3 +111,8 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 and Kafka 2.13-
   Note if this is your first time running you may need to run the following first:
   ```cd kafka-3.1.0 && ./gradlew jar -PscalaVersion=2.13.6```
   ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --kraft```
+
+  18) Run with SSL authentication and encryption
+  Note if this is your first time running you need to run the following first:  
+  ```cd certs && ./create-certs.sh```
+  ```sudo python3 main.py tests/input/simple.graphml --nbroker 2 --nzk 2 --create-plots --time 60 --kraft --ssl```
