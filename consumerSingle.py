@@ -9,6 +9,7 @@ import sys
 import time
 import os
 import logging
+import ssl
 
 
 try:
@@ -28,7 +29,7 @@ try:
 	mRate = float(sys.argv[9])    
 	replication = int(sys.argv[10])   
 	topicCheckInterval = float(sys.argv[11])  
-	ssl = bool(sys.argv[12])
+	isSSL = sys.argv[12]
     
 	logging.basicConfig(filename="logs/kafka/"+"nodes:" +str(brokers)+ "_mSize:"+ mSizeString+ "_mRate:"+ str(mRate)+ "_topics:"+str(nTopics) +"_replication:"+str(replication)+"/cons/cons-"+nodeID+".log",
 							format='%(asctime)s %(levelname)s:%(message)s',
@@ -36,8 +37,10 @@ try:
 	logging.info("node: "+nodeID)
 	consumers = []
 	timeout = int((1.0/cRate) * 1000)
-	#bootstrapServers="10.0.0."+str(nodeID)+":9092"
-	bootstrapServers="10.0.0."+str(nodeID)+":9093"
+	bootstrapServers="10.0.0."+str(nodeID)+":9092"
+	if isSSL == "True":
+		logging.info("SSL %s", isSSL)
+		bootstrapServers="10.0.0."+str(nodeID)+":9093"
 
 
 	# One consumer for all topics
@@ -47,7 +50,7 @@ try:
 		" consumer_timeout_ms=" + str(timeout) + " fetch_min_bytes=" + str(fetchMinBytes) +
 		" fetch_max_wait_ms=" + str(fetchMaxWait) + " session_timeout_ms=" + str(sessionTimeout))
 		
-	if ssl:
+	if isSSL == "True":
 		consumer = KafkaConsumer(			
 			bootstrap_servers=bootstrapServers,
 			auto_offset_reset='latest' if consumptionLag else 'earliest',
@@ -58,10 +61,10 @@ try:
 			session_timeout_ms=sessionTimeout,
 			group_id="group-"+str(nodeID),
 			security_protocol='SSL',
-			ssl_check_hostname=False,
-			# ssl_cafile=os.getcwd()+'/certs-offical/CARoot.pem',
-			# ssl_certfile=os.getcwd()+'/certs-offical/cacert.pem',
-			# ssl_keyfile=os.getcwd()+'/certs-offical/cakey.pem',
+			ssl_check_hostname=False,			
+			# ssl_cafile=os.getcwd()+'/certs-official/CARoot.pem',
+			# ssl_certfile=os.getcwd()+'/certs-official/cacert.pem',
+			# ssl_keyfile=os.getcwd()+'/certs-official/cakey.pem',
 			ssl_cafile=os.getcwd()+'/certs/CARoot.pem',
 			ssl_certfile=os.getcwd()+'/certs/ca-cert',
 			ssl_keyfile=os.getcwd()+'/certs/ca-key',
