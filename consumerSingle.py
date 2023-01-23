@@ -62,12 +62,9 @@ try:
 			group_id="group-"+str(nodeID),
 			security_protocol='SSL',
 			ssl_check_hostname=False,			
-			# ssl_cafile=os.getcwd()+'/certs-official/CARoot.pem',
-			# ssl_certfile=os.getcwd()+'/certs-official/cacert.pem',
-			# ssl_keyfile=os.getcwd()+'/certs-official/cakey.pem',
 			ssl_cafile=os.getcwd()+'/certs/CARoot.pem',
-			ssl_certfile=os.getcwd()+'/certs/ca-cert',
-			ssl_keyfile=os.getcwd()+'/certs/ca-key',
+			ssl_certfile=os.getcwd()+'/certs/cacert.pem',
+			ssl_keyfile=os.getcwd()+'/certs/cakey.pem',
 			ssl_password="password"
 		)	
 	else:
