@@ -92,7 +92,10 @@ def logTopicLeaders(net, logDir, args):
 	issuingNode = net.hosts[0]
 	print("Finding topic leaders at localhost:2181")
 	for i in range(args.nTopics):
-		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+str(i), shell=True)	
+		if args.ssl:
+			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.1.0/config/consumer.properties --describe --topic topic-"+str(i), shell=True)				
+		else:
+			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+str(i), shell=True)	
 		print(out)
 		split1 = out.split('Leader: ')
 		split2 = split1[1].split('\t')
@@ -101,10 +104,13 @@ def logTopicLeaders(net, logDir, args):
 		logging.info("topic-"+ str(i) +" leader is node " + topicLeaderNode)
 
 
-def getTopicLeader(issuingNode, i):
+def getTopicLeader(issuingNode, i, args):
 	n = None
 	try:
-		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+i, shell=True)	
+		if args.ssl:
+			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.1.0/config/consumer.properties --describe --topic topic-"+i, shell=True)				
+		else:			
+			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+i, shell=True)	
 		if 'ERROR' in out or 'Error' in out:
 			print(out)
 		else:
@@ -163,7 +169,7 @@ def processDisconnect(net, logDir, args):
 			# split1 = out.split('Leader: ')
 			# split2 = split1[1].split('\t')
 			# topicLeaderNode = 'h' + split2[0]	
-			topicLeaderNode = getTopicLeader(issuingNode, str(i))					
+			topicLeaderNode = getTopicLeader(issuingNode, str(i), args)					
 			print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
 			if topicLeaderNode == kraftLeaderNode:
 				# Don't disconnect leader
@@ -204,6 +210,24 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 	nHosts = len(net.hosts)
 	print("Number of hosts: " + str(nHosts))
+
+	if args.ssl:
+		print("Updating SSL consumer.properties")		
+		propertyFile = open("kafka-3.1.0/config/consumer.properties", "r")
+		consumerProperties = propertyFile.read()
+		bProperties = consumerProperties
+		bProperties = bProperties.replace(
+				"ssl.truststore.location=truststore",
+				"ssl.truststore.location="+os.getcwd()+"/certs/server.truststore.jks")
+
+		bProperties = bProperties.replace(
+				"ssl.keystore.location=keystore",
+				"ssl.keystore.location="+os.getcwd()+"/certs/server.keystore.jks")
+
+		bFile = open("kafka-3.1.0/config/consumer.properties", "w")
+		bFile.write(bProperties)
+		bFile.close()
+		propertyFile.close()
     
 	#Create topics
 	topicNodes = []
@@ -214,8 +238,11 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		issuingNode = net.hosts[issuingID]
 		
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
-
-		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
+		if args.ssl:		
+			# Use consumer.properties		
+			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9093 --command-config kafka-3.1.0/config/consumer.properties --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
+		else:
+			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
 		print(out)
 		topicNodes.append(issuingNode)
 	

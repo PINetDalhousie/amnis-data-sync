@@ -47,12 +47,12 @@ def configureKafkaCluster(brokerPlace, args):
 
 			bProperties = bProperties.replace(
 			"listeners=PLAINTEXT://:9092,CONTROLLER://:9093",			
-			"listeners=PLAINTEXT://:9092,SSL://:9093,CONTROLLER://10.0.0." + str(bID) + ":" + str(controllerPort))
+			"listeners=SSL://:9093,CONTROLLER://10.0.0." + str(bID) + ":" + str(controllerPort))
 			controllerPort += 1
 
 			bProperties = bProperties.replace(
 			"advertised.listeners=PLAINTEXT://localhost:9092",
-			"advertised.listeners=PLAINTEXT://10.0.0." + str(bID) + ":9092,SSL://10.0.0." + str(bID) + ":9093")
+			"advertised.listeners=SSL://10.0.0." + str(bID) + ":9093")
 
 			bProperties = bProperties.replace(
 				"#ssl.truststore.location=",
@@ -197,7 +197,7 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 		while brokerWait:
 			print("Testing Connection to Broker " + str(bNode) + "...")
 			out, err, exitCode = startingHost.pexec(
-				"nc -z -v 10.0.0." + str(bNode) + " 9092")
+				"nc -z -v 10.0.0." + str(bNode) + " 9093")
 			stopTime = time.time()
 			totalTime = stopTime - startTime
 			if(exitCode == 0):
