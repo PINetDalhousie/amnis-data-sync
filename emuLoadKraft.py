@@ -93,9 +93,9 @@ def logTopicLeaders(net, logDir, args):
 	print("Finding topic leaders at localhost:2181")
 	for i in range(args.nTopics):
 		if args.ssl:
-			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.1.0/config/consumer.properties --describe --topic topic-"+str(i), shell=True)				
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --describe --topic topic-"+str(i), shell=True)				
 		else:
-			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+str(i), shell=True)	
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+str(i), shell=True)	
 		print(out)
 		split1 = out.split('Leader: ')
 		split2 = split1[1].split('\t')
@@ -108,9 +108,9 @@ def getTopicLeader(issuingNode, i, args):
 	n = None
 	try:
 		if args.ssl:
-			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.1.0/config/consumer.properties --describe --topic topic-"+i, shell=True)				
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --describe --topic topic-"+i, shell=True)				
 		else:			
-			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+i, shell=True)	
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+i, shell=True)	
 		if 'ERROR' in out or 'Error' in out:
 			print(out)
 		else:
@@ -165,7 +165,7 @@ def processDisconnect(net, logDir, args):
 		kraftLeaderNode = readCurrentKraftLeader(logDir)
 		# Find topic leaders
 		for i in range(args.nTopics):
-			# out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
+			# out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
 			# split1 = out.split('Leader: ')
 			# split2 = split1[1].split('\t')
 			# topicLeaderNode = 'h' + split2[0]	
@@ -213,7 +213,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 	if args.ssl:
 		print("Updating SSL consumer.properties")		
-		propertyFile = open("kafka-3.1.0/config/consumer.properties", "r")
+		propertyFile = open("kafka-3.2.0/config/consumer.properties", "r")
 		consumerProperties = propertyFile.read()
 		bProperties = consumerProperties
 		bProperties = bProperties.replace(
@@ -224,11 +224,38 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 				"ssl.keystore.location=keystore",
 				"ssl.keystore.location="+os.getcwd()+"/certs/server.keystore.jks")
 
-		bFile = open("kafka-3.1.0/config/consumer.properties", "w")
+		bFile = open("kafka-3.2.0/config/consumer.properties", "w")
 		bFile.write(bProperties)
 		bFile.close()
-		propertyFile.close()
-    
+		propertyFile.close()		
+
+
+	# Set authentication
+	for n in range(1, nHosts):
+		issuingNode = net.hosts[n]
+		print(f"Creating authentication rule for {issuingNode.name}")
+			
+		
+		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --allow-principal User:'*' --allow-host '*' --deny-principal User:BadBob --deny-host 198.51.100.3 --operation Read --topic Test-topic")	
+		
+		# TODO - Get rules from arg
+		outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --deny-host '10.0.0.8' --operation Write --topic topic-0")	
+		outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --deny-host '10.0.0.9' --operation Read --topic topic-0")
+		
+		
+		# Working - only deny host 8 topic-0 writing
+		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --deny-host '10.0.0.8' --operation Write --topic topic-0")	
+		# Working - deny all topic-0
+		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --operation Write --topic topic-0")	
+		
+		#Allow template
+		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server 10.0.0.1:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --deny-host '10.0.0.8' --operation Read --operation Write --topic topic-0")	
+		
+		
+		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server 10.0.0.1:9093 --command-config kafka-3.2.0/config/consumer.properties --add --allow-principal User:'Mike' --allow-host '10.0.0.8' --operation Read --operation Write --topic topic-0")	
+		print(outAuth)
+
+
 	#Create topics
 	topicNodes = []
 	startTime = time.time()
@@ -240,9 +267,9 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
 		if args.ssl:		
 			# Use consumer.properties		
-			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9093 --command-config kafka-3.1.0/config/consumer.properties --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9093 --command-config kafka-3.2.0/config/consumer.properties --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
 		else:
-			out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
 		print(out)
 		topicNodes.append(issuingNode)
 	

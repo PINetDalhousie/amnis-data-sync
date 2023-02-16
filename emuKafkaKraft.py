@@ -15,7 +15,7 @@ import emuLogs
 
 def configureKafkaCluster(brokerPlace, args):
 	print("Configure kafka cluster with kraft")
-	propertyFile = open("kafka-3.1.0/config/kraft/server.properties", "r")
+	propertyFile = open("kafka-3.2.0/config/kraft/server.properties", "r")
 	serverProperties = propertyFile.read()
 
 	# Specify controller addresses to connect
@@ -32,7 +32,7 @@ def configureKafkaCluster(brokerPlace, args):
 
 	controllerPort = 19092
 	for bID in brokerPlace:
-		os.system("sudo mkdir kafka-3.1.0/kafka" + str(bID) + "/")
+		os.system("sudo mkdir kafka-3.2.0/kafka" + str(bID) + "/")
 
 		bProperties = serverProperties
 		bProperties = bProperties.replace("node.id=1", "node.id="+str(bID))
@@ -41,7 +41,7 @@ def configureKafkaCluster(brokerPlace, args):
 	
 		
 		bProperties = bProperties.replace("log.dirs=/tmp/kraft-combined-logs",
-										  "log.dirs=./kafka-3.1.0/logs/kafka" + str(bID))
+										  "log.dirs=./kafka-3.2.0/logs/kafka" + str(bID))
 
 		if args.ssl:
 
@@ -84,7 +84,12 @@ def configureKafkaCluster(brokerPlace, args):
 
 			bProperties = bProperties.replace(
 				"inter.broker.listener.name=PLAINTEXT",
-				"inter.broker.listener.name=SSL")			
+				"inter.broker.listener.name=SSL")	
+
+			bProperties = bProperties.replace(
+				"#authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer",
+				"authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer")
+					
 		else:
 			bProperties = bProperties.replace(
 						"listeners=PLAINTEXT://:9092,CONTROLLER://:9093",
@@ -105,12 +110,12 @@ def configureKafkaCluster(brokerPlace, args):
 		bProperties = bProperties.replace(
 			"#replica.fetch.min.bytes=1", "replica.fetch.min.bytes="+str(args.replicaMinBytes))
 
-		bFile = open("kafka-3.1.0/config/kraft/server" +
+		bFile = open("kafka-3.2.0/config/kraft/server" +
 					 str(bID) + ".properties", "w")
 		bFile.write(bProperties)
 		bFile.close()
 
-	bFile = open("kafka-3.1.0/config/server" + str(bID) + ".properties", "w")
+	bFile = open("kafka-3.2.0/config/server" + str(bID) + ".properties", "w")
 	bFile.write(bProperties)
 	bFile.close()
 
@@ -173,7 +178,7 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 	for bNode in brokerPlace:
 		print("Setting Kafka storage for node "+str(bNode))
 		os.system(
-			f"kafka-3.1.0/bin/kafka-storage.sh format -t {uuid} -c kafka-3.1.0/config/kraft/server{str(bNode)}.properties")
+			f"kafka-3.2.0/bin/kafka-storage.sh format -t {uuid} -c kafka-3.2.0/config/kraft/server{str(bNode)}.properties")
 		time.sleep(1)
 
 	popens = {}
@@ -183,7 +188,7 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 		h = netNodes[bID]
 		print("Creating Kafka broker at node "+str(bNode))
 		popens[h] = h.popen(
-			"kafka-3.1.0/bin/kafka-server-start.sh kafka-3.1.0/config/kraft/server"+str(bNode)+".properties &", shell=True)
+			"kafka-3.2.0/bin/kafka-server-start.sh kafka-3.2.0/config/kraft/server"+str(bNode)+".properties &", shell=True)
 		time.sleep(1)
 
 	# Start the process logging monitor for mininet hosts
@@ -214,5 +219,5 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 
 def cleanKafkaState(brokerPlace):
 	for bID in brokerPlace:
-		os.system("sudo rm -rf kafka-3.1.0/kafka" + str(bID) + "/")
-		os.system("sudo rm -f kafka-3.1.0/config/kraft/server" + str(bID) + ".properties")
+		os.system("sudo rm -rf kafka-3.2.0/kafka" + str(bID) + "/")
+		os.system("sudo rm -f kafka-3.2.0/config/kraft/server" + str(bID) + ".properties")
