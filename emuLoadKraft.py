@@ -90,13 +90,15 @@ def printLinksBetween(net , n1, n2):
 	
 def logTopicLeaders(net, logDir, args):
 	issuingNode = net.hosts[0]
-	print("Finding topic leaders at localhost:2181")
+	print(f"Finding topic leaders at {issuingNode.name}")
 	for i in range(args.nTopics):
 		if args.ssl:
 			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --describe --topic topic-"+str(i), shell=True)				
 		else:
 			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+str(i), shell=True)	
 		print(out)
+		if 'Error' in out:
+			continue
 		split1 = out.split('Leader: ')
 		split2 = split1[1].split('\t')
 		topicLeaderNode = 'h' + split2[0]			
@@ -200,6 +202,23 @@ def traceWireshark(hostsToCapture, f):
 		print(output)
 
 
+def setAuth(net):
+	# TODO - Temp hardcoded rule: Only one producer allowed to write for topic-1
+
+	nodeToAllowClassified = net.hosts[0].name
+
+	# Loop through and apply rule
+	for h in net.hosts:				
+		if h.name == nodeToAllowClassified:
+			print(f"Not setting authentication rule for {nodeToAllowClassified}")
+			continue
+		rule = "--add --deny-principal User:'*' --deny-host '" + h.IP() + "' --operation Write --topic topic-0"		
+		print(f"Creating authentication rule {rule} for {h.name}")		
+		outAuth = h.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties " + rule)	
+		print(outAuth)
+	
+
+
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, logDir, args, topicWaitTime=100):
 
 	print("Start workload")	
@@ -231,29 +250,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 
 	# Set authentication
-	for n in range(1, nHosts):
-		issuingNode = net.hosts[n]
-		print(f"Creating authentication rule for {issuingNode.name}")
-			
-		
-		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --allow-principal User:'*' --allow-host '*' --deny-principal User:BadBob --deny-host 198.51.100.3 --operation Read --topic Test-topic")	
-		
-		# TODO - Get rules from arg
-		outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --deny-host '10.0.0.8' --operation Write --topic topic-0")	
-		outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --deny-host '10.0.0.9' --operation Read --topic topic-0")
-		
-		
-		# Working - only deny host 8 topic-0 writing
-		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --deny-host '10.0.0.8' --operation Write --topic topic-0")	
-		# Working - deny all topic-0
-		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --operation Write --topic topic-0")	
-		
-		#Allow template
-		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server 10.0.0.1:9093 --command-config kafka-3.2.0/config/consumer.properties --add --deny-principal User:'*' --deny-host '10.0.0.8' --operation Read --operation Write --topic topic-0")	
-		
-		
-		#outAuth = issuingNode.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server 10.0.0.1:9093 --command-config kafka-3.2.0/config/consumer.properties --add --allow-principal User:'Mike' --allow-host '10.0.0.8' --operation Read --operation Write --topic topic-0")	
-		print(outAuth)
+	setAuth(net)
 
 
 	#Create topics
@@ -264,7 +261,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		issuingID = randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]
 		
-		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
+		print("Creating topic "+str(i)+" at broker "+str(issuingNode.name))
 		if args.ssl:		
 			# Use consumer.properties		
 			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9093 --command-config kafka-3.2.0/config/consumer.properties --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
