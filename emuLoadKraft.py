@@ -75,8 +75,13 @@ def spawnConsumers(net, nTopics, cRate, args):
 	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
 	#print("Data consumed")
 
-	for node in net.hosts:
-		node.popen("python3 " + script +str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(ssl)+" &", shell=True)
+	for node in net.hosts:					
+		if args.java:
+			nodeID = str(node.name)[1:]	
+			command = "java -jar java/target/amnis-java-1.0-SNAPSHOT.jar " + nodeID + " &"
+			node.popen(command, shell=True)			
+		else:
+			node.popen("python3 " + script +str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(ssl)+" &", shell=True)
 
 
 
@@ -250,7 +255,8 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 
 
 	# Set authentication
-	setAuth(net)
+	if args.auth:
+		setAuth(net)
 
 
 	#Create topics

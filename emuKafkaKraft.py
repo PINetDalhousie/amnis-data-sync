@@ -36,6 +36,11 @@ def configureKafkaCluster(brokerPlace, args):
 
 		bProperties = serverProperties
 		bProperties = bProperties.replace("node.id=1", "node.id="+str(bID))
+		if args.java and args.localReplica:
+			bProperties = bProperties.replace("#broker.rack=rack-1", "broker.rack=rack-"+str(bID))
+			bProperties = bProperties.replace("#replica.selector.class=org.apache.kafka.common.replica.RackAwareReplicaSelector", 
+			"replica.selector.class=org.apache.kafka.common.replica.RackAwareReplicaSelector")			
+
 		bProperties = bProperties.replace("controller.quorum.voters=1@localhost",
 										  "controller.quorum.voters=" + controllerAddresses)
 	
@@ -53,6 +58,10 @@ def configureKafkaCluster(brokerPlace, args):
 			bProperties = bProperties.replace(
 			"advertised.listeners=PLAINTEXT://localhost:9092",
 			"advertised.listeners=SSL://10.0.0." + str(bID) + ":9093")
+
+			bProperties = bProperties.replace(
+			"#security.protocol=SSL",
+			"security.protocol=SSL")
 
 			bProperties = bProperties.replace(
 				"#ssl.truststore.location=",
@@ -161,7 +170,7 @@ def monitorCmd(popens, logDir):
 			kraftLog.write("<%s>: %s" % (host.name, line))
 
 
-def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
+def runKafka(net, brokerPlace, logDir, args, brokerWaitTime=200):
 	netNodes = {}
 	# Run the following in terminal to get new uuid:
 	# ./bin/kafka-storage.sh random-uuid
@@ -198,11 +207,14 @@ def runKafka(net, brokerPlace, logDir, brokerWaitTime=200):
 
 	brokerWait = True
 	totalTime = 0
+	port = 9092
+	if args.ssl:
+		port = 9093
 	for bNode in brokerPlace:
 		while brokerWait:
 			print("Testing Connection to Broker " + str(bNode) + "...")
 			out, err, exitCode = startingHost.pexec(
-				"nc -z -v 10.0.0." + str(bNode) + " 9093")
+				"nc -z -v 10.0.0." + str(bNode) + " " + str(port))
 			stopTime = time.time()
 			totalTime = stopTime - startTime
 			if(exitCode == 0):

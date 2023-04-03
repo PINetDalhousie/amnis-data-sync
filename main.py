@@ -38,6 +38,7 @@ def killSubprocs(brokerPlace, zkPlace):
 	os.system("sudo pkill -9 -f producer.py")
 	os.system("sudo pkill -9 -f consumer.py")
 	os.system("sudo pkill -9 -f consumerSingle.py")
+	os.system("sudo pkill -9 -f java/target/amnis-java-1.0-SNAPSHOT.jar")
 
 	for bID in brokerPlace:
 		os.system("sudo pkill -9 -f server"+str(bID)+".properties") 
@@ -188,16 +189,21 @@ if __name__ == '__main__':
 	parser.add_argument('--offsets-replication', dest='offsetsTopicReplication', type=int, default=1, help='The replication factor for the offsets topic')
 
 	parser.add_argument('--kraft', dest='kraft', action='store_true', help='Run using KRaft consensus protocol instead of Zookeeper')	
-	parser.add_argument('--ssl', dest='ssl', action='store_true', help='Enable encryption and authentication using SSL')
+	parser.add_argument('--ssl', dest='ssl', action='store_true', help='Enable encryption using SSL')
+	parser.add_argument('--auth', dest='auth', action='store_true', help='Enable authentication ')
+
+	parser.add_argument('--java', dest='java', action='store_true', help='Run with java consumers')
+	parser.add_argument('--local-replica', dest='localReplica', action='store_true', help='Run with local replica fetch')
+
 
 
 	args = parser.parse_args()
 
 	# TODO: TEMP - hardcode for testing
-	# args.topo = 'tests/input/star/star-ten-node-topo.graphml'
+	# args.topo = 'tests/input/star-no-latency/star-ten-node-topo.graphml'
 	# args.nBroker = 10
 	# args.nZk = 10
-	# args.nTopics = 10
+	# args.nTopics = 2
 	# args.replication = 10
 	# args.mSizeString = 'fixed,1000'
 	# args.mRate = 30.0
@@ -216,6 +222,11 @@ if __name__ == '__main__':
 	# args.disconnectTopicLeaders = 0
 	# args.relocate = False
 	# args.singleConsumer = False	
+	# args.kraft = True
+	# args.ssl = False
+	# args.auth = False
+	# args.java = True
+	# args.localReplica = True
 	# END
 
 	print(args)	
@@ -291,7 +302,7 @@ if __name__ == '__main__':
 	pID += 1
 
 	if kraft:		
-		emuKafkaKraft.runKafka(net, brokerPlace, logDir)
+		emuKafkaKraft.runKafka(net, brokerPlace, logDir, args)
 		emuLoadKraft.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)
 	else:
 		emuZk.runZk(net, zkPlace, logDir)
