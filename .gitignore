@@ -1,6 +1,6 @@
 __pycache__/
 kafka/logs/
-kafka-3.1.0/kafka-3.1.0-logs/
+kafka-3.2.0/logs/
 logs/
 certs/*.pem
 certs/*.jks
