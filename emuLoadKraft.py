@@ -95,7 +95,7 @@ def printLinksBetween(net , n1, n2):
 	
 def logTopicLeaders(net, logDir, args):
 	issuingNode = net.hosts[0]
-	print(f"Finding topic leaders at {issuingNode.name}")
+	print(f"Finding topic leaders at {issuingNode.name}\r")
 	for i in range(args.nTopics):
 		if args.ssl:
 			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --describe --topic topic-"+str(i), shell=True)				
@@ -107,7 +107,7 @@ def logTopicLeaders(net, logDir, args):
 		split1 = out.split('Leader: ')
 		split2 = split1[1].split('\t')
 		topicLeaderNode = 'h' + split2[0]			
-		print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
+		print(f"Leader for topic-{str(i)} is node {topicLeaderNode}\r")
 		logging.info("topic-"+ str(i) +" leader is node " + topicLeaderNode)
 
 
@@ -124,7 +124,7 @@ def getTopicLeader(issuingNode, i, args):
 			split1 = out.split('Leader: ')
 			split2 = split1[1].split('\t')
 			n = 'h' + split2[0]			
-			print(f"Leader for topic-{i} is node {n}")
+			print(f"Leader for topic-{i} is node {n}\r")
 	except Exception as e:
 		print(e)
 	finally:
@@ -143,7 +143,7 @@ def readCurrentKraftLeader(logDir):
 				first = line.split("leaderId=")[1]
 				kraftLeader = "h" + first.split(",")[0]				
 				break
-	print(f'Kraft leader is {kraftLeader}')
+	print(f'Kraft leader is {kraftLeader}\r')
 	return kraftLeader
 
 
@@ -159,7 +159,7 @@ def processDisconnect(net, logDir, args):
 			h = net.getNodeByName(netHostsList[randomIndex][0])
 			if not hostsToDisconnect.__contains__(h):		
 				hostsToDisconnect.append(h)
-				print(f"Host {h.name} to be disconnected for {args.disconnectDuration}s")
+				print(f"Host {h.name} to be disconnected for {args.disconnectDuration}s\r")
 			randomIndex = randint(0, len(netHosts) -1)					
 	elif args.disconnectHosts is not None:
 		hostNames = args.disconnectHosts.split(',')			
@@ -168,7 +168,7 @@ def processDisconnect(net, logDir, args):
 			hostsToDisconnect.append(h)
 	elif args.disconnectTopicLeaders != 0:				
 		issuingNode = net.hosts[0]
-		print("Finding topic leaders at localhost:2181")
+		print("Finding topic leaders at localhost:2181\r")
 		kraftLeaderNode = readCurrentKraftLeader(logDir)
 		# Find topic leaders
 		for i in range(args.nTopics):
@@ -177,10 +177,10 @@ def processDisconnect(net, logDir, args):
 			# split2 = split1[1].split('\t')
 			# topicLeaderNode = 'h' + split2[0]	
 			topicLeaderNode = getTopicLeader(issuingNode, str(i), args)					
-			print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
+			print(f"Leader for topic-{str(i)} is node {topicLeaderNode}\r")
 			if topicLeaderNode == kraftLeaderNode:
 				# Don't disconnect leader
-				print(f"Not adding {topicLeaderNode} to disconnect list as it is Kraft leader ")	
+				print(f"Not adding {topicLeaderNode} to disconnect list as it is Kraft leader \t")	
 				continue
 			else:
 				h = net.getNodeByName(topicLeaderNode)
@@ -226,17 +226,17 @@ def setAuth(net):
 
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, logDir, args, topicWaitTime=100):
 
-	print("Start workload")	
+	print("Start workload\r")	
 	if args.captureAll:
 		traceWireshark(net.hosts, "start")
 
 	seed(1)
 
 	nHosts = len(net.hosts)
-	print("Number of hosts: " + str(nHosts))
+	print("Number of hosts: " + str(nHosts)+ "\r")
 
 	if args.ssl:
-		print("Updating SSL consumer.properties")		
+		print("Updating SSL consumer.properties\r")		
 		propertyFile = open("kafka-3.2.0/config/consumer.properties", "r")
 		consumerProperties = propertyFile.read()
 		bProperties = consumerProperties
@@ -267,7 +267,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		issuingID = randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]
 		
-		print("Creating topic "+str(i)+" at broker "+str(issuingNode.name))
+		print("Creating topic "+str(i)+" at broker "+str(issuingNode.name)+"\r")
 		if args.ssl:		
 			# Use consumer.properties		
 			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9093 --command-config kafka-3.2.0/config/consumer.properties --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
@@ -278,12 +278,12 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	
 	stopTime = time.time()
 	totalTime = stopTime - startTime
-	print("Successfully Created " + str(nTopics) + " Topics in " + str(totalTime) + " seconds")
+	print("Successfully Created " + str(nTopics) + " Topics in " + str(totalTime) + " seconds\r")
 	
 
 
 	spawnConsumers(net, nTopics, consumerRate, args)
-	print(f"Consumers created at {str(datetime.now())}")
+	print(f"Consumers created at {str(datetime.now())}\r")
 	time.sleep(5)	
 
 	# Set the network delay back to to .graphml values before spawning producers so we get accurate latency
@@ -291,11 +291,11 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		setNetworkDelay(net)
 		time.sleep(1)
 
-	print(f"Sleeping for {args.consumerSetupSleep} to allow consumers to connect")
+	print(f"Sleeping for {args.consumerSetupSleep} seconds to allow consumers to connect\r")
 	time.sleep(args.consumerSetupSleep)
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
-	print(f"Producers created at {str(datetime.now())}")
+	print(f"Producers created at {str(datetime.now())}\r")
 	time.sleep(1)
 
 
@@ -323,17 +323,17 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		while s.name == randomSwitch[0]:		
 			randomSwitch = choice(list(switches.items()))	
 		s2 = net.getNodeByName(randomSwitch[0])
-		print(f"{h.name} to relocate from {s.name} to {s2.name}")
+		print(f"{h.name} to relocate from {s.name} to {s2.name}\r")
 
 		
 
-	print(f"Starting workload at {str(datetime.now())}")
-	logging.info('Starting workload at ' + str(datetime.now()))
+	print(f"Starting workload at {str(datetime.now())}\r")
+	logging.info('Starting workload at ' + str(datetime.now())+"\r")
 
 	while timer < duration:
 		time.sleep(10)
 		percentComplete = int((timer/duration)*100)
-		print("Processing workload: "+str(percentComplete)+"%")
+		print("Processing workload: "+str(percentComplete)+"%\r")
 		if isDisconnect and percentComplete >= 10:
 			if not isDisconnected:			
 				disconnectHosts(net, netHosts, hostsToDisconnect)				
@@ -353,8 +353,8 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		timer += 10
 
 	logTopicLeaders(net, logDir, args)
-	print(f"Workload finished at {str(datetime.now())}")	
-	logging.info('Workload finished at ' + str(datetime.now()))
+	print(f"Workload finished at {str(datetime.now())}\r")	
+	logging.info('Workload finished at ' + str(datetime.now())+"\r")
 
 
 

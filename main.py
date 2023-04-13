@@ -34,16 +34,16 @@ REPLICA_LAG_TIME_MAX_MS = 30000
 
 # Kill all subprocesses
 def killSubprocs(brokerPlace, zkPlace):	
-	os.system("sudo pkill -9 -f bandwidth-monitor.py")
-	os.system("sudo pkill -9 -f producer.py")
-	os.system("sudo pkill -9 -f consumer.py")
-	os.system("sudo pkill -9 -f consumerSingle.py")
-	os.system("sudo pkill -9 -f java/target/amnis-java-1.0-SNAPSHOT.jar")
+	os.system("pkill -9 -f bandwidth-monitor.py")
+	os.system("pkill -9 -f producer.py")
+	os.system("pkill -9 -f consumer.py")
+	os.system("pkill -9 -f consumerSingle.py")
+	os.system("pkill -9 -f java/target/amnis-java-1.0-SNAPSHOT.jar")
 
 	for bID in brokerPlace:
-		os.system("sudo pkill -9 -f server"+str(bID)+".properties") 
+		os.system("pkill -9 -f server"+str(bID)+".properties") 
 
-	os.system("sudo pkill -9 -f zookeeper") 
+	os.system("pkill -9 -f zookeeper") 
 
 
 def validateInput(args):
@@ -168,7 +168,7 @@ if __name__ == '__main__':
 	parser.add_argument('--replica-max-wait', dest='replicaMaxWait', type=int, default=500, help='Max wait time for each fetcher request issued by follower replicas')
 	parser.add_argument('--replica-min-bytes', dest='replicaMinBytes', type=int, default=1, help='Minimum bytes expected for each fetch response')
 
-	parser.add_argument('--create-plots', dest='createPlots', action='store_true')
+	#parser.add_argument('--create-plots', dest='createPlots', action='store_true')
 
 	parser.add_argument('--message-file', dest='messageFilePath', type=str, default='None', help='Path to a file containing the message to be sent by producers')
 	parser.add_argument('--topic-check', dest='topicCheckInterval', type=float, default=1.0, help='Minimum amount of time (in seconds) the consumer will wait between checking topics')
@@ -260,13 +260,14 @@ if __name__ == '__main__':
 	#TODO: remove debug code
 	killSubprocs(brokerPlace, zkPlace)
 	emuLogs.cleanLogs()
+
 	if kraft:		
 		emuKafkaKraft.cleanKafkaState(brokerPlace)		
 	else:		
 		emuKafka.cleanKafkaState(brokerPlace)
 		emuZk.cleanZkState(zkPlace)
-
 	logDir = emuLogs.configureLogDir(args.nBroker, args.mSizeString, args.mRate, args.nTopics, args.replication)
+	
 	if kraft:		
 		emuKafkaKraft.configureKafkaCluster(brokerPlace, args)
 	else:		
@@ -309,7 +310,7 @@ if __name__ == '__main__':
 		emuKafka.runKafka(net, brokerPlace, logDir)					
 		emuLoad.runLoad(net, args.nTopics, args.replication, args.mSizeString, args.mRate, args.tClassString, args.consumerRate, args.duration, logDir, args)
 
-	print("Simulation complete")
+	print("Simulation complete\r")
 	logging.info('Simulation complete at ' + str(datetime.now()))
 
 

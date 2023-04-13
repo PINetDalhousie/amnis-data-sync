@@ -124,10 +124,6 @@ def configureKafkaCluster(brokerPlace, args):
 		bFile.write(bProperties)
 		bFile.close()
 
-	bFile = open("kafka-3.2.0/config/server" + str(bID) + ".properties", "w")
-	bFile.write(bProperties)
-	bFile.close()
-
 	propertyFile.close()
 
 
@@ -177,25 +173,26 @@ def runKafka(net, brokerPlace, logDir, args, brokerWaitTime=200):
 	uuid = 'JmL9ihFRQmSabrNWrYSpjg'
 
 	# Make kraft log foldr
-	os.system("sudo mkdir -p " + logDir + "/kraft/")
-
+	os.system("mkdir -p " + logDir + "/kraft/")
 	for node in net.hosts:
 		netNodes[node.name] = node
 
 	startTime = time.time()
 
 	for bNode in brokerPlace:
-		print("Setting Kafka storage for node "+str(bNode))
-		os.system(
-			f"kafka-3.2.0/bin/kafka-storage.sh format -t {uuid} -c kafka-3.2.0/config/kraft/server{str(bNode)}.properties")
+		print("Setting Kafka storage for node "+str(bNode) + "\r")
+		output = subprocess.check_output(f"kafka-3.2.0/bin/kafka-storage.sh format -t {uuid} -c kafka-3.2.0/config/kraft/server{str(bNode)}.properties", shell=True, stderr=subprocess.STDOUT)
+		#os.system(
+		#	f"kafka-3.2.0/bin/kafka-storage.sh format -t {uuid} -c kafka-3.2.0/config/kraft/server{str(bNode)}.properties")
 		time.sleep(1)
+		#print(output)
 
 	popens = {}
 	for bNode in brokerPlace:
 		bID = "h"+str(bNode)
 		startingHost = netNodes[bID]
 		h = netNodes[bID]
-		print("Creating Kafka broker at node "+str(bNode))
+		print("Creating Kafka broker at node "+str(bNode) + "\r")
 		popens[h] = h.popen(
 			"kafka-3.2.0/bin/kafka-server-start.sh kafka-3.2.0/config/kraft/server"+str(bNode)+".properties &", shell=True)
 		time.sleep(1)
@@ -212,7 +209,7 @@ def runKafka(net, brokerPlace, logDir, args, brokerWaitTime=200):
 		port = 9093
 	for bNode in brokerPlace:
 		while brokerWait:
-			print("Testing Connection to Broker " + str(bNode) + "...")
+			print("Testing Connection to Broker " + str(bNode) + "...\r")
 			out, err, exitCode = startingHost.pexec(
 				"nc -z -v 10.0.0." + str(bNode) + " " + str(port))
 			stopTime = time.time()
@@ -223,10 +220,10 @@ def runKafka(net, brokerPlace, logDir, args, brokerWaitTime=200):
 		#    print("ERROR: Timed out waiting for Kafka brokers to start")
 		#    sys.exit(1)
 			else:
-				print("Waiting for Broker " + str(bNode) + " to Start...")
+				print("Waiting for Broker " + str(bNode) + " to Start...\r")
 				time.sleep(10)
 		brokerWait = True
-	print("Successfully Created Kafka Brokers in " + str(totalTime) + " seconds")
+	print("Successfully Created Kafka Brokers in " + str(totalTime) + " seconds\r")
 
 
 def cleanKafkaState(brokerPlace):

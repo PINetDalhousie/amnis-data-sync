@@ -7,3 +7,8 @@ certs/*.jks
 certs/cert-*
 certs/index.txt.*
 certs/serial.txt.*
+
+# Maven 
+target/
+java/dependency-reduced-pom.xml
+
