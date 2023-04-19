@@ -23,7 +23,12 @@ public class ConsumerDemo {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");  
 
     public static void main(String[] args) {        
-        String nodeId = args[0];        
+        String nodeId = args[0];
+        int nTopics = Integer.parseInt(args[1]);
+	    String fetchMinBytes = args[2];
+	    String fetchMaxWait = args[3];
+	    String sessionTimeout = args[4];
+
         String bootstrapServers = "10.0.0." + nodeId + ":9092";
         String groupId = "group-" + nodeId;
         String rackId = "rack-" + nodeId;
@@ -39,9 +44,9 @@ public class ConsumerDemo {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-        properties.setProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "1");
-        properties.setProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "500");
-        properties.setProperty(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "10000");
+        properties.setProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, fetchMinBytes);
+        properties.setProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, fetchMaxWait);
+        properties.setProperty(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeout);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.setProperty(ConsumerConfig.CLIENT_RACK_CONFIG, rackId);                
 
@@ -56,9 +61,9 @@ public class ConsumerDemo {
 
         try {
             // subscribe consumer to our topic(s)
-            topics.add("topic-0");
-            topics.add("topic-1");
-            //consumer.subscribe(Pattern.compile("topic-*"));
+            for(int i = 0; i < nTopics; i++){
+                topics.add("topic-" + Integer.toString(i));
+            }
             consumer.subscribe(topics);
             log.info("Subscribed to topics");
 

@@ -78,7 +78,7 @@ def spawnConsumers(net, nTopics, cRate, args):
 	for node in net.hosts:					
 		if args.java:
 			nodeID = str(node.name)[1:]	
-			command = "java -jar java/target/amnis-java-1.0-SNAPSHOT.jar " + nodeID + " &"
+			command = "java -jar java/target/amnis-java-1.0-SNAPSHOT.jar " + nodeID + " "+str(nTopics)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" &"
 			node.popen(command, shell=True)			
 		else:
 			node.popen("python3 " + script +str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(ssl)+" &", shell=True)
@@ -303,7 +303,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	logTopicLeaders(net, logDir, args)	
 	
 	timer = 0
-	isDisconnect = args.disconnectRandom != 0 or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
+	isDisconnect = args.disconnectRandom != 0 or args.disconnectHosts is not None or args.disconnectKraftLeader or args.disconnectTopicLeaders != 0
 	relocate = args.relocate
 	
 	# Set up disconnect

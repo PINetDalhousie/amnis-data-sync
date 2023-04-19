@@ -181,7 +181,6 @@ if __name__ == '__main__':
 	parser.add_argument('--dc-topic-leaders', dest='disconnectTopicLeaders', type=int, default=0, help='Disconnect a number of topic leader nodes')
 	parser.add_argument('--dc-hosts', dest='disconnectHosts', type=str, help='Disconnect a list of hosts (h1,h2..hn)')
 	parser.add_argument('--dc-kraft-leader', dest='disconnectKraftLeader', action='store_true', help='Disconnect the kraft leader')	
-	parser.add_argument('--kraft-broker-sleep', dest='kraftBrokerSleep', type=int, default=0, help='Sleep to allow brokers to connect (in seconds)')
 	parser.add_argument('--latency-after-setup', dest='latencyAfterSetup', action='store_true', help='Lower the network latency before setting up Kafka, then set it back once Kafka is set up.')	
 	parser.add_argument('--consumer-setup-sleep', dest='consumerSetupSleep', type=int, default=120, help='Duration to sleep between setting up consumers and producers (in seconds).')
 
