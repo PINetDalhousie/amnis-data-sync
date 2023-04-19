@@ -16,8 +16,9 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 with Kafka 2.13
 
   - pip3
   - Java 11
+  - maven
   - Xterm
-  - Mininet 2.3.0
+  - Mininet 2.3.0.dev6
   - Networkx 3.0
   - Kafka-python 2.0.2
   - Matplotlib 3.5.1
@@ -29,11 +30,11 @@ The tool was tested on Ubuntu 18.04.1 and is based on Python 3.6 with Kafka 2.13
   Most dependencies can be installed using `apt install` & `pip3 install`:
   
   ```bash
-  $ sudo apt install python3-pip mininet default-jdk xterm netcat
+  $ sudo apt install python3-pip mininet default-jdk xterm netcat maven
   
   $ python3 -m pip install --upgrade pip
   
-  $ sudo pip3 install mininet==2.3.0 networkx=3.0 kafka-python==2.0.2 matplotlib==3.5.1 python-snappy==0.6.1 lz4==4.0.0 seaborn==0.12.2 pandas==1.5.2
+  $ sudo pip3 install mininet==2.3.0.dev6 networkx==3.0 kafka-python==2.0.2 matplotlib==3.5.1 python-snappy==0.6.1 lz4==4.0.0 seaborn==0.12.2 pandas==1.5.2
   ```
   
   3. Build the custom Java Consumer whih can be used in conjunction with a KRaft Kafka deployment:
