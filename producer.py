@@ -12,6 +12,7 @@ import logging
 import re
 import random
 import os
+import ssl
 
 def processProdMsg(q):
 	while True:
@@ -92,6 +93,7 @@ try:
 	brokers = int(sys.argv[11])    
 	replication = int(sys.argv[12]) 
 	messageFilePath = sys.argv[13] 
+	isSSL = sys.argv[14]
 
 	seed(1)
 
@@ -111,6 +113,9 @@ try:
     
 
 	bootstrapServers="10.0.0."+nodeID+":9092"
+	if isSSL == "True":
+		logging.info("SSL %s", isSSL)
+		bootstrapServers="10.0.0."+nodeID+":9093"
 
 	# Convert acks=2 to 'all'
 	if(acks == 2):
@@ -121,12 +126,20 @@ try:
 		" linger_ms=" + str(linger) + " request_timeout_ms=" + str(requestTimeout))
 
 
-	if(compression == 'None'):
+	if isSSL == "True":
 		producer = KafkaProducer(bootstrap_servers=bootstrapServers,
 			acks=acks,
 			batch_size=batchSize,
 			linger_ms=linger,
-			request_timeout_ms=requestTimeout)
+			request_timeout_ms=requestTimeout,
+			compression_type=compression,
+			security_protocol='SSL',
+			ssl_check_hostname=False,			
+			ssl_cafile=os.getcwd()+'/certs/CARoot.pem',
+			ssl_certfile=os.getcwd()+'/certs/cacert.pem',
+			ssl_keyfile=os.getcwd()+'/certs/cakey.pem',
+			ssl_password="password"
+			)
 	else:
 		producer = KafkaProducer(bootstrap_servers=bootstrapServers,
 			acks=acks,

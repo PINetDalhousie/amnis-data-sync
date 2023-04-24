@@ -25,6 +25,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 	brokers = args.nBroker
 	replication = args.replication 
 	messageFilePath = args.messageFilePath   
+	ssl = args.ssl
 
 	tClasses = tClassString.split(',')
 	#print("Traffic classes: " + str(tClasses))
@@ -52,7 +53,7 @@ def spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args):
 
 	for nodeList in nodeClassification.values():
 		for node in nodeList:
-			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)+" &", shell=True)
+			node.popen("python3 producer.py "+str(node)+" "+tClasses[i]+" "+mSizeString+" "+str(mRate)+" "+str(nTopics)+" "+str(acks)+" "+str(compression)+" "+str(batchSize)+" "+str(linger)+" "+str(requestTimeout)+" "+str(brokers)+" "+str(replication)+" "+str(messageFilePath)+" "+str(ssl)+" &", shell=True)
 		i += 1
 
 
@@ -69,12 +70,18 @@ def spawnConsumers(net, nTopics, cRate, args):
 	script ='consumer.py '
 	if args.singleConsumer:
 		script = 'consumerSingle.py ' 
+	ssl = args.ssl
 
 	#h2.cmd("python3 kafka-python-consumer.py > consumed-data.txt", shell=True)
 	#print("Data consumed")
 
-	for node in net.hosts:
-		node.popen("python3 " + script +str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" &", shell=True)
+	for node in net.hosts:					
+		if args.java:
+			nodeID = str(node.name)[1:]	
+			command = "java -jar java/target/amnis-java-1.0-SNAPSHOT.jar " + nodeID + " "+str(nTopics)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" &"
+			node.popen(command, shell=True)			
+		else:
+			node.popen("python3 " + script +str(node.name)+" "+str(nTopics)+" "+str(cRate)+" "+str(fetchMinBytes)+" "+str(fetchMaxWait)+" "+str(sessionTimeout)+" "+str(brokers)+" "+mSizeString+" "+str(mRate)+" "+str(replication)+" "+str(topicCheckInterval)+" "+str(ssl)+" &", shell=True)
 
 
 
@@ -88,28 +95,36 @@ def printLinksBetween(net , n1, n2):
 	
 def logTopicLeaders(net, logDir, args):
 	issuingNode = net.hosts[0]
-	print("Finding topic leaders at localhost:2181")
+	print(f"Finding topic leaders at {issuingNode.name}\r")
 	for i in range(args.nTopics):
-		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+str(i), shell=True)	
+		if args.ssl:
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --describe --topic topic-"+str(i), shell=True)				
+		else:
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+str(i), shell=True)	
 		print(out)
+		if 'Error' in out:
+			continue
 		split1 = out.split('Leader: ')
 		split2 = split1[1].split('\t')
 		topicLeaderNode = 'h' + split2[0]			
-		print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
+		print(f"Leader for topic-{str(i)} is node {topicLeaderNode}\r")
 		logging.info("topic-"+ str(i) +" leader is node " + topicLeaderNode)
 
 
-def getTopicLeader(issuingNode, i):
+def getTopicLeader(issuingNode, i, args):
 	n = None
 	try:
-		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+i, shell=True)	
+		if args.ssl:
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties --describe --topic topic-"+i, shell=True)				
+		else:			
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic-"+i, shell=True)	
 		if 'ERROR' in out or 'Error' in out:
 			print(out)
 		else:
 			split1 = out.split('Leader: ')
 			split2 = split1[1].split('\t')
 			n = 'h' + split2[0]			
-			print(f"Leader for topic-{i} is node {n}")
+			print(f"Leader for topic-{i} is node {n}\r")
 	except Exception as e:
 		print(e)
 	finally:
@@ -128,7 +143,7 @@ def readCurrentKraftLeader(logDir):
 				first = line.split("leaderId=")[1]
 				kraftLeader = "h" + first.split(",")[0]				
 				break
-	print(f'Kraft leader is {kraftLeader}')
+	print(f'Kraft leader is {kraftLeader}\r')
 	return kraftLeader
 
 
@@ -144,7 +159,7 @@ def processDisconnect(net, logDir, args):
 			h = net.getNodeByName(netHostsList[randomIndex][0])
 			if not hostsToDisconnect.__contains__(h):		
 				hostsToDisconnect.append(h)
-				print(f"Host {h.name} to be disconnected for {args.disconnectDuration}s")
+				print(f"Host {h.name} to be disconnected for {args.disconnectDuration}s\r")
 			randomIndex = randint(0, len(netHosts) -1)					
 	elif args.disconnectHosts is not None:
 		hostNames = args.disconnectHosts.split(',')			
@@ -153,19 +168,19 @@ def processDisconnect(net, logDir, args):
 			hostsToDisconnect.append(h)
 	elif args.disconnectTopicLeaders != 0:				
 		issuingNode = net.hosts[0]
-		print("Finding topic leaders at localhost:2181")
+		print("Finding topic leaders at localhost:2181\r")
 		kraftLeaderNode = readCurrentKraftLeader(logDir)
 		# Find topic leaders
 		for i in range(args.nTopics):
-			# out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
+			# out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic topic-"+str(i), shell=True)			
 			# split1 = out.split('Leader: ')
 			# split2 = split1[1].split('\t')
 			# topicLeaderNode = 'h' + split2[0]	
-			topicLeaderNode = getTopicLeader(issuingNode, str(i))					
-			print(f"Leader for topic-{str(i)} is node {topicLeaderNode}")
+			topicLeaderNode = getTopicLeader(issuingNode, str(i), args)					
+			print(f"Leader for topic-{str(i)} is node {topicLeaderNode}\r")
 			if topicLeaderNode == kraftLeaderNode:
 				# Don't disconnect leader
-				print(f"Not adding {topicLeaderNode} to disconnect list as it is Kraft leader ")	
+				print(f"Not adding {topicLeaderNode} to disconnect list as it is Kraft leader \t")	
 				continue
 			else:
 				h = net.getNodeByName(topicLeaderNode)
@@ -192,38 +207,83 @@ def traceWireshark(hostsToCapture, f):
 		print(output)
 
 
+def setAuth(net):
+	# TODO - Temp hardcoded rule: Only one producer allowed to write for topic-1
+
+	nodeToAllowClassified = net.hosts[0].name
+
+	# Loop through and apply rule
+	for h in net.hosts:				
+		if h.name == nodeToAllowClassified:
+			print(f"Not setting authentication rule for {nodeToAllowClassified}")
+			continue
+		rule = "--add --deny-principal User:'*' --deny-host '" + h.IP() + "' --operation Write --topic topic-0"		
+		print(f"Creating authentication rule {rule} for {h.name}")		
+		outAuth = h.cmd("kafka-3.2.0/bin/kafka-acls.sh --bootstrap-server localhost:9093 --command-config kafka-3.2.0/config/consumer.properties " + rule)	
+		print(outAuth)
+	
+
+
 def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consumerRate, duration, logDir, args, topicWaitTime=100):
 
-	print("Start workload")	
+	print("Start workload\r")	
 	if args.captureAll:
 		traceWireshark(net.hosts, "start")
 
 	seed(1)
 
 	nHosts = len(net.hosts)
-	print("Number of hosts: " + str(nHosts))
-    
+	print("Number of hosts: " + str(nHosts)+ "\r")
+
+	if args.ssl:
+		print("Updating SSL consumer.properties\r")		
+		propertyFile = open("kafka-3.2.0/config/consumer.properties", "r")
+		consumerProperties = propertyFile.read()
+		bProperties = consumerProperties
+		bProperties = bProperties.replace(
+				"ssl.truststore.location=truststore",
+				"ssl.truststore.location="+os.getcwd()+"/certs/server.truststore.jks")
+
+		bProperties = bProperties.replace(
+				"ssl.keystore.location=keystore",
+				"ssl.keystore.location="+os.getcwd()+"/certs/server.keystore.jks")
+
+		bFile = open("kafka-3.2.0/config/consumer.properties", "w")
+		bFile.write(bProperties)
+		bFile.close()
+		propertyFile.close()		
+
+
+	# Set authentication
+	if args.auth:
+		setAuth(net)
+
+
 	#Create topics
 	topicNodes = []
 	startTime = time.time()
+	time.sleep(10)
 	for i in range(nTopics):
 		issuingID = randint(0, nHosts-1)
 		issuingNode = net.hosts[issuingID]
 		
-		print("Creating topic "+str(i)+" at broker "+str(issuingID+1))
-
-		out = issuingNode.cmd("kafka-3.1.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
+		print("Creating topic "+str(i)+" at broker "+str(issuingNode.name)+"\r")
+		if args.ssl:		
+			# Use consumer.properties		
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9093 --command-config kafka-3.2.0/config/consumer.properties --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
+		else:
+			out = issuingNode.cmd("kafka-3.2.0/bin/kafka-topics.sh --create --bootstrap-server 10.0.0."+str(issuingID+1)+":9092 --replication-factor "+str(replication)+" --partitions 1 --topic topic-"+str(i), shell=True)
 		print(out)
 		topicNodes.append(issuingNode)
 	
 	stopTime = time.time()
 	totalTime = stopTime - startTime
-	print("Successfully Created " + str(nTopics) + " Topics in " + str(totalTime) + " seconds")
+	print("Successfully Created " + str(nTopics) + " Topics in " + str(totalTime) + " seconds\r")
 	
 
 
 	spawnConsumers(net, nTopics, consumerRate, args)
-	print(f"Consumers created at {str(datetime.now())}")
+	print(f"Consumers created at {str(datetime.now())}\r")
 	time.sleep(5)	
 
 	# Set the network delay back to to .graphml values before spawning producers so we get accurate latency
@@ -231,11 +291,11 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		setNetworkDelay(net)
 		time.sleep(1)
 
-	print(f"Sleeping for {args.consumerSetupSleep} to allow consumers to connect")
+	print(f"Sleeping for {args.consumerSetupSleep} seconds to allow consumers to connect\r")
 	time.sleep(args.consumerSetupSleep)
 
 	spawnProducers(net, mSizeString, mRate, tClassString, nTopics, args)
-	print(f"Producers created at {str(datetime.now())}")
+	print(f"Producers created at {str(datetime.now())}\r")
 	time.sleep(1)
 
 
@@ -243,7 +303,7 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 	logTopicLeaders(net, logDir, args)	
 	
 	timer = 0
-	isDisconnect = args.disconnectRandom != 0 or args.disconnectHosts is not None or args.disconnectZkLeader or args.disconnectTopicLeaders != 0
+	isDisconnect = args.disconnectRandom != 0 or args.disconnectHosts is not None or args.disconnectKraftLeader or args.disconnectTopicLeaders != 0
 	relocate = args.relocate
 	
 	# Set up disconnect
@@ -263,17 +323,17 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		while s.name == randomSwitch[0]:		
 			randomSwitch = choice(list(switches.items()))	
 		s2 = net.getNodeByName(randomSwitch[0])
-		print(f"{h.name} to relocate from {s.name} to {s2.name}")
+		print(f"{h.name} to relocate from {s.name} to {s2.name}\r")
 
 		
 
-	print(f"Starting workload at {str(datetime.now())}")
-	logging.info('Starting workload at ' + str(datetime.now()))
+	print(f"Starting workload at {str(datetime.now())}\r")
+	logging.info('Starting workload at ' + str(datetime.now())+"\r")
 
 	while timer < duration:
 		time.sleep(10)
 		percentComplete = int((timer/duration)*100)
-		print("Processing workload: "+str(percentComplete)+"%")
+		print("Processing workload: "+str(percentComplete)+"%\r")
 		if isDisconnect and percentComplete >= 10:
 			if not isDisconnected:			
 				disconnectHosts(net, netHosts, hostsToDisconnect)				
@@ -293,8 +353,8 @@ def runLoad(net, nTopics, replication, mSizeString, mRate, tClassString, consume
 		timer += 10
 
 	logTopicLeaders(net, logDir, args)
-	print(f"Workload finished at {str(datetime.now())}")	
-	logging.info('Workload finished at ' + str(datetime.now()))
+	print(f"Workload finished at {str(datetime.now())}\r")	
+	logging.info('Workload finished at ' + str(datetime.now())+"\r")
 
 
 
