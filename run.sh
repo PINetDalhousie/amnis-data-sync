@@ -11,7 +11,7 @@ cp ./plot-scripts/modifiedLatencyPlotScript.py ./
 echo "Result directory is $RESULT_DIR"
 
 echo "********Running sim"
-sudo python3 main.py $TOPOLOGY --nbroker $SWITCHES --nzk $SWITCHES --message-rate 30.0 --replication $SWITCHES --message-file message-data/xml/Cars103.xml --time 150 --replica-min-bytes 200000 --replica-max-wait 5000 --ntopics $TOPICS --topic-check 0.1 --consumer-rate 0.5 --compression gzip --single-consumer --batch-size 16384 --linger 5000 --kraft --java --local-replica
+sudo python3 main.py $TOPOLOGY --nbroker $SWITCHES --message-rate 30.0 --replication $SWITCHES --message-file message-data/xml/Cars103.xml --time 150 --replica-min-bytes 200000 --replica-max-wait 5000 --ntopics $TOPICS --topic-check 0.1 --consumer-rate 0.5 --compression gzip --single-consumer --batch-size 16384 --linger 5000 --kraft --java --local-replica
 
 echo "********Moving java consumer logs"
 sudo mv cons-* logs/kafka/$DIR/cons/

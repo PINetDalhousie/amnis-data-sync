@@ -130,13 +130,9 @@ def configureKafkaCluster(brokerPlace, args):
 def placeKafkaBrokers(net, nBroker, nZk):
 
 	brokerPlace = []
-	zkPlace = []
 
 	if nBroker < 0 or nBroker > len(net.hosts):
 		print("ERROR: Cannot support specified number of broker instances.")
-		sys.exit(1)
-	elif nZk < 0 or nZk > len(net.hosts):
-		print("ERROR: Cannot support specified number of Zookeeper instances.")
 		sys.exit(1)
 
 	if nBroker == len(net.hosts):
@@ -146,14 +142,7 @@ def placeKafkaBrokers(net, nBroker, nZk):
 		print("ERROR: Support for broker placement will be added in the future. Please consider setting the number of brokers to the number of end hosts in your network.")
 		sys.exit(1)
 
-	if nZk == len(net.hosts):
-		for i in range(nZk):
-			zkPlace.append(i+1)
-	else:
-		print("ERROR: Support for zookeeper placement will be added in the future. Please consider setting the number of zookeeper instances to the number of end hosts in your network.")
-		sys.exit(1)
-
-	return brokerPlace, zkPlace
+	return brokerPlace
 
 # Function to log open processes running on host
 

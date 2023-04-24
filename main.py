@@ -33,7 +33,7 @@ REPLICA_LAG_TIME_MAX_MS = 30000
 
 
 # Kill all subprocesses
-def killSubprocs(brokerPlace, zkPlace):	
+def killSubprocs(brokerPlace):	
 	os.system("pkill -9 -f bandwidth-monitor.py")
 	os.system("pkill -9 -f producer.py")
 	os.system("pkill -9 -f consumer.py")
@@ -48,23 +48,21 @@ def killSubprocs(brokerPlace, zkPlace):
 
 def validateInput(args):
 
-	#Check duration
-	if (args.duration < 1):
-		print("ERROR: Time should be greater than zero.")
+	if (args.nBroker < 0):
+		print("ERROR: Number of brokers should not be negative.")
 		sys.exit(1)
 
-	if(args.topicCheckInterval < 0):
-		print("ERROR: Topic check interval should be greater than zero.")
+	if (args.nZk < 0):
+		print("ERROR: Number of Zookeeper instances should not be negative.")
 		sys.exit(1)
-		
-	#Check traffic classes
-	tClassString = args.tClassString
-	tClasses = tClassString.split(',')
 
-	for tClass in tClasses:
-		if(float(tClass) <= 0.1):
-			print("ERROR: All traffic classes should have a weight greater than 0.1.")
-			sys.exit(1)
+	if (args.nTopics < 1):
+		print("ERROR: Number of topics should be greater than zero.")
+		sys.exit(1)
+
+	if (args.replication < 1):
+		print("ERROR: Replication factor should be greater than zero.")
+		sys.exit(1)
 
 	#Check message size
 	mSizeString = args.mSizeString
@@ -91,19 +89,31 @@ def validateInput(args):
 			print("ERROR: Mean message size should be equal to or greater than 1.0.")
 			sys.exit(1)
 		elif int(mSizeParams[2]) < 0.0:
-			print("ERROR: Standard deviation for message size should be greater than zero.")
+			print("ERROR: Standard deviation for message size should be equal to or greater than zero.")
 			sys.exit(1)
 
 	#Check message rate
-	mRate = args.mRate
-
-	if mRate > 100:
-		print("ERROR: Message rate should be less than 100 msg/second.")
+	if args.mRate > 100:
+		print("ERROR: Message rate should be less than or equal to 100 messages/second.")
 		sys.exit(1)
+
+	#Check traffic classes
+	tClassString = args.tClassString
+	tClasses = tClassString.split(',')
+
+	for tClass in tClasses:
+		if(float(tClass) <= 0.1):
+			print("ERROR: All traffic classes should have a weight greater than 0.1.")
+			sys.exit(1)
 
 	#Check consumer rate
 	if args.consumerRate <= 0.0 or args.consumerRate > 100.0:
-		print("ERROR: Consumer rate should be between 0 and 100 checks/second")
+		print("ERROR: Consumer rate should be in the range (0, 100] checks/second")
+		sys.exit(1)
+
+	#Check duration
+	if (args.duration < 1):
+		print("ERROR: Time should be greater than zero.")
 		sys.exit(1)
 
 	if args.acks < 0 or args.acks >= 3:
@@ -116,28 +126,108 @@ def validateInput(args):
 		print(*compressionList, sep = ", ") 
 		sys.exit(1)
 
+	if (args.batchSize < 0):
+		print("ERROR: Batch Size should not be negative.")
+		sys.exit(1)
+
+	if (args.linger < 0):
+		print("ERROR: Linger should not be negative.")
+		sys.exit(1)
+	
+	if (args.requestTimeout < 0):
+		print("ERROR: Request Timeout should not be negative.")
+		sys.exit(1)
+
+	if (args.fetchMinBytes < 0):
+		print("ERROR: Fetch Min Bytes should not be negative.")
+		sys.exit(1)
+	
+	if (args.fetchMaxWait < 0):
+		print("ERROR: Fetch Max Wait should not be negative.")
+		sys.exit(1)
+
 	# Note that the value must be in the allowable range as configured in the broker configuration by group.min.session.timeout.ms and group.max.session.timeout.ms
 	if args.sessionTimeout < GROUP_MIN_SESSION_TIMEOUT_MS or args.sessionTimeout > GROUP_MAX_SESSION_TIMEOUT_MS:
 		print("ERROR: Session timeout must be in the allowable range as configured in the broker configuration by group.min.session.timeout.ms value of " + str(GROUP_MIN_SESSION_TIMEOUT_MS) + " and group.max.session.timeout.ms value of " + str(GROUP_MAX_SESSION_TIMEOUT_MS))
 		sys.exit(1)
 
 	# This value should always be less than the replica.lag.time.max.ms at all times to prevent frequent shrinking of ISR for low throughput topics
-	if args.replicaMaxWait >= REPLICA_LAG_TIME_MAX_MS:
-		print("ERROR: replica.fetch.wait.max.ms must be less than the replica.lag.time.max.ms value of " +  str(REPLICA_LAG_TIME_MAX_MS) + " at all times")
+	if args.replicaMaxWait >= REPLICA_LAG_TIME_MAX_MS or args.replicaMaxWait < 0:
+		print("ERROR: replica.fetch.wait.max.ms must be less than the replica.lag.time.max.ms value of " +  str(REPLICA_LAG_TIME_MAX_MS) + " and greater than zero at all times")
 		sys.exit(1)
-	
+
+	if(args.replicaMinBytes < 0):
+		print("ERROR: Replica Min Bytes should not be negative.")
+		sys.exit(1)
+
+	if(args.topicCheckInterval <= 0):
+		print("ERROR: Topic Check Interval should greater than zero.")
+		sys.exit(1)
+
 	if(args.topicCheckInterval * args.nTopics) > args.duration:
 		print("WARNING: Not all topics will be checked within the given duration of the simulation. Simulation Time:" +  str(args.duration) + " seconds. Time Required to Check All Topics at Least Once: "+  str(args.topicCheckInterval * args.nTopics) + " seconds.")
 
+	if (args.relocate) and (args.disconnectRandom > 0 or args.disconnectZkLeader or args.disconnectTopicLeaders > 0 or args.disconnectHosts or args.disconnectKraftLeader):
+		print("ERROR: Relocate can not be combined with Disconnection attributes.")
+		sys.exit(1)
+
 	# Check disconnect duration
+	if(args.disconnectDuration < 0):
+		print("ERROR: Disconnect Duration should not be negative.")
+		sys.exit(1)
+
 	if (args.disconnectDuration >= args.duration):
 		print("ERROR: Disconnect duration should be less than simulation duration.")
 		sys.exit(1)		
 
 	# Check random disconnect
-	if (args.disconnectRandom > args.nBroker):
-		print("ERROR: Disconnect nodes should be less than broker nodes.")
-		sys.exit(1)			
+	if (args.disconnectRandom < 0 or args.disconnectRandom > args.nBroker):
+		print("ERROR: Disconnect nodes should not be negative but less than the number of broker nodes.")
+		sys.exit(1)	
+
+	if (args.disconnectRandom > 0) and (args.disconnectTopicLeaders > 0 or args.disconnectHosts):
+		print("ERROR: Disconnect Random can not be combined with Disconnect Topic Leaders or Disconnect Hosts.")
+		sys.exit(1)
+
+	if (args.disconnectTopicLeaders < 0):
+		print("ERROR: Disconnect Random should not be negative.")
+		sys.exit(1)
+
+	if (args.disconnectTopicLeaders > 0) and (args.disconnectRandom > 0 or args.disconnectHosts):
+		print("ERROR: Disconnect Topic Leaders can not be combined with Disconnect Random or Disconnect Hosts.")
+		sys.exit(1)
+
+	if (args.disconnectHosts) and (args.disconnectTopicLeaders > 0 or args.disconnectRandom > 0):
+		print("ERROR: Disconnect Hosts can not be combined with Disconnect Random or Disconnect Topic Leaders.")
+		sys.exit(1)
+
+	if (args.nZk > 0 or args.disconnectZkLeader) and (args.kraft):
+		print("ERROR: Zookeeper attributes can not be used with a KRaft deployment.")
+		sys.exit(1)		
+
+	if (not args.kraft) and args.disconnectKraftLeader:
+		print("ERROR: KRaft attribute must be specified to Disconnect KRaft Leader.")
+		sys.exit(1)
+
+	if(args.consumerSetupSleep < 0):
+		print("ERROR: Consumer Setup Sleep should not be negative.")
+		sys.exit(1)
+
+	if(args.offsetsTopicReplication < 0):
+		print("ERROR: Offsets Topic Replication should not be negative.")
+		sys.exit(1)
+
+	if (not args.kraft) and (args.ssl or args.auth):
+		print("ERROR: KRaft attribute must be specified to enable SSL or Authentication.")
+		sys.exit(1)
+
+	if (args.java) and (args.ssl):
+		print("ERROR: SSL not supported by Java Consumer.")
+		sys.exit(1)
+
+	if (not args.java) and (args.localReplica):
+		print("ERROR: Java attribute must be specified to run with Local Replica.")
+		sys.exit(1)
 
 if __name__ == '__main__': 
 
@@ -252,12 +342,12 @@ if __name__ == '__main__':
 	net.build()
 
 	if kraft:
-		brokerPlace, zkPlace = emuKafkaKraft.placeKafkaBrokers(net, args.nBroker, args.nZk)
+		brokerPlace = emuKafkaKraft.placeKafkaBrokers(net, args.nBroker, args.nZk)
 	else:	
 		brokerPlace, zkPlace = emuKafka.placeKafkaBrokers(net, args.nBroker, args.nZk)
 
 	#TODO: remove debug code
-	killSubprocs(brokerPlace, zkPlace)
+	killSubprocs(brokerPlace)
 	emuLogs.cleanLogs()
 
 	if kraft:		
@@ -314,7 +404,7 @@ if __name__ == '__main__':
 
 
 	# to kill all the running subprocesses
-	killSubprocs(brokerPlace, zkPlace)
+	killSubprocs(brokerPlace)
 
 
 	net.stop()
